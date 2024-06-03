@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  problemId   String
+  languageId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  code        String
+  fullCode    String
+  status      String
+  testcases   TestCase[]
+  language    Language @relation(fields: [languageId], references: [id])
+}
+
+model Language {
+  id        String   @id @default(cuid())
+  name      String
+  judge0Id  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Submission Submission[]
+}
+
+model TestCase {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  status            TestCaseResult @default(PENDING)
+  index             Int
+  submission        Submission @relation(fields: [submissionId], references: [id])
+  submissionId      String
+  judge0TrackingId  String
+}
+
+enum TestCaseResult {
+  AC
+  FAIL
+  TLE
+  COMPILATION_ERROR
+  PENDING
+}
