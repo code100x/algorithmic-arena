@@ -10,6 +10,6 @@ export const SubmissionCallback = z.object({
     message: z.string().nullable(),
     status: z.object({
         id: z.number(),
-        description: z.enum(['Accepted', 'Rejected', 'Runtime Error (NZEC)', 'Compilation Error', 'Time Limit Exceeded', 'Memory Limit Exceeded'])
+        description: z.enum(['Accepted', 'Rejected', 'Runtime Error (NZEC)', 'Compilation Error', 'Time Limit Exceeded', 'Memory Limit Exceeded', 'Wrong Answer'])
     })
 });
