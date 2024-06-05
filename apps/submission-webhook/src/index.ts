@@ -46,6 +46,9 @@ app.put("/submission-callback", async (req, res) => {
     (testcase) => testcase.status !== "AC",
   );
 
+
+  // This logic is fairly ugly
+  // We should have another async process update the status of the submission.
   if (pendingTestcases.length === 0) {
     const accepted = failedTestcases.length === 0;
     await prismaClient.$transaction(async (tx) => {
