@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "leaderboard:create": "CONTEST_ID=clx19tibu00054lu9fpb3c3zx ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",

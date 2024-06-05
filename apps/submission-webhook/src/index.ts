@@ -67,6 +67,7 @@ app.put("/submission-callback", async (req, res) => {
                 });
                 
                 const points = await getPoints(response.activeContestId, response.userId, response.problemId);
+
                 await tx.contestSubmission.upsert({
                     where: {
                         userId_problemId_contestId: {
@@ -88,12 +89,9 @@ app.put("/submission-callback", async (req, res) => {
                 })
 
                 if (!existingRecord) {
-                    await tx.contestProblem.update({
+                    await tx.problem.update({
                         where: {
-                            contestId_problemId: {
-                                contestId: response.activeContestId,
-                                problemId: response.problemId
-                            }
+                            id: response.problemId
                         },
                         data: {
                             solved: {

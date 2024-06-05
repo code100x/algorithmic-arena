@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
             "source_code": problem.fullBoilerplateCode,
             "stdin": input,
             "expected_output": problem.outputs[index],
-            "callback_url": "https://httpdump.app/dumps/6af1a303-354f-413d-83b8-6abadf962065"
+            "callback_url": process.env.JUDGE0_CALLBACK_URL ?? "https://judge0-callback.100xdevs.com/submission-callback",
         }))
     });
 

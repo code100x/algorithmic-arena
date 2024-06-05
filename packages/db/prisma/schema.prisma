@@ -18,6 +18,7 @@ model User {
   contestSubmissions ContestSubmission[]
   role      UserRole   @default(USER)
   submissions Submission[]
+  contestPoints ContestPoints[]
 }
 
 model Contest {
@@ -32,6 +33,7 @@ model Contest {
   updatedAt   DateTime   @updatedAt
   problems    ContestProblem[]
   contestSubmissions ContestSubmission[]
+  leaderboard Boolean    @default(false)
 }
 
 model ContestProblem {
@@ -73,6 +75,7 @@ model DefaultCode {
   updatedAt   DateTime   @updatedAt
   problem     Problem @relation(fields: [problemId], references: [id])
   language    Language   @relation(fields: [languageId], references: [id])
+  @@unique([problemId, languageId])
 }
 
 model Submission {
@@ -137,6 +140,7 @@ model ContestPoints {
   userId           String
   points      Int
   rank             Int
+  user            User @relation(fields: [userId], references: [id])
   @@unique([contestId, userId])
 }
 

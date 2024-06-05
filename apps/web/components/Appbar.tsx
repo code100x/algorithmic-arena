@@ -28,7 +28,7 @@ export function Appbar() {
     </nav>
 
     {!isLoading && session?.user && <div className="flex items-center gap-4">
-      <Button onClick={() => signOut()}>Log out</Button>
+      <Button onClick={() => signOut()}>Logout</Button>
     </div>}
 
     {!isLoading && !session?.user && <Button onClick={() => signIn()}>Sign in</Button>}

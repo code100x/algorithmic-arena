@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@repo/ui/card"
 import { getProblems } from "../app/db/problem"
+import { PrimaryButton } from "./LinkButton";
 
 export async function Problems() {
     const problems = await getProblems();
@@ -39,7 +40,9 @@ function ProblemCard({ problem }: { problem: any }) {
         </div>
     </CardContent>
     <CardFooter>
-        <Link href="#" prefetch={false} />
+        <PrimaryButton href={`/problem/${problem.id}`}> 
+            View Problem
+        </PrimaryButton>
     </CardFooter>
 </Card>
 }

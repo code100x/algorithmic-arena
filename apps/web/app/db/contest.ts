@@ -1,6 +1,9 @@
+import { getServerSession } from "next-auth";
 import { db } from ".";
+import { authOptions } from "../lib/auth";
 
 export const getContest = async (contestId: string) => {
+    const session = await getServerSession(authOptions);
     const contest = await db.contest.findFirst({
         where: {
             id: contestId,
@@ -11,10 +14,24 @@ export const getContest = async (contestId: string) => {
                 include: {
                     problem: true
                 }
-            } 
+            },
+            contestSubmissions: {
+                where: {
+                    userId: session?.user?.id
+                }
+            }
         }
     });
     return contest;
+}
+
+export const getContestsWithLeaderboard = async () => {
+    const contests = await db.contest.findMany({
+        where: {
+            leaderboard: true
+        }
+    });
+    return contests;
 }
 
 export const getUpcomingContests = async () => {

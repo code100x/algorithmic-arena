@@ -4,7 +4,7 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@repo/ui/table";
-import { CheckIcon, CrossIcon, ClockIcon } from "lucide-react";
+import { CheckIcon, ClockIcon, CircleX } from "lucide-react";
 export interface ISubmission {
     id: string;
     time: string;
@@ -27,11 +27,13 @@ function getColor(status: string) {
       case "FAIL":
           return "text-red-500";
       case "TLE":
-          return "text-yellow-500";
+          return "text-red-500";
       case "COMPILATION_ERROR":
           return "text-red-500";
       case "PENDING":
           return "text-yellow-500";
+      case "REJECTED":
+        return "text-red-500";
       default:
           return "text-gray-500";
   }
@@ -42,11 +44,13 @@ function getIcon(status: string) {
       case "AC":
           return <CheckIcon className="h-4 w-4" />;
       case "FAIL":
-          return <CrossIcon className="h-4 w-4" />;
+          return <CircleX className="h-4 w-4" />;
+      case "REJECTED":
+          return <CircleX className="h-4 w-4" />;
       case "TLE":
           return <ClockIcon className="h-4 w-4" />;
       case "COMPILATION_ERROR":
-          return <CrossIcon className="h-4 w-4" />;
+          return <CircleX className="h-4 w-4" />;
       case "PENDING":
           return <ClockIcon className="h-4 w-4" />;
       default:

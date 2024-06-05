@@ -22,15 +22,40 @@ async function main(contestId: string) {
 
     const sortedUserPoints = Array.from(userPoints.entries()).sort((a, b) => b[1] - a[1]);
     
+    // clean existing leaderboard
+
+    await prisma.contest.update({
+        where: {
+            id: contestId
+        },
+        data: {
+            leaderboard: false
+        }
+    });
+
+    await prisma.contestPoints.deleteMany({
+        where: {
+            contestId: contestId,
+        }
+    });
+
     await prisma.contestPoints.createMany({
         data: sortedUserPoints.map(([userId, points]) => ({
             userId,
             points: points,
             contestId: contestId,
-            rank: sortedUserPoints.indexOf([userId, points]) + 1
+            rank: sortedUserPoints.map(x => x[0]).indexOf(userId) + 1 
         }))
     });
 
+    await prisma.contest.update({
+        where: {
+            id: contestId
+        },
+        data: {
+            leaderboard: true
+        }
+    });
 }
 
 main(process.env.CONTEST_ID!);

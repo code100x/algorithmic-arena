@@ -3,7 +3,7 @@ import { ContestCard } from "./ContestCard";
 
 export async function Contests() {
   const [upcomingContests, pastContests] = await Promise.all([getUpcomingContests(), getExistingContests()]);
-    return <div>
+    return <div className="min-h-screen">
         <section className="bg-white dark:bg-gray-900 py-8 md:py-12">
           <div className="container mx-auto px-4 md:px-6">
             <div className="mb-6">

@@ -8,6 +8,8 @@ import { useEffect, useState } from "react"
 import { LANGUAGE_MAPPING } from "@repo/common/language"
 import axios from "axios";
 import { ISubmission, SubmissionTable } from "./SubmissionTable";
+import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
+import { toast } from "react-toastify";
 
 enum SubmitStatus {
     SUBMIT = "SUBMIT",
@@ -27,7 +29,7 @@ export interface IProblem {
     }[]
 }
 
-export const ProblemSubmitBar = ({ problem }: { problem:  IProblem }) => {
+export const ProblemSubmitBar = ({ problem, contestId }: { problem:  IProblem, contestId?: string  }) => {
     const [activeTab, setActiveTab] = useState("problem")
 
     return (
@@ -49,25 +51,12 @@ export const ProblemSubmitBar = ({ problem }: { problem:  IProblem }) => {
                 </div>
               </div>
               <div className={`${activeTab === "problem" ? "" : "hidden"}`}>
-                  <SubmitProblem problem={problem} />
+                  <SubmitProblem problem={problem} contestId={contestId} />
               </div>
               {activeTab === "submissions" && <Submissions problem={problem} />}
             </div>
         </div>
     )
-}
-
-interface Submission {
-    id: string;
-    problemId: string;
-    languageId: string;
-    code: string;
-    fullCode: string;
-    status: string;
-    testcases: {
-        status: string;
-        index: number;
-    }[];
 }
 
 function Submissions({ problem }: { problem: IProblem }) {
@@ -85,10 +74,11 @@ function Submissions({ problem }: { problem: IProblem }) {
     </div>
 }
 
-function SubmitProblem({ problem }: { problem: IProblem }) {
+function SubmitProblem({ problem, contestId }: { problem: IProblem, contestId?: string }) {
     const [language, setLanguage] = useState(Object.keys(LANGUAGE_MAPPING)[0] as string);
     const [code, setCode] = useState<Record<string, string>>({});
-    const [status, setStatus] = useState<string>("SUBMIT");
+    const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
+    const [testcases, setTestcases] = useState<any[]>([]);
 
     useEffect(() => {
         const defaultCode: { [key: string]: string } = {};
@@ -100,22 +90,42 @@ function SubmitProblem({ problem }: { problem: IProblem }) {
         setCode(defaultCode);
     }, [problem]);
 
-    async function pollWithBackoff(id: string) {
-        const response = await axios.get(`/api/submission/${id}`)
+    async function pollWithBackoff(id: string, retries: number) {
+        if (retries === 0) {
+            setStatus(SubmitStatus.SUBMIT);
+            toast.error("Not able to get status ");
+            return;
+        }
+        
+        const response = await axios.get(`/api/submission/?id=${id}`)
+
         if (response.data.submission.status === "PENDING") {
-            setTimeout(() => pollWithBackoff(id), 1000);
+            setTestcases(response.data.testCases);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            pollWithBackoff(id, retries - 1);
         } else {
-            setStatus(response.data.submission.status);
+            if (response.data.submission.status === "AC") {
+                setStatus(SubmitStatus.ACCEPTED);
+                setTestcases(response.data.testCases);
+                toast.success("Accepted!");
+                return;
+            } else {
+                setStatus(SubmitStatus.FAILED);
+                toast.error("Failed :(");
+                return;
+            }
         }
     }
 
     async function submit() {
+        setStatus(SubmitStatus.PENDING);
         const response = await axios.post(`/api/submission/`, {
             "code": code[language], 
             "languageId": language,
-            "problemId": problem.id
+            "problemId": problem.id,
+            "activeContestId": contestId
         });
-        pollWithBackoff(response.data.id);
+        pollWithBackoff(response.data.id, 5);
     }
 
     return (
@@ -150,10 +160,42 @@ function SubmitProblem({ problem }: { problem: IProblem }) {
                     />
               </div>
               <div className="flex justify-end">
-                <Button type="submit" className="mt-4 align-right" onClick={submit}>
-                    Submit
+                <Button disabled={status === SubmitStatus.PENDING} type="submit" className="mt-4 align-right" onClick={submit}>
+                    {status === SubmitStatus.PENDING ? "Submitting" : "Submit"} 
                 </Button>
               </div>
+              <RenderTestcase testcases={testcases} />
       </div>
     )
+}
+
+
+function renderResult(status: string) {
+    switch (status) {
+        case "AC":
+            return <CheckIcon className="h-6 w-6 text-green-500" />;
+        case "FAIL":
+            return <CircleX className="h-6 w-6 text-red-500" />;
+        case "TLE":
+            return <ClockIcon className="h-6 w-6 text-red-500" />;
+        case "COMPILATION_ERROR":
+            return <CircleX className="h-6 w-6 text-red-500" />;
+        case "PENDING":
+            return <ClockIcon className="h-6 w-6 text-yellow-500" />;
+        default:
+            return <div className="text-gray-500"></div>;
+    }
+}
+
+function RenderTestcase({ testcases }: { testcase: any[] }) {
+    return <div className="grid grid-cols-6 gap-4">
+        {testcases.map((testcase, index) => <div key={index} className="border rounded-md">
+            <div className="px-2 pt-2 flex justify-center">
+                <div className="">Test #{index + 1}</div>
+                </div>
+            <div className="p-2 flex justify-center">
+                {renderResult(testcase.status)}
+            </div>
+        </div>)}
+    </div>
 }

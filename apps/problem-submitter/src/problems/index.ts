@@ -11,13 +11,13 @@ interface Problem {
 }
 
 export const getProblem = async (problemId: string, languageId: SUPPORTED_LANGS): Promise<Problem> => {
-    const fullBoilderPlate = await getProblemFullBoilerplateCode(problemId, languageId);
+    const fullBoilerPlate = await getProblemFullBoilerplateCode(problemId, languageId);
     const inputs = await getProblemInputs(problemId);
     const outputs = await getProblemOutputs(problemId);
 
     return {
         id: problemId,
-        fullBoilerplateCode: fullBoilderPlate,
+        fullBoilerplateCode: fullBoilerPlate,
         inputs: inputs,
         outputs: outputs,
     };

@@ -1,19 +1,17 @@
-import { ProblemStatement } from "../../../../../components/ProblemStatement";
-import { ProblemSubmitBar } from "../../../../../components/ProblemSubmitBar";
-import { getProblem } from "../../../../db/problem";
+import { ProblemStatement } from "../../../components/ProblemStatement";
+import { ProblemSubmitBar } from "../../../components/ProblemSubmitBar";
+import { getProblem } from "../../db/problem";
 
 export default async function ProblemPage({
   params: {
-    id,
     problemId,
   }
 }: {
   params: {
-    id: string;
     problemId: string;
   }
 }) {
-  const problem = await getProblem(problemId, id);
+  const problem = await getProblem(problemId);
 
   if (!problem) {
     return <div>Problem not found</div>
@@ -27,7 +25,7 @@ export default async function ProblemPage({
             <ProblemStatement description={problem.description} />
           </div>
         </div>
-        <ProblemSubmitBar contestId={id} problem={problem} />
+        <ProblemSubmitBar problem={problem} />
      </main>
     </div>
   )

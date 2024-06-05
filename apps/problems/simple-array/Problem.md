@@ -1,22 +1,20 @@
-## Simple arrays
-Given an array as input, find the max value in it
-## Simple arrays
-Given an array as input, find the max value in it
-
-For example
-Input 
+## Two sum
+Find the sum of two given elements. Both the numbers will always be 0 or postiive.
+#### Test case 1
+Input
 ```
-	[1, 2, 3, 4, 5]
+1, 2
 ```
-
 Output
-5
-
-For example
-Input 
 ```
-	[1, 2, 3, 4, 5]
+3
 ```
-
+#### Test case 2
+Input
+```
+1, 100
+```
 Output
-5
+```
+100
+```
