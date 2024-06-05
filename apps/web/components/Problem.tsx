@@ -46,7 +46,7 @@ export default function Component() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="language">Language</Label>
-                  <Select id="language" defaultValue="cpp">
+                  <Select defaultValue="cpp">
                     <SelectTrigger>
                       <SelectValue placeholder="Select language" />
                     </SelectTrigger>
@@ -60,7 +60,7 @@ export default function Component() {
                 </div>
                 <div>
                   <Label htmlFor="difficulty">Difficulty</Label>
-                  <Select id="difficulty" defaultValue="800">
+                  <Select defaultValue="800">
                     <SelectTrigger>
                       <SelectValue placeholder="Select difficulty" />
                     </SelectTrigger>

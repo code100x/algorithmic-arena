@@ -91,9 +91,9 @@ function SubmitProblem({ problem }: { problem: IProblem }) {
     const [status, setStatus] = useState<string>("SUBMIT");
 
     useEffect(() => {
-        const defaultCode = {};
+        const defaultCode: { [key: string]: string } = {};
         problem.defaultCode.forEach(code => {
-            const language = Object.keys(LANGUAGE_MAPPING).find(language => LANGUAGE_MAPPING[language].internal === code.languageId);
+            const language = Object.keys(LANGUAGE_MAPPING).find(language => LANGUAGE_MAPPING[language]?.internal === code.languageId);
             if (!language) return;
             defaultCode[language] = code.code;
         });
@@ -121,7 +121,7 @@ function SubmitProblem({ problem }: { problem: IProblem }) {
     return (
         <div>
             <Label htmlFor="language">Language</Label>
-            <Select value={language} id="language" defaultValue="cpp" onValueChange={(value) => setLanguage(value)}>
+            <Select value={language} defaultValue="cpp" onValueChange={(value) => setLanguage(value)}>
                 <SelectTrigger>
                     <SelectValue placeholder="Select language" />
                 </SelectTrigger>
@@ -143,6 +143,7 @@ function SubmitProblem({ problem }: { problem: IProblem }) {
                     }}
                     language={LANGUAGE_MAPPING[language]?.monaco}
                     onChange={(value) => {
+                        //@ts-ignore
                         setCode({ ...code, [language]: value });
                     }}
                     defaultLanguage="javascript"

@@ -13,7 +13,7 @@ export async function Contests() {
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} time={contest.startTime.getUTCMinutes()} duration={`${(new Date(contest.endTime).getTime() - new Date(contest.startTime).getTime()) / 1000 * 60 * 60} hours`} />)} 
+              {upcomingContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} time={contest.startTime.getUTCMinutes().toString()} duration={`${(new Date(contest.endTime).getTime() - new Date(contest.startTime).getTime()) / 1000 * 60 * 60} hours`} />)} 
             </div>
           </div>
         </section>
@@ -26,7 +26,7 @@ export async function Contests() {
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} time={contest.startTime.toLocaleDateString()} duration={new Date(contest.endTime).getTime() - new Date(contest.startTime).getTime()} />)}
+            {pastContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} time={contest.startTime.toLocaleDateString()} duration={(new Date(contest.endTime).getTime() - new Date(contest.startTime).getTime()).toString()} />)}
             </div>
           </div>
         </section>
