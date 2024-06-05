@@ -35,7 +35,7 @@ async function getProblemFullBoilerplateCode(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(
-      `${MOUNT_PATH}/${problemId}/boilerplate-full/function.${languageId}`,,
+      `${MOUNT_PATH}/${problemId}/boilerplate-full/function.${languageId}`,
       { encoding: "utf-8" },
       (err, data) => {
         if (err) {
