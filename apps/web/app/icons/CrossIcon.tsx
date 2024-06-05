@@ -1,5 +1,5 @@
 
-export const CrossIcon = ({ className }: { className?: string }) => {
+export const CrossIcon = (props: { className?: string }) => {
     return (
         <svg
             {...props}

@@ -1,5 +1,5 @@
 
-export const CheckIcon = ({ className }: { className?: string }) => {
+export const CheckIcon = (props: { className?: string }) => {
     return (
         <svg
             {...props}
