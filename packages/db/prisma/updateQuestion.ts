@@ -18,7 +18,6 @@ async function main(problemSlug: string, problemTitle: string) {
   const problemStatement = await promisifedReadFile(
     `${MOUNT_PATH}/${problemSlug}/Problem.md`,
   );
-  console.log(problemStatement);
 
   const problem = await prismaClient.problem.upsert({
     where: {
@@ -33,7 +32,6 @@ async function main(problemSlug: string, problemTitle: string) {
       description: problemStatement,
     },
   });
-  console.log(problem);
 
   await Promise.all(
     Object.keys(LANGUAGE_MAPPING).map(async (language) => {

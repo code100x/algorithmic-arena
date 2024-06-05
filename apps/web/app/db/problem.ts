@@ -26,8 +26,6 @@ export const getProblem = async (problemId: string, contestId?: string) => {
         defaultCode: true,
       },
     });
-    console.log("problem");
-    console.log(problem);
     return problem;
   }
 

@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
 
   const submissionInput = SubmissionInput.safeParse(await req.json());
   if (!submissionInput.success) {
-    console.log(submissionInput.error.issues);
     return NextResponse.json(
       {
         message: "Invalid input",
@@ -69,8 +68,7 @@ export async function POST(req: NextRequest) {
         stdin: input,
         expected_output: problem.outputs[index],
         callback_url:
-          process.env.JUDGE0_CALLBACK_URL ??
-          "https://judge0-callback.100xdevs.com/submission-callback",
+          process.env.JUDGE0_CALLBACK_URL,
       })),
     },
   );
