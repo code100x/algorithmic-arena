@@ -1,11 +1,10 @@
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@repo/ui/card"
 import Link from "next/link"
-import { parseClock, parseFutureDate, parseOldDate } from "../app/lib/time";
+import { parseFutureDate, parseOldDate } from "../app/lib/time";
 
 interface ContestCardParams {
     title: string;
     id: string;
-    time: string;
     endTime: Date;
     startTime: Date;
 }

@@ -26,7 +26,7 @@ export async function Contests() {
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} time={contest.startTime.toLocaleDateString()} startTime={contest.startTime} endTime={contest.endTime} />)}
+            {pastContests.map((contest) => <ContestCard key={contest.id} title={contest.title} id={contest.id} startTime={contest.startTime} endTime={contest.endTime} />)}
             </div>
           </div>
         </section>

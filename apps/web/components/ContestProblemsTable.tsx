@@ -29,7 +29,7 @@ export const ContestProblemsTable = ({ contest }: { contest: any }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {contest.problems.map(({ problem }) => <ProblemRow key={problem.id} id={problem.id} title={problem.title} difficulty={problem.difficulty} submissionCount={problem.solved} />)}
+                    {contest.problems.map(({ problem }: { problem: any }) => <ProblemRow key={problem.id} id={problem.id} title={problem.title} difficulty={problem.difficulty} submissionCount={problem.solved} />)}
                 </TableBody>
               </Table>
             </div>
