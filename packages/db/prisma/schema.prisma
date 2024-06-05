@@ -135,8 +135,9 @@ model ContestPoints {
   id               String   @id @default(cuid())
   contestId        String
   userId           String
-  totalPoints      Int
+  points      Int
   rank             Int
+  @@unique([contestId, userId])
 }
 
 enum TestCaseResult {
