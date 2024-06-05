@@ -50,7 +50,7 @@ app.put("/submission-callback", async (req, res) => {
                     id: testCase.submissionId
                 },
                 data: {
-                    status: accepted ? "REJECTED" : "AC",
+                    status: accepted ? "AC" : "REJECTED",
                     time: Math.max(...allTestcaseData.map(testcase => Number(testcase.time || "0"))), 
                     memory: Math.max(...allTestcaseData.map(testcase => testcase.memory || 0)),
                 }
