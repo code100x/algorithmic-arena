@@ -4,6 +4,7 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@repo/ui/table";
+import { CheckIcon, CrossIcon, ClockIcon } from "lucide-react";
 export interface ISubmission {
     id: string;
     time: string;
@@ -19,23 +20,42 @@ export interface ISubmission {
     }[];
 };
 
+function getColor(status: string) {
+  switch (status) {
+      case "AC":
+          return "text-green-500";
+      case "FAIL":
+          return "text-red-500";
+      case "TLE":
+          return "text-yellow-500";
+      case "COMPILATION_ERROR":
+          return "text-red-500";
+      case "PENDING":
+          return "text-yellow-500";
+      default:
+          return "text-gray-500";
+  }
+}
+
+function getIcon(status: string) {
+  switch (status) {
+      case "AC":
+          return <CheckIcon className="h-4 w-4" />;
+      case "FAIL":
+          return <CrossIcon className="h-4 w-4" />;
+      case "TLE":
+          return <ClockIcon className="h-4 w-4" />;
+      case "COMPILATION_ERROR":
+          return <CrossIcon className="h-4 w-4" />;
+      case "PENDING":
+          return <ClockIcon className="h-4 w-4" />;
+      default:
+          return <ClockIcon className="h-4 w-4" />;
+  }
+}
+
 export function SubmissionTable({ submissions }: { submissions: ISubmission[] }) {
-    function getColor(status: string) {
-        switch (status) {
-            case "AC":
-                return "text-green-500";
-            case "FAIL":
-                return "text-red-500";
-            case "TLE":
-                return "text-yellow-500";
-            case "COMPILATION_ERROR":
-                return "text-red-500";
-            case "PENDING":
-                return "text-gray-500";
-            default:
-                return "text-gray-500";
-        }
-    }
+
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -51,7 +71,9 @@ export function SubmissionTable({ submissions }: { submissions: ISubmission[] })
         <TableBody>
             {submissions.map((submission) => <TableRow>
                 <TableCell>{submission.id.substr(0, 8)}</TableCell>
-                <TableCell className={getColor(submission.status)}>{submission.status}</TableCell>
+                <TableCell className={getColor(submission.status)}>
+                  {getIcon(submission.status)}
+                </TableCell>
                 <TableCell>{submission.testcases.filter(testcase => testcase.status === "AC").length}/{submission.testcases.length}</TableCell>
                 <TableCell>{submission.time}</TableCell>
                 <TableCell>{submission.memory}</TableCell>
