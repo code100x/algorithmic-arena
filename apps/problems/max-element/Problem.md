@@ -1,8 +1,4 @@
-## Simple arrays
-
-Given an array as input, find the max value in it
-
-## Simple arrays
+## Max element
 
 Given an array as input, find the max value in it
 
