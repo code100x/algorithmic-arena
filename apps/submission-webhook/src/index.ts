@@ -11,6 +11,7 @@ app.put("/submission-callback", async (req, res) => {
     const parsedBody = SubmissionCallback.safeParse(req.body);
 
     if (!parsedBody.success) {
+        console.log(parsedBody.error.issues);
         return res.status(403).json({
             message: "Invalid input"
         })
