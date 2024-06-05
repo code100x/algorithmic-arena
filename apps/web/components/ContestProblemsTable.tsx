@@ -67,7 +67,7 @@ export const ContestProblemsTable = ({
                       points={
                         contest.contestSubmissions.find(
                           (submission) => submission.problemId === problem.id,
-                        )?.points
+                        )?.points || 0
                       }
                       contestId={contest.id}
                       key={problem.id}

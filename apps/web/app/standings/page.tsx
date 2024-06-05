@@ -35,7 +35,7 @@ interface IContest {
   startTime: Date;
 }
 
-export function ContestsTable({ contests }: { contests: IContest[] }) {
+function ContestsTable({ contests }: { contests: IContest[] }) {
   return (
     <div className="overflow-x-auto">
       <Table>

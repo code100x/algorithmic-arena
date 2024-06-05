@@ -223,7 +223,7 @@ function renderResult(status: string) {
   }
 }
 
-function RenderTestcase({ testcases }: { testcase: any[] }) {
+function RenderTestcase({ testcases }: { testcases: any[] }) {
   return (
     <div className="grid grid-cols-6 gap-4">
       {testcases.map((testcase, index) => (
