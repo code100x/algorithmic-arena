@@ -1,6 +1,3 @@
-import Link from "next/link"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@repo/ui/card"
-import { ContestCard } from "./ContestCard"
 import { Contests } from "./Contests"
 import { Hero } from "./Hero"
 import { Problems } from "./Problems"

@@ -15,3 +15,5 @@ export default function ContestPage({
         <Contest id={params.id} />
     )
 }
+
+export const dynamic = "force-dynamic";
