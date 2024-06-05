@@ -3,18 +3,16 @@ import { ProblemSubmitBar } from "../../../components/ProblemSubmitBar";
 import { getProblem } from "../../db/problem";
 
 export default async function ProblemPage({
-  params: {
-    problemId,
-  }
+  params: { problemId },
 }: {
   params: {
     problemId: string;
-  }
+  };
 }) {
   const problem = await getProblem(problemId);
 
   if (!problem) {
-    return <div>Problem not found</div>
+    return <div>Problem not found</div>;
   }
 
   return (
@@ -26,8 +24,8 @@ export default async function ProblemPage({
           </div>
         </div>
         <ProblemSubmitBar problem={problem} />
-     </main>
+      </main>
     </div>
-  )
+  );
 }
 export const dynamic = "force-dynamic";

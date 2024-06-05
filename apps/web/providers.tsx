@@ -1,11 +1,10 @@
-'use client';
-import * as React from 'react';
-import { ReactNode } from 'react';
-import { SessionProvider } from 'next-auth/react';
-import { ToastContainer } from 'react-toastify';
+"use client";
+import * as React from "react";
+import { ReactNode } from "react";
+import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
-
 
 export const Providers = ({ children }: { children: ReactNode }) => {
   const contextClass = {
@@ -16,7 +15,6 @@ export const Providers = ({ children }: { children: ReactNode }) => {
     default: "bg-indigo-600",
     dark: "bg-white-600 font-gray-300",
   };
-
 
   return (
     <SessionProvider>
@@ -29,7 +27,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         position="top-right"
         autoClose={3000}
       />
-       {children}
+      {children}
     </SessionProvider>
   );
 };

@@ -1,6 +1,6 @@
-import { Contests } from "./Contests"
-import { Hero } from "./Hero"
-import { Problems } from "./Problems"
+import { Contests } from "./Contests";
+import { Hero } from "./Hero";
+import { Problems } from "./Problems";
 
 export function Landing() {
   return (
@@ -15,6 +15,5 @@ export function Landing() {
         </section>
       </main>
     </div>
-  )
+  );
 }
-

@@ -3,12 +3,18 @@
  * @see https://v0.dev/t/icxUukXo17C
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import Link from "next/link"
-import { Button } from "@repo/ui/button"
-import { Avatar, AvatarFallback } from "@repo/ui/avatar"
-import { Label } from "@repo/ui/label"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@repo/ui/select"
-import { Textarea } from "@repo/ui/textarea"
+import Link from "next/link";
+import { Button } from "@repo/ui/button";
+import { Avatar, AvatarFallback } from "@repo/ui/avatar";
+import { Label } from "@repo/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@repo/ui/select";
+import { Textarea } from "@repo/ui/textarea";
 
 export default function Component() {
   return (
@@ -19,24 +25,28 @@ export default function Component() {
             <h2 className="text-2xl font-bold">Problem A - Watermelon</h2>
             <h3>Problem Description</h3>
             <p>
-              One hot summer day, Polycarp bought a watermelon. He decided to cut it in half to eat it with his friend.
-              However, when Polycarp tried to cut the watermelon, it broke into more than two pieces. Now Polycarp and
-              his friend are left with a real mess. They have to pick up the pieces and put the watermelon back
-              together.
+              One hot summer day, Polycarp bought a watermelon. He decided to
+              cut it in half to eat it with his friend. However, when Polycarp
+              tried to cut the watermelon, it broke into more than two pieces.
+              Now Polycarp and his friend are left with a real mess. They have
+              to pick up the pieces and put the watermelon back together.
             </p>
             <p>
-              Given the number of pieces the watermelon was broken into, your task is to determine whether Polycarp and
-              his friend can put the watermelon back together so that each of them gets at least one piece.
+              Given the number of pieces the watermelon was broken into, your
+              task is to determine whether Polycarp and his friend can put the
+              watermelon back together so that each of them gets at least one
+              piece.
             </p>
             <h3>Input</h3>
             <p>
-              The first and only line of the input contains an integer n (2 ≤ n ≤ 100) — the number of pieces the
-              watermelon was broken into.
+              The first and only line of the input contains an integer n (2 ≤ n
+              ≤ 100) — the number of pieces the watermelon was broken into.
             </p>
             <h3>Output</h3>
             <p>
-              If Polycarp and his friend can put the watermelon back together so that each of them gets at least one
-              piece, print "YES" (without quotes). Otherwise, print "NO" (without quotes).
+              If Polycarp and his friend can put the watermelon back together so
+              that each of them gets at least one piece, print "YES" (without
+              quotes). Otherwise, print "NO" (without quotes).
             </p>
           </div>
         </div>
@@ -75,7 +85,11 @@ export default function Component() {
               </div>
               <div>
                 <Label htmlFor="code">Your Code</Label>
-                <Textarea id="code" rows={10} placeholder="Enter your code here" />
+                <Textarea
+                  id="code"
+                  rows={10}
+                  placeholder="Enter your code here"
+                />
               </div>
               <Button type="submit" className="w-full">
                 Submit
@@ -85,7 +99,9 @@ export default function Component() {
         </div>
       </main>
       <footer className="bg-gray-900 text-white px-4 md:px-6 py-3 flex items-center justify-between">
-        <div className="text-sm">&copy; 2024 Codeforces. All rights reserved.</div>
+        <div className="text-sm">
+          &copy; 2024 Codeforces. All rights reserved.
+        </div>
         <nav className="hidden md:flex items-center gap-6">
           <Link href="#" className="hover:underline" prefetch={false}>
             About
@@ -102,5 +118,5 @@ export default function Component() {
         </nav>
       </footer>
     </div>
-  )
+  );
 }

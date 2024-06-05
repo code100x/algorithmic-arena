@@ -3,20 +3,17 @@ import { ProblemSubmitBar } from "../../../../../components/ProblemSubmitBar";
 import { getProblem } from "../../../../db/problem";
 
 export default async function ProblemPage({
-  params: {
-    id,
-    problemId,
-  }
+  params: { id, problemId },
 }: {
   params: {
     id: string;
     problemId: string;
-  }
+  };
 }) {
   const problem = await getProblem(problemId, id);
 
   if (!problem) {
-    return <div>Problem not found</div>
+    return <div>Problem not found</div>;
   }
 
   return (
@@ -28,8 +25,8 @@ export default async function ProblemPage({
           </div>
         </div>
         <ProblemSubmitBar contestId={id} problem={problem} />
-     </main>
+      </main>
     </div>
-  )
+  );
 }
 export const dynamic = "force-dynamic";

@@ -1,14 +1,13 @@
-
 import { getContest } from "../app/db/contest";
 import { ContestClock } from "./ContestClock";
 import { ContestPoints } from "./ContestPoints";
 import { ContestProblemsTable } from "./ContestProblemsTable";
 
-export async function Contest({id}: {id: string}) {
+export async function Contest({ id }: { id: string }) {
   const contest = await getContest(id);
 
   if (!contest) {
-    return <div>Contest not found</div>
+    return <div>Contest not found</div>;
   }
 
   return (
@@ -21,10 +20,14 @@ export async function Contest({id}: {id: string}) {
           <ContestClock endTime={contest.endTime} />
         </div>
         <div className="pt-2">
-          <ContestPoints points={contest.contestSubmissions.reduce((acc, curr) => acc + curr.points, 0)} />
+          <ContestPoints
+            points={contest.contestSubmissions.reduce(
+              (acc, curr) => acc + curr.points,
+              0,
+            )}
+          />
         </div>
       </div>
     </div>
-  )
+  );
 }
-
