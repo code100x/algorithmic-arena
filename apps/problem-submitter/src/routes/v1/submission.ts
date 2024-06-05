@@ -1,9 +1,8 @@
-
 import Express from "express";
 import { JUDGE0_URI } from "../../config";
 import axios from "axios";
 import { SubmissionInput } from "../../types";
-import { LANGUAGE_MAPPING } from "../../judge0";
+import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { getProblem } from "../../problems";
 import { prismaClient } from "../../db";
 
@@ -22,34 +21,32 @@ router.post("/", async (req, res) => {
 
     const response = await axios.post(`${JUDGE0_URI}/submissions/batch?base64_encoded=false`, {
             "submissions": problem.inputs.map((input, index) => ({
-                "language_id": LANGUAGE_MAPPING[submissionInput.data.languageId],
+                "language_id": LANGUAGE_MAPPING[submissionInput.data.languageId].judge0,
                 "source_code": problem.fullBoilerplateCode,
                 "stdin": input,
                 "expected_output": problem.outputs[index],
-                "callback_url": "https://httpdump.app/dumps/ef2e5e04-0b69-4c52-96ba-d6be23ce3755"
+                "callback_url": "https://httpdump.app/dumps/2e3f2f40-2515-47e7-930e-04d79e2a932f"
             }))
     });
 
-    console.log(response.data)
-    await prismaClient.submission.create({
+    const submission = await prismaClient.submission.create({
         data: {
             problemId: submissionInput.data.problemId,
-            languageId: submissionInput.data.languageId,
+            languageId: LANGUAGE_MAPPING[submissionInput.data.languageId].internal,
             code: submissionInput.data.code,
             fullCode: problem.fullBoilerplateCode,
             status: "PENDING",
-            testcases: {
-                create: problem.inputs.map((input, index) => ({
-                    status: "PENDING",
-                    index,
-                    judge0TrackingId: response.data[index].token,
-                }))
-            }
         }
     });
-
-    
-        res.send("Submission made");
+    await prismaClient.testCase.createMany({
+        data: problem.inputs.map((input, index) => ({
+            submissionId: submission.id,
+            status: "PENDING",
+            index,
+            judge0TrackingId: response.data[index].token,
+        }))
+    });
+    res.send("Submission made");
 });
 
 export default router;

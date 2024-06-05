@@ -1,20 +1,21 @@
 {
-  "name": "problem-submitter",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run build && node dist/index.js",
+    "build": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.14.0",
     "@types/express": "^4.17.21",
     "axios": "^1.7.2",
     "express": "^4.19.2",
-    "prisma": "^5.14.0",
+    "@repo/db": "*",
     "zod": "^3.23.8"
   }
 }

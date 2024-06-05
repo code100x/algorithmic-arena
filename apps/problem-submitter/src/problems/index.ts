@@ -25,7 +25,7 @@ export const getProblem = async (problemId: string, languageId: SUPPORTED_LANGS)
 
 async function getProblemFullBoilerplateCode(problemId: string, languageId: SUPPORTED_LANGS): Promise<string> {
     return new Promise((resolve, reject) => {
-        fs.readFile(path.join(__dirname, `../../../problems/${problemId}/boilerplate-full/function.${languageId}`), { encoding: "utf-8" }, (err, data) => {
+        fs.readFile(path.join(__dirname, `../../problems/${problemId}/boilerplate-full/function.${languageId}`), { encoding: "utf-8" }, (err, data) => {
             if (err) {
                 reject(err);
             }
@@ -36,13 +36,13 @@ async function getProblemFullBoilerplateCode(problemId: string, languageId: SUPP
 
 async function getProblemInputs(problemId: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        fs.readdir(path.join(__dirname, `../../../problems/${problemId}/tests/inputs`), async (err, files) => {
+        fs.readdir(path.join(__dirname, `../../problems/${problemId}/tests/inputs`), async (err, files) => {
             if (err) {
                 console.log(err); 
             } else {
                 await Promise.all(files.map(file => { 
                     return new Promise<string>((resolve, reject) => {
-                        fs.readFile(path.join(__dirname, `../../../problems/${problemId}/tests/inputs/${file}`), { encoding: "utf-8" }, (err, data) => {
+                        fs.readFile(path.join(__dirname, `../../problems/${problemId}/tests/inputs/${file}`), { encoding: "utf-8" }, (err, data) => {
                             if (err) {
                                 reject(err);
                             }
@@ -50,7 +50,6 @@ async function getProblemInputs(problemId: string): Promise<string[]> {
                         });
                     });
                 })).then((data) => {
-                    console.log(data);
                     resolve(data);
                 })
                 .catch(e => reject(e));
@@ -62,13 +61,13 @@ async function getProblemInputs(problemId: string): Promise<string[]> {
 
 async function getProblemOutputs(problemId: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        fs.readdir(path.join(__dirname, `../../../problems/${problemId}/tests/outputs`), async (err, files) => {
+        fs.readdir(path.join(__dirname, `../../problems/${problemId}/tests/outputs`), async (err, files) => {
             if (err) {
                 console.log(err); 
             } else {
                 await Promise.all(files.map(file => { 
                     return new Promise<string>((resolve, reject) => {
-                        fs.readFile(path.join(__dirname, `../../../problems/${problemId}/tests/outputs/${file}`), { encoding: "utf-8" }, (err, data) => {
+                        fs.readFile(path.join(__dirname, `../../problems/${problemId}/tests/outputs/${file}`), { encoding: "utf-8" }, (err, data) => {
                             if (err) {
                                 reject(err);
                             }
