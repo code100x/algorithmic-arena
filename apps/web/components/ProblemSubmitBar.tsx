@@ -127,7 +127,7 @@ function SubmitProblem({
 
     if (response.data.submission.status === "PENDING") {
       setTestcases(response.data.testCases);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
       pollWithBackoff(id, retries - 1);
     } else {
       if (response.data.submission.status === "AC") {
@@ -152,7 +152,7 @@ function SubmitProblem({
       problemId: problem.id,
       activeContestId: contestId,
     });
-    pollWithBackoff(response.data.id, 5);
+    pollWithBackoff(response.data.id, 10);
   }
 
   return (
