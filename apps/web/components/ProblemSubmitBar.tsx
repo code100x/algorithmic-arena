@@ -145,6 +145,7 @@ function SubmitProblem({
 
   async function submit() {
     setStatus(SubmitStatus.PENDING);
+    setTestcases(t => t.map(tc => ({...tc, status: "PENDING"})));
     const response = await axios.post(`/api/submission/`, {
       code: code[language],
       languageId: language,
