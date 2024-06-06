@@ -116,6 +116,9 @@ app.put("/submission-callback", async (req, res) => {
           });
         }
       }
+    }, {
+      maxWait: 5000,
+      timeout: 10000,
     });
   }
   res.send("Received");
