@@ -138,6 +138,7 @@ function SubmitProblem({
       } else {
         setStatus(SubmitStatus.FAILED);
         toast.error("Failed :(");
+        setTestcases(response.data.testCases);
         return;
       }
     }
