@@ -49,6 +49,8 @@ app.put("/submission-callback", async (req, res) => {
 
   // This logic is fairly ugly
   // We should have another async process update the status of the submission.
+  // This can also lead to a race condition where two test case webhooks are sent at the same time
+  // None of them would update the status of the submission
   if (pendingTestcases.length === 0) {
     const accepted = failedTestcases.length === 0;
     const response = await prismaClient.submission.update({
