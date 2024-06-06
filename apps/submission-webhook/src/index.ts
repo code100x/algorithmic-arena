@@ -51,75 +51,56 @@ app.put("/submission-callback", async (req, res) => {
   // We should have another async process update the status of the submission.
   if (pendingTestcases.length === 0) {
     const accepted = failedTestcases.length === 0;
-    await prismaClient.$transaction(async (tx) => {
-      const response = await tx.submission.update({
+    const response = await prismaClient.submission.update({
+      where: {
+        id: testCase.submissionId,
+      },
+      data: {
+        status: accepted ? "AC" : "REJECTED",
+        time: Math.max(
+          ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
+        ),
+        memory: Math.max(
+          ...allTestcaseData.map((testcase) => testcase.memory || 0),
+        ),
+      },
+      include: {
+        problem: true,
+        activeContest: true,
+      }
+    });
+
+    if (response.activeContestId && response.activeContest) {
+      const points = await getPoints(
+        response.activeContestId,
+        response.userId,
+        response.problemId,
+        response.problem.difficulty,
+        response.activeContest?.startTime,
+        response.activeContest?.endTime,
+      );
+
+      await prismaClient.contestSubmission.upsert({
         where: {
-          id: testCase.submissionId,
-        },
-        data: {
-          status: accepted ? "AC" : "REJECTED",
-          time: Math.max(
-            ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
-          ),
-          memory: Math.max(
-            ...allTestcaseData.map((testcase) => testcase.memory || 0),
-          ),
-        },
-      });
-      if (response.activeContestId) {
-        const existingRecord = await tx.contestSubmission.findUnique({
-          where: {
-            userId_problemId_contestId: {
-              contestId: response.activeContestId,
-              userId: response.userId,
-              problemId: response.problemId,
-            },
-          },
-        });
-
-        const points = await getPoints(
-          response.activeContestId,
-          response.userId,
-          response.problemId,
-        );
-
-        await tx.contestSubmission.upsert({
-          where: {
-            userId_problemId_contestId: {
-              contestId: response.activeContestId,
-              userId: response.userId,
-              problemId: response.problemId,
-            },
-          },
-          create: {
-            submissionId: response.id,
+          userId_problemId_contestId: {
+            contestId: response.activeContestId,
             userId: response.userId,
             problemId: response.problemId,
-            contestId: response.activeContestId,
-            points,
           },
-          update: {
-            points,
-          },
-        });
-
-        if (!existingRecord) {
-          await tx.problem.update({
-            where: {
-              id: response.problemId,
-            },
-            data: {
-              solved: {
-                increment: 1,
-              },
-            },
-          });
-        }
-      }
-    }, {
-      maxWait: 5000,
-      timeout: 10000,
-    });
+        },
+        create: {
+          submissionId: response.id,
+          userId: response.userId,
+          problemId: response.problemId,
+          contestId: response.activeContestId,
+          points,
+        },
+        update: {
+          points,
+        },
+      });
+    }
+    // increase the solve count here, or asynchronously later
   }
   res.send("Received");
 });

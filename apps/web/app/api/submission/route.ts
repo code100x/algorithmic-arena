@@ -8,6 +8,7 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 
+// TODO: This should be heavily rate limited
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -68,7 +69,8 @@ export async function POST(req: NextRequest) {
         stdin: input,
         expected_output: problem.outputs[index],
         callback_url:
-          process.env.JUDGE0_CALLBACK_URL,
+          process.env.JUDGE0_CALLBACK_URL ??
+          "https://judge0-callback.100xdevs.com/submission-callback",
       })),
     },
   );

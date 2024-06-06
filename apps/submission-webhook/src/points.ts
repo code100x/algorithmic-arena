@@ -10,28 +10,13 @@ export const getPoints = async (
   contestId: string,
   userId: string,
   problemId: string,
+  difficulty: string,
+  startTime: Date,
+  endTime: Date,
 ): Promise<number> => {
-  const [contest, problem] = await Promise.all([
-    db.contest.findUnique({
-      where: {
-        id: contestId,
-      },
-    }),
-    db.problem.findUnique({
-      where: {
-        id: problemId,
-      },
-    }),
-  ]);
-
-  if (!contest) {
-    return 0;
-  }
-  const startTime = contest.startTime;
-  const endTime = contest.endTime;
   const now = new Date();
   const timeDiff = Math.abs(endTime.getTime() - startTime.getTime());
-  const points = POINT_MAPPING[problem?.difficulty || "EASY"];
+  const points = POINT_MAPPING[difficulty || "EASY"];
   const totalPoints =
     (((endTime.getTime() - now.getTime()) / timeDiff) * points) / 2 +
     points / 2;
