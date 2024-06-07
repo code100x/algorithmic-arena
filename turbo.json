@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalEnv": ["MOUNT_PATH","JUDGE0_CALLBACK_URL","REDIS_URL","NEXTAUTH_SECRET"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
