@@ -1,10 +1,14 @@
-import { db } from "../db";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { JWTPayload, SignJWT, importJWK } from "jose";
 import { Session } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+
+import { db } from "../db";
+import { CredentialsSchema } from "@repo/common/zod";
 
 interface token extends JWT {
   uid: string;
@@ -49,11 +53,18 @@ export const authOptions = {
         password: { label: "password", type: "password", placeholder: "" },
       },
       async authorize(credentials: any) {
-        const hashedPassword = await bcrypt.hash(credentials.password, 10);
+        const validCredentials = CredentialsSchema.safeParse(credentials);
+        if (!validCredentials.success) {
+          throw new Error("Invalid credentials");
+        }
 
+        const hashedPassword = await bcrypt.hash(
+          validCredentials.data.password,
+          10
+        );
         const userDb = await db.user.findFirst({
           where: {
-            email: credentials.username,
+            email: validCredentials.data.username,
           },
           select: {
             password: true,
@@ -63,7 +74,12 @@ export const authOptions = {
         });
 
         if (userDb) {
-          if (await bcrypt.compare(credentials.password, userDb.password)) {
+          if (
+            await bcrypt.compare(
+              validCredentials.data.password,
+              userDb.password
+            )
+          ) {
             const jwt = await generateJWT({
               id: userDb.id,
             });
@@ -71,19 +87,20 @@ export const authOptions = {
             return {
               id: userDb.id,
               name: userDb.name,
-              email: credentials.username,
+              email: validCredentials.data.username,
               token: jwt,
             };
           } else {
             return null;
           }
         }
+
         try {
           // sign up
           const user = await db.user.create({
             data: {
-              email: credentials.username,
-              name: credentials.username,
+              email: validCredentials.data.username,
+              name: validCredentials.data.username,
               password: hashedPassword,
             },
           });
@@ -94,14 +111,22 @@ export const authOptions = {
 
           return {
             id: user.id,
-            name: credentials.username,
-            email: credentials.username,
+            name: validCredentials.data.username,
+            email: validCredentials.data.username,
             token: jwt,
           };
         } catch (e) {
           return null;
         }
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || "",
+      clientSecret: process.env.GITHUB_SECRET || "",
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET || "secr3t",
