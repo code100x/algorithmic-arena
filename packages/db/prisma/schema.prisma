@@ -96,6 +96,7 @@ model Submission {
   user            User @relation(fields: [userId], references: [id])
   language    Language @relation(fields: [languageId], references: [id])
   problem     Problem @relation(fields: [problemId], references: [id])
+  judge0Submissions Judge0Submission[] @relation("SubmissionToJudge0")
 }
 
 model Language {
@@ -142,6 +143,33 @@ model ContestPoints {
   rank             Int
   user            User @relation(fields: [userId], references: [id])
   @@unique([contestId, userId])
+}
+
+model Judge0Submission {
+  id              String   @id @default(cuid())
+  submissionId    String   @unique
+  status          SubmissionStatus
+  stdout          String?
+  stderr          String?
+  compileOutput   String?
+  time            Float?
+  memory          Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+   submission   Submission @relation(fields: [submissionId], references: [id], name: "SubmissionToJudge0")
+
+  @@index([submissionId])
+}
+
+enum SubmissionStatus {
+  ACCEPTED
+  REJECTED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  WRONG_ANSWER
+  PENDING
 }
 
 enum TestCaseResult {
