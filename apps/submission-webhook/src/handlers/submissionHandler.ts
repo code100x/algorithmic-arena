@@ -2,7 +2,7 @@ import { SubmissionInput } from '@repo/common/zod';
 import { Judge0Submission } from '../models/Judge0Submission';
 import { Submission } from '../models/Submission';
 
-export async function handleSubmission(submissionData: SubmissionInput) {
+export async function handleSubmission(submissionData: SubmissionInput ) {
   const { code, languageId, problemId, activeContestId } = submissionData;
 
   const submission = await Submission.create({

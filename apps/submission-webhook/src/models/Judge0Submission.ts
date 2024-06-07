@@ -22,7 +22,7 @@ export class Judge0Submission {
 
   id: string;
   submissionId: string;
-  status: PermissionStatus;
+  status: string;
   stdout: string | null;
   stderr: string | null;
   compileOutput: string | null;
