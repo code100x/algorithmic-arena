@@ -2,12 +2,6 @@ import { Judge0Submission as PrismaJudge0Submission } from '@prisma/client';
 import prismaClient from "../db";
 
 export class Judge0Submission {
-  awaitCallback() {
-      throw new Error('Method not implemented.');
-  }
-  sendToJudge0() {
-      throw new Error('Method not implemented.');
-  }
   static async create(data: Partial<PrismaJudge0Submission>): Promise<Judge0Submission> {
     const prismaJudge0Submission = await prismaClient.judge0Submission.create({ data });
     return new Judge0Submission(prismaJudge0Submission);
@@ -22,7 +16,7 @@ export class Judge0Submission {
 
   id: string;
   submissionId: string;
-  status: string;
+  judge0Status: string;
   stdout: string | null;
   stderr: string | null;
   compileOutput: string | null;
@@ -34,7 +28,7 @@ export class Judge0Submission {
   constructor(data: PrismaJudge0Submission) {
     this.id = data.id;
     this.submissionId = data.submissionId;
-    this.status = data.status;
+    this.judge0Status = data.status;
     this.stdout = data.stdout;
     this.stderr = data.stderr;
     this.compileOutput = data.compileOutput;

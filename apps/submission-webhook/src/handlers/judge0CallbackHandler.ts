@@ -25,7 +25,7 @@ export async function handleJudge0Callback(callbackData: typeof SubmissionCallba
     throw new Error('Submission not found');
   }
 
-  // Find or create the test case
+
   let testCase = await TestCase.findByJudge0TrackingId(token);
   if (!testCase) {
     testCase = await TestCase.create({

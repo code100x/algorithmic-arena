@@ -40,10 +40,10 @@ export class Submission {
     this.time = data.time;
 
   }
-async update(data: Partial<PrismaSubmission>): Promise<Submission> {
+  async update(data: Partial<PrismaSubmission>): Promise<Submission> {
     const updatedPrismaSubmission = await prismaClient.submission.update({
-        where: { id: this.id },
-        data,
+      where: { id: this.id },
+      data,
     });
     return new Submission(updatedPrismaSubmission);
   }
