@@ -1,110 +1,46 @@
-import express from "express";
-import prismaClient from "./db";
+import express, { Request, Response } from "express";
+import { PrismaClient } from '@prisma/client';
 import { SubmissionCallback } from "@repo/common/zod";
 import { outputMapping } from "./outputMapping";
-import { getPoints } from "./points";
+import { enqueueSubmissionUpdate } from "./messageQueue";
 
+const prismaClient = new PrismaClient();
 const app = express();
+
 app.use(express.json());
 
-app.put("/submission-callback", async (req, res) => {
+app.put("/submission-callback", async (req: Request, res: Response) => {
   const parsedBody = SubmissionCallback.safeParse(req.body);
-
   if (!parsedBody.success) {
-    return res.status(403).json({
-      message: "Invalid input",
-    });
+    return res.status(403).json({ message: "Invalid input", errors: parsedBody.error.errors });
   }
 
-  const testCase = await prismaClient.testCase.update({
-    where: {
-      judge0TrackingId: parsedBody.data.token,
-    },
-    data: {
-      status: outputMapping[parsedBody.data.status.description],
-      time: Number(parsedBody.data.time),
-      memory: parsedBody.data.memory,
-    },
-  });
-
-  if (!testCase) {
-    return res.status(404).json({
-      message: "Testcase not found",
-    });
-  }
-
-  const allTestcaseData = await prismaClient.testCase.findMany({
-    where: {
-      submissionId: testCase.submissionId,
-    },
-  });
-
-  const pendingTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status === "PENDING",
-  );
-  const failedTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status !== "AC",
-  );
-
-
-  // This logic is fairly ugly
-  // We should have another async process update the status of the submission.
-  // This can also lead to a race condition where two test case webhooks are sent at the same time
-  // None of them would update the status of the submission
-  if (pendingTestcases.length === 0) {
-    const accepted = failedTestcases.length === 0;
-    const response = await prismaClient.submission.update({
-      where: {
-        id: testCase.submissionId,
-      },
+  try {
+    const testCase = await prismaClient.testCase.update({
+      where: { judge0TrackingId: parsedBody.data.token },
       data: {
-        status: accepted ? "AC" : "REJECTED",
-        time: Math.max(
-          ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
-        ),
-        memory: Math.max(
-          ...allTestcaseData.map((testcase) => testcase.memory || 0),
-        ),
+        status: outputMapping[parsedBody.data.status.description] || "UNKNOWN",
+        time: Number(parsedBody.data.time),
+        memory: parsedBody.data.memory,
       },
-      include: {
-        problem: true,
-        activeContest: true,
-      }
     });
 
-    if (response.activeContestId && response.activeContest) {
-      const points = await getPoints(
-        response.activeContestId,
-        response.userId,
-        response.problemId,
-        response.problem.difficulty,
-        response.activeContest?.startTime,
-        response.activeContest?.endTime,
-      );
-
-      await prismaClient.contestSubmission.upsert({
-        where: {
-          userId_problemId_contestId: {
-            contestId: response.activeContestId,
-            userId: response.userId,
-            problemId: response.problemId,
-          },
-        },
-        create: {
-          submissionId: response.id,
-          userId: response.userId,
-          problemId: response.problemId,
-          contestId: response.activeContestId,
-          points,
-        },
-        update: {
-          points,
-        },
-      });
+    if (!testCase) {
+      return res.status(404).json({ message: "Testcase not found" });
     }
-    // increase the solve count here, or asynchronously later
+
+    enqueueSubmissionUpdate(Number(testCase.submissionId)).catch(err => {
+      console.error("Failed to enqueue submission update:", err);
+    });
+
+    res.send({ message: "Received" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
-  res.send("Received");
 });
 
-app.listen(process.env.PORT || 3001);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
