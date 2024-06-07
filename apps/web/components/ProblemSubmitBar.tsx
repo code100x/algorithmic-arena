@@ -16,6 +16,7 @@ import axios from "axios";
 import { ISubmission, SubmissionTable } from "./SubmissionTable";
 import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
+import { signIn, useSession } from "next-auth/react";
 
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
@@ -83,6 +84,7 @@ function Submissions({ problem }: { problem: IProblem }) {
     };
     fetchData();
   }, []);
+
   return (
     <div>
       <SubmissionTable submissions={submissions} />
@@ -103,6 +105,7 @@ function SubmitProblem({
   const [code, setCode] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
   const [testcases, setTestcases] = useState<any[]>([]);
+  const session = useSession();
 
   useEffect(() => {
     const defaultCode: { [key: string]: string } = {};
@@ -198,9 +201,9 @@ function SubmitProblem({
           disabled={status === SubmitStatus.PENDING}
           type="submit"
           className="mt-4 align-right"
-          onClick={submit}
+          onClick={session.data?.user ? submit : () => signIn()}
         >
-          {status === SubmitStatus.PENDING ? "Submitting" : "Submit"}
+          {session.data?.user ? (status === SubmitStatus.PENDING ? "Submitting" : "Submit") : "Login to submit"}
         </Button>
       </div>
       <RenderTestcase testcases={testcases} />
