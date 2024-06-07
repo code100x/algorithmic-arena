@@ -3,13 +3,18 @@ import prismaClient from "../db";
 
 export class TestCase {
   static async create(data: Partial<PrismaTestCase>): Promise<TestCase> {
-    const prismaTestCase = await prismaClient.testCase.create({data});
+    const prismaTestCase = await prismaClient.testCase.create({ data });
     return new TestCase(prismaTestCase);
   }
 
   static async findBySubmissionId(submissionId: string): Promise<TestCase[]> {
     const prismaTestCases = await prismaClient.testCase.findMany({ where: { submissionId } });
     return prismaTestCases.map((prismaTestCase) => new TestCase(prismaTestCase));
+  }
+
+  static async findByJudge0TrackingId(judge0TrackingId: string): Promise<TestCase | null> {
+    const prismaTestCase = await prismaClient.testCase.findUnique({ where: { judge0TrackingId } });
+    return prismaTestCase ? new TestCase(prismaTestCase) : null;
   }
 
   id: string;

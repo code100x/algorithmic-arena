@@ -25,11 +25,29 @@ export async function handleJudge0Callback(callbackData: typeof SubmissionCallba
     throw new Error('Submission not found');
   }
 
+  // Find or create the test case
+  let testCase = await TestCase.findByJudge0TrackingId(token);
+  if (!testCase) {
+    testCase = await TestCase.create({
+      judge0TrackingId: token,
+      status: status.description,
+      time: parseFloat(time || '0'),
+      memory: memory || null,
+      submissionId: submission.id,
+    });
+  } else {
+    await testCase.update({
+      status: status.description,
+      time: parseFloat(time || '0'),
+      memory: memory || null,
+    });
+  }
+
   await submission.update({
     status: updatedJudge0Submission.status,
     time: updatedJudge0Submission.time,
     memory: updatedJudge0Submission.memory,
   });
 
-  // we can update the here test cases as well
+
 }
