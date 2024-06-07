@@ -7,6 +7,7 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
+import { isRequestAllowed } from "../../lib/ratelimit";
 
 // TODO: This should be heavily rate limited
 export async function POST(req: NextRequest) {
@@ -18,6 +19,17 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
+      },
+    );
+  }
+  const isAllowed = await isRequestAllowed(session.user.id,10);
+  if (!isAllowed) {
+    return NextResponse.json(
+      {
+        message: "You are being rate limited",
+      },
+      {
+        status: 429,
       },
     );
   }

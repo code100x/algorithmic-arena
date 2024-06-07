@@ -146,15 +146,41 @@ function SubmitProblem({
 
   async function submit() {
     setStatus(SubmitStatus.PENDING);
-    setTestcases(t => t.map(tc => ({...tc, status: "PENDING"})));
-    const response = await axios.post(`/api/submission/`, {
-      code: code[language],
-      languageId: language,
-      problemId: problem.id,
-      activeContestId: contestId,
-    });
-    pollWithBackoff(response.data.id, 10);
+    setTestcases(t => t.map(tc => ({ ...tc, status: "PENDING" })));
+    
+    try {
+      const response = await axios.post(`/api/submission/`, {
+        code: code[language],
+        languageId: language,
+        problemId: problem.id,
+        activeContestId: contestId,
+      });
+      
+      if (response.status === 429) {
+        setStatus(SubmitStatus.FAILED);
+        toast.error("Rate limited");
+        return;
+      }
+      if (response.status !== 200) {
+        setStatus(SubmitStatus.FAILED);
+        toast.error(`Submission failed with status code ${response.status}`);
+        return;
+      }
+      
+      pollWithBackoff(response.data.id, 10);
+    } catch (error:any) {
+      setStatus(SubmitStatus.FAILED);
+      
+      if (error.response && error.response.status === 429) {
+        toast.error("Rate limited");
+      } else if (error.response) {
+        toast.error(`Submission failed with status code ${error.response.status}`);
+      } else {
+        toast.error("Submission failed. Please try again.");
+      }
+    }
   }
+  
 
   return (
     <div>
