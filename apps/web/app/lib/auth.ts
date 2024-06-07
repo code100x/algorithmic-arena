@@ -49,6 +49,11 @@ export const authOptions = {
         password: { label: "password", type: "password", placeholder: "" },
       },
       async authorize(credentials: any) {
+
+        if (!credentials.username || !credentials.password) {
+          return null;
+        }
+
         const hashedPassword = await bcrypt.hash(credentials.password, 10);
 
         const userDb = await db.user.findFirst({
@@ -80,6 +85,14 @@ export const authOptions = {
         }
         try {
           // sign up
+          if (credentials.username.length < 3) {
+            return null
+          }
+
+          if (credentials.username.password < 3) {
+            return null
+          }
+
           const user = await db.user.create({
             data: {
               email: credentials.username,
