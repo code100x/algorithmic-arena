@@ -57,7 +57,6 @@ export const authOptions = {
         if (!validCredentials.success) {
           throw new Error("Invalid credentials");
         }
-
         const hashedPassword = await bcrypt.hash(
           validCredentials.data.password,
           10
@@ -97,6 +96,14 @@ export const authOptions = {
 
         try {
           // sign up
+          if (credentials.username.length < 3) {
+            return null
+          }
+
+          if (credentials.username.password < 3) {
+            return null
+          }
+
           const user = await db.user.create({
             data: {
               email: validCredentials.data.username,
