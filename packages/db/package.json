@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:seed": "prisma db seed",
-    "db:question": "ts-node prisma/updateQuestion.ts"
+    "db:seed": "prisma db seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -15,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "5.12.0",
+    "@prisma/client": "^5.12.0",
     "prisma": "^5.12.0"
   },
   "exports": {
