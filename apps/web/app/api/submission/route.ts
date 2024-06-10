@@ -7,9 +7,8 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
-import { isRequestAllowed } from "../../lib/ratelimit";
+import { rateLimit } from "../../lib/rateLimit";
 
-// TODO: This should be heavily rate limited
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -22,15 +21,19 @@ export async function POST(req: NextRequest) {
       },
     );
   }
-  const isAllowed = await isRequestAllowed(session.user.id,10);
+  const userId = session.user.id
+  //using the ratelimt function from lib, 1 req per 10 seconds
+  const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
+
   if (!isAllowed) {
     return NextResponse.json(
       {
-        message: "You are being rate limited",
+        message: "Too many requests. Please wait before submitting again.",
       },
       {
         status: 429,
-      },
+      }
+
     );
   }
 
