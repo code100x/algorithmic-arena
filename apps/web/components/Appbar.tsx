@@ -5,13 +5,10 @@ import { signOut, useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/button";
 import { CodeIcon } from "./Icon";
-import ThemeSwitch from "./ThemeSwitch";
-
 
 export function Appbar() {
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
-
 
   return (
     <header className="bg-gray-900 text-white px-4 md:px-6 py-3 flex items-center justify-between">
@@ -31,19 +28,17 @@ export function Appbar() {
         </Link>
       </nav>
 
-      <div className="flex flex-row items-center">
-        <ThemeSwitch/>
+      {!isLoading && session?.user && (
+        <div className="flex items-center gap-4">
+          <Button onClick={() => signOut()}>Logout</Button>
+        </div>
+      )}
 
-        {!isLoading && session?.user && (
-          <div className="flex items-center gap-4">
-            <Button onClick={() => signOut()}>Logout</Button>
-          </div>
-        )}
-        {!isLoading && !session?.user && (
-          <Button onClick={() => signIn()}>Sign in</Button>
-        )}
-        {isLoading && <div className="flex items-center gap-4"></div>}
-      </div>
+      {!isLoading && !session?.user && (
+        <Button onClick={() => signIn()}>Sign in</Button>
+      )}
+
+      {isLoading && <div className="flex items-center gap-4"></div>}
     </header>
   );
 }

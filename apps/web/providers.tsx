@@ -5,7 +5,6 @@ import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
-import { ThemeProvider } from "next-themes";
 
 export const Providers = ({ children }: { children: ReactNode }) => {
   const contextClass = {
@@ -28,9 +27,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         position="top-right"
         autoClose={3000}
       />
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {children}
-      </ThemeProvider>
+      {children}
     </SessionProvider>
   );
 };
