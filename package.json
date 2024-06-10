@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
+    "next-themes": "^0.3.0"
+  }
 }
