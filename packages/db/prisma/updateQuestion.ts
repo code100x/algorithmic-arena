@@ -58,4 +58,17 @@ async function main(problemSlug: string, problemTitle: string) {
   );
 }
 
-main(process.env.PROBLEM_SLUG!, process.env.PROBLEM_TITLE!);
+export function addProblemsInDB(){
+fs.readdir(MOUNT_PATH, (err, dirs) => {
+    if (err) {
+        console.error('Error reading directory:', err);
+        return;
+    }
+    dirs.forEach(async (dir) => {
+       await main(dir, dir);
+    });
+})
+
+}
+
+
