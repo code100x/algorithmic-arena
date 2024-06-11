@@ -5,7 +5,9 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev:docker": "npm run prisma:docker && yarn dev",
+    "prisma:docker": "cd packages/db && npx prisma migrate dev --skip-seed && npx prisma db seed"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
@@ -20,5 +22,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@icons-pack/react-simple-icons": "^9.5.0",
+    "@prisma/client": "^5.15.0"
+  }
 }
