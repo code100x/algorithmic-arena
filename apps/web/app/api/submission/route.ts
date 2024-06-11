@@ -9,6 +9,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
 
+const SECRET_KEY = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!;
+const CLOUDFLARE_TURNSTILE_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -18,10 +22,10 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
-  const userId = session.user.id
+  const userId = session.user.id;
   //using the ratelimt function from lib, 1 req per 10 seconds
   const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
 
@@ -37,6 +41,7 @@ export async function POST(req: NextRequest) {
   }
 
   const submissionInput = SubmissionInput.safeParse(await req.json());
+
   if (!submissionInput.success) {
     return NextResponse.json(
       {
@@ -44,7 +49,28 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 400,
+      }
+    );
+  }
+
+  let formData = new FormData();
+  formData.append("secret", SECRET_KEY);
+  formData.append("response", submissionInput.data.token);
+
+  const result = await fetch(CLOUDFLARE_TURNSTILE_URL, {
+    body: formData,
+    method: "POST",
+  });
+  const challengeSucceeded = (await result.json()).success;
+
+  if (!challengeSucceeded.success) {
+    return NextResponse.json(
+      {
+        message: "Invalid reCAPTCHA token",
       },
+      {
+        status: 403,
+      }
     );
   }
 
@@ -61,17 +87,17 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId,
+    submissionInput.data.languageId
   );
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(
     "##USER_CODE_HERE##",
-    submissionInput.data.code,
+    submissionInput.data.code
   );
 
   const response = await axios.post(
@@ -86,7 +112,7 @@ export async function POST(req: NextRequest) {
           process.env.JUDGE0_CALLBACK_URL ??
           "https://judge0-callback.100xdevs.com/submission-callback",
       })),
-    },
+    }
   );
 
   const submission = await db.submission.create({
@@ -117,7 +143,7 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }
 
@@ -130,7 +156,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
   const url = new URL(req.url);
@@ -144,7 +170,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
 
@@ -162,7 +188,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
@@ -179,6 +205,6 @@ export async function GET(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }

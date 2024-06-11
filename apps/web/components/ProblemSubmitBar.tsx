@@ -17,6 +17,7 @@ import { ISubmission, SubmissionTable } from "./SubmissionTable";
 import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
@@ -54,8 +55,7 @@ export const ProblemSubmitBar = ({
               defaultValue="problem"
               className="rounded-md p-1"
               value={activeTab}
-              onValueChange={setActiveTab}
-            >
+              onValueChange={setActiveTab}>
               <TabsList className="grid grid-cols-2 w-full">
                 <TabsTrigger value="problem">Submit</TabsTrigger>
                 <TabsTrigger value="submissions">Submissions</TabsTrigger>
@@ -78,7 +78,7 @@ function Submissions({ problem }: { problem: IProblem }) {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
-        `/api/submission/bulk?problemId=${problem.id}`,
+        `/api/submission/bulk?problemId=${problem.id}`
       );
       setSubmissions(response.data.submissions || []);
     };
@@ -100,18 +100,19 @@ function SubmitProblem({
   contestId?: string;
 }) {
   const [language, setLanguage] = useState(
-    Object.keys(LANGUAGE_MAPPING)[0] as string,
+    Object.keys(LANGUAGE_MAPPING)[0] as string
   );
   const [code, setCode] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
   const [testcases, setTestcases] = useState<any[]>([]);
+  const [token, setToken] = useState<string>("");
   const session = useSession();
 
   useEffect(() => {
     const defaultCode: { [key: string]: string } = {};
     problem.defaultCode.forEach((code) => {
       const language = Object.keys(LANGUAGE_MAPPING).find(
-        (language) => LANGUAGE_MAPPING[language]?.internal === code.languageId,
+        (language) => LANGUAGE_MAPPING[language]?.internal === code.languageId
       );
       if (!language) return;
       defaultCode[language] = code.code;
@@ -149,12 +150,13 @@ function SubmitProblem({
 
   async function submit() {
     setStatus(SubmitStatus.PENDING);
-    setTestcases(t => t.map(tc => ({...tc, status: "PENDING"})));
+    setTestcases((t) => t.map((tc) => ({ ...tc, status: "PENDING" })));
     const response = await axios.post(`/api/submission/`, {
       code: code[language],
       languageId: language,
       problemId: problem.id,
       activeContestId: contestId,
+      token: token,
     });
     pollWithBackoff(response.data.id, 10);
   }
@@ -165,8 +167,7 @@ function SubmitProblem({
       <Select
         value={language}
         defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}
-      >
+        onValueChange={(value) => setLanguage(value)}>
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
@@ -197,13 +198,22 @@ function SubmitProblem({
         />
       </div>
       <div className="flex justify-end">
+        <Turnstile
+          onSuccess={(token) => {
+            setToken(token);
+          }}
+          siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+        />
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"
           className="mt-4 align-right"
-          onClick={session.data?.user ? submit : () => signIn()}
-        >
-          {session.data?.user ? (status === SubmitStatus.PENDING ? "Submitting" : "Submit") : "Login to submit"}
+          onClick={session.data?.user ? submit : () => signIn()}>
+          {session.data?.user
+            ? status === SubmitStatus.PENDING
+              ? "Submitting"
+              : "Submit"
+            : "Login to submit"}
         </Button>
       </div>
       <RenderTestcase testcases={testcases} />
