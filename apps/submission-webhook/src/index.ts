@@ -1,110 +1,116 @@
 import express from "express";
-import prismaClient from "./db";
+import { PrismaClient } from "@prisma/client";
 import { outputMapping } from "./outputMapping";
 import { getPoints } from "./points";
 
+const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
 app.post("/judge0-update", async (req, res) => {
-  const { judge0TrackingId, status, time, memory } = req.body;
+  try {
+    const { judge0TrackingId, status, time, memory, submissionId } = req.body;
 
-  const testCase = await prismaClient.testCase.findUnique({
-    where: {
-      judge0TrackingId,
-    },
-    include: {
-      submission: {
+
+    await prisma.testCase.updateMany({
+      where: {
+        judge0TrackingId,
+        submissionId,
+      },
+      data: {
+        status: outputMapping[status], 
+        time: Number(time),
+        memory: Number(memory),
+      },
+    });
+
+  
+    const allTestCases = await prisma.testCase.findMany({
+      where: {
+        submissionId,
+      },
+    });
+
+    const pendingTestCases = allTestCases.filter(tc => tc.status === "PENDING");
+    const failedTestCases = allTestCases.filter(tc => tc.status !== "AC");
+
+    if (pendingTestCases.length === 0) {
+
+      const accepted = failedTestCases.length === 0;
+      await prisma.submission.update({
+        where: {
+          id: submissionId,
+        },
+        data: {
+          status: accepted ? "AC" : "REJECTED",
+          time: Math.max(...allTestCases.map(tc => Number(tc.time || "0"))),
+          memory: Math.max(...allTestCases.map(tc => tc.memory || 0)),
+        },
         include: {
           problem: true,
           activeContest: true,
-        },
-      },
-    },
-  });
+        }
+      });
 
-  if (!testCase) {
-    return res.status(404).json({
-      message: "TestCase not found",
-    });
-  }
 
-  await prismaClient.testCase.update({
-    where: {
-      id: testCase.id,
-    },
-    data: {
-      status: outputMapping[status],
-      time: Number(time),
-      memory: Number(memory),
-    },
-  });
-
-  const allTestcaseData = await prismaClient.testCase.findMany({
-    where: {
-      submissionId: testCase.submissionId,
-    },
-  });
-
-  const pendingTestcases = allTestcaseData.filter(
-    (tc) => tc.status === "PENDING"
-  );
-  const failedTestcases = allTestcaseData.filter(
-    (tc) => tc.status !== "AC"
-  );
-
-  if (pendingTestcases.length === 0) {
-    const accepted = failedTestcases.length === 0;
-    const response = await prismaClient.submission.update({
-      where: {
-        id: testCase.submissionId,
-      },
-      data: {
-        status: accepted ? "AC" : "REJECTED",
-        time: Math.max(
-          ...allTestcaseData.map((tc) => Number(tc.time || "0"))
-        ),
-        memory: Math.max(...allTestcaseData.map((tc) => tc.memory || 0)),
-      },
-      include: {
-        problem: true,
-        activeContest: true,
-      },
-    });
-
-    if (response.activeContestId && response.activeContest) {
-      const points = await getPoints(
-        response.activeContestId,
-        response.userId,
-        response.problemId,
-        response.problem.difficulty,
-        response.activeContest.startTime,
-        response.activeContest.endTime
-      );
-
-      await prismaClient.contestSubmission.upsert({
+      const submission = await prisma.submission.findUnique({
         where: {
-          userId_problemId_contestId: {
-            contestId: response.activeContestId,
-            userId: response.userId,
-            problemId: response.problemId,
-          },
-        },
-        create: {
-          submissionId: response.id,
-          userId: response.userId,
-          problemId: response.problemId,
-          contestId: response.activeContestId,
-          points,
-        },
-        update: {
-          points,
+          id: submissionId,
         },
       });
-    }
-  }
 
-  res.sendStatus(200);
+      if (submission && submission.activeContestId && submission.activeContestId) {
+        const points = getPoints(
+          submission.id,
+          submission.userId,
+          submission.problemId,
+          submission.activeContestId,
+          new Date(submission.time || new Date()),
+          new Date(submission.memory || new Date())
+        ); 
+        await prisma.contestSubmission.upsert({
+          where: {
+            userId_problemId_contestId: {
+              contestId: submission.activeContestId,
+              userId: submission.userId,
+              problemId: submission.problemId,
+            },
+          },
+          create: {
+            submissionId: submission.id,
+            userId: submission.userId,
+            problemId: submission.problemId,
+            contestId: submission.activeContestId,
+            points: await getPoints(
+              submission.id,
+              submission.userId,
+              submission.problemId,
+              submission.activeContestId,
+              new Date(submission.time || new Date()),
+              new Date(submission.memory || new Date()),
+            ),
+          },
+          update: {
+            points: await getPoints(
+              submission.id,
+              submission.userId,
+              submission.problemId,
+              submission.activeContestId,
+              new Date(submission.time || new Date()),
+              new Date(submission.memory || new Date())
+            ),
+          },
+        });
+      }
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error handling judge0 update:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
-app.listen(process.env.PORT || 3001);
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`Server is running on port ${process.env.PORT || 3001}`);
+});
