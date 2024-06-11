@@ -1,37 +1,44 @@
 import express from "express";
 import prismaClient from "./db";
-import { SubmissionCallback } from "@repo/common/zod";
 import { outputMapping } from "./outputMapping";
 import { getPoints } from "./points";
 
 const app = express();
 app.use(express.json());
 
-app.put("/submission-callback", async (req, res) => {
-  const parsedBody = SubmissionCallback.safeParse(req.body);
+app.post("/judge0-update", async (req, res) => {
+  const { judge0TrackingId, status, time, memory } = req.body;
 
-  if (!parsedBody.success) {
-    return res.status(403).json({
-      message: "Invalid input",
-    });
-  }
-
-  const testCase = await prismaClient.testCase.update({
+  const testCase = await prismaClient.testCase.findUnique({
     where: {
-      judge0TrackingId: parsedBody.data.token,
+      judge0TrackingId,
     },
-    data: {
-      status: outputMapping[parsedBody.data.status.description],
-      time: Number(parsedBody.data.time),
-      memory: parsedBody.data.memory,
+    include: {
+      submission: {
+        include: {
+          problem: true,
+          activeContest: true,
+        },
+      },
     },
   });
 
   if (!testCase) {
     return res.status(404).json({
-      message: "Testcase not found",
+      message: "TestCase not found",
     });
   }
+
+  await prismaClient.testCase.update({
+    where: {
+      id: testCase.id,
+    },
+    data: {
+      status: outputMapping[status],
+      time: Number(time),
+      memory: Number(memory),
+    },
+  });
 
   const allTestcaseData = await prismaClient.testCase.findMany({
     where: {
@@ -40,17 +47,12 @@ app.put("/submission-callback", async (req, res) => {
   });
 
   const pendingTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status === "PENDING",
+    (tc) => tc.status === "PENDING"
   );
   const failedTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status !== "AC",
+    (tc) => tc.status !== "AC"
   );
 
-
-  // This logic is fairly ugly
-  // We should have another async process update the status of the submission.
-  // This can also lead to a race condition where two test case webhooks are sent at the same time
-  // None of them would update the status of the submission
   if (pendingTestcases.length === 0) {
     const accepted = failedTestcases.length === 0;
     const response = await prismaClient.submission.update({
@@ -60,16 +62,14 @@ app.put("/submission-callback", async (req, res) => {
       data: {
         status: accepted ? "AC" : "REJECTED",
         time: Math.max(
-          ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
+          ...allTestcaseData.map((tc) => Number(tc.time || "0"))
         ),
-        memory: Math.max(
-          ...allTestcaseData.map((testcase) => testcase.memory || 0),
-        ),
+        memory: Math.max(...allTestcaseData.map((tc) => tc.memory || 0)),
       },
       include: {
         problem: true,
         activeContest: true,
-      }
+      },
     });
 
     if (response.activeContestId && response.activeContest) {
@@ -78,8 +78,8 @@ app.put("/submission-callback", async (req, res) => {
         response.userId,
         response.problemId,
         response.problem.difficulty,
-        response.activeContest?.startTime,
-        response.activeContest?.endTime,
+        response.activeContest.startTime,
+        response.activeContest.endTime
       );
 
       await prismaClient.contestSubmission.upsert({
@@ -102,9 +102,9 @@ app.put("/submission-callback", async (req, res) => {
         },
       });
     }
-    // increase the solve count here, or asynchronously later
   }
-  res.send("Received");
+
+  res.sendStatus(200);
 });
 
 app.listen(process.env.PORT || 3001);

@@ -119,6 +119,7 @@ model TestCase {
   memory            Int?
   time              Float?
   judge0TrackingId  String    @unique
+  @@index([judge0TrackingId])
 }
 
 model ContestSubmission {
