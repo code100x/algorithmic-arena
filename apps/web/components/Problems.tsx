@@ -1,6 +1,7 @@
 import { getProblems } from "../app/db/problem";
 import { ProblemCard } from "./ProblemCard";
 import { LevelFilter } from "./LevelFilter";
+import { SearchBar } from "./SearchBar";
 
 export async function Problems() {
   const problems = await getProblems();
@@ -9,6 +10,7 @@ export async function Problems() {
   return (
     <section className="bg-white dark:bg-gray-900 py-8 md:py-12 min-h-screen">
       <div className="w-full flex justify-center gap-4">
+        <SearchBar problems={problems} />
         <LevelFilter />
       </div>
       <div className="container mx-auto px-4 md:px-6">
