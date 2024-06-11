@@ -1,187 +1,116 @@
-generator client {
-  provider = "prisma-client-js"
-}
+import express from "express";
+import { PrismaClient } from "@prisma/client";
+import { outputMapping } from "./outputMapping";
+import { getPoints } from "./points";
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+const prisma = new PrismaClient();
+const app = express();
+app.use(express.json());
 
-model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  name      String?
-  token     String?
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  contestSubmissions ContestSubmission[]
-  role      UserRole   @default(USER)
-  submissions Submission[]
-  contestPoints ContestPoints[]
-}
+app.post("/judge0-update", async (req, res) => {
+  try {
+    const { judge0TrackingId, status, time, memory, submissionId } = req.body;
 
-model Contest {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  startTime   DateTime
-  hidden      Boolean    @default(true)
-  submissions Submission[]
-  endTime     DateTime
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problems    ContestProblem[]
-  contestSubmissions ContestSubmission[]
-  leaderboard Boolean    @default(false)
-}
 
-model ContestProblem {
-  id          String
-  contestId   String
-  problemId   String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  contest     Contest @relation(fields: [contestId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
-  index       Int
-  solved      Int    @default(0)
+    await prisma.testCase.updateMany({
+      where: {
+        judge0TrackingId,
+        submissionId,
+      },
+      data: {
+        status: outputMapping[status], 
+        time: Number(time),
+        memory: Number(memory),
+      },
+    });
 
-  @@id([contestId, problemId])
-}
+  
+    const allTestCases = await prisma.testCase.findMany({
+      where: {
+        submissionId,
+      },
+    });
 
-model Problem {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  hidden      Boolean    @default(true)
-  slug        String     @unique
-  solved      Int    @default(0)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  difficulty  Difficulty @default(MEDIUM)
-  contestSubmissions ContestSubmission[]
-  contests    ContestProblem[]
-  submissions Submission[]
-  defaultCode DefaultCode[]
-}
+    const pendingTestCases = allTestCases.filter(tc => tc.status === "PENDING");
+    const failedTestCases = allTestCases.filter(tc => tc.status !== "AC");
 
-model DefaultCode {
-  id          String     @id @default(cuid())
-  languageId  Int
-  problemId   String
-  code        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problem     Problem @relation(fields: [problemId], references: [id])
-  language    Language   @relation(fields: [languageId], references: [id])
-  @@unique([problemId, languageId])
-}
+    if (pendingTestCases.length === 0) {
 
-model Submission {
-  id          String   @id @default(cuid())
-  problemId   String
-  userId      String
-  languageId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  code        String
-  fullCode    String
-  activeContestId String?
-  status      SubmissionResult @default(PENDING)
-  testcases   TestCase[]
-  memory            Int?
-  time              Float?
-  activeContest     Contest? @relation(fields: [activeContestId], references: [id])
-  user            User @relation(fields: [userId], references: [id])
-  language    Language @relation(fields: [languageId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
-  judge0Status SubmissionStatus?
-  judge0Stdout String?
-  judge0Stderr String?
-  judge0CompileOutput String?
-  judge0Time Float?
-  judge0Memory Int?
-}
+      const accepted = failedTestCases.length === 0;
+      await prisma.submission.update({
+        where: {
+          id: submissionId,
+        },
+        data: {
+          status: accepted ? "AC" : "REJECTED",
+          time: Math.max(...allTestCases.map(tc => Number(tc.time || "0"))),
+          memory: Math.max(...allTestCases.map(tc => tc.memory || 0)),
+        },
+        include: {
+          problem: true,
+          activeContest: true,
+        }
+      });
 
-model Language {
-  id        Int   @id @default(autoincrement())
-  name      String
-  judge0Id  Int   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Submission Submission[]
-  DefaultCode DefaultCode[]
-}
 
-model TestCase {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  status            TestCaseResult @default(PENDING)
-  index             Int
-  submission        Submission @relation(fields: [submissionId], references: [id])
-  submissionId      String
-  memory            Int?
-  time              Float?
-  judge0TrackingId  String?
-}
+      const submission = await prisma.submission.findUnique({
+        where: {
+          id: submissionId,
+        },
+      });
 
-model ContestSubmission {
-  id           String   @id @default(cuid())
-  userId       String
-  problemId    String
-  contestId    String
-  submissionId String // purely for auditing
-  points       Int
-  user         User @relation(fields: [userId], references: [id])
-  problem      Problem @relation(fields: [problemId], references: [id])
-  contest      Contest @relation(fields: [contestId], references: [id])
-  @@unique([userId, problemId, contestId])
-}
+      if (submission && submission.activeContestId && submission.activeContestId) {
+        const points = getPoints(
+          submission.id,
+          submission.userId,
+          submission.problemId,
+          submission.activeContestId,
+          new Date(submission.time || new Date()),
+          new Date(submission.memory || new Date())
+        ); 
+        await prisma.contestSubmission.upsert({
+          where: {
+            userId_problemId_contestId: {
+              contestId: submission.activeContestId,
+              userId: submission.userId,
+              problemId: submission.problemId,
+            },
+          },
+          create: {
+            submissionId: submission.id,
+            userId: submission.userId,
+            problemId: submission.problemId,
+            contestId: submission.activeContestId,
+            points: await getPoints(
+              submission.id,
+              submission.userId,
+              submission.problemId,
+              submission.activeContestId,
+              new Date(submission.time || new Date()),
+              new Date(submission.memory || new Date()),
+            ),
+          },
+          update: {
+            points: await getPoints(
+              submission.id,
+              submission.userId,
+              submission.problemId,
+              submission.activeContestId,
+              new Date(submission.time || new Date()),
+              new Date(submission.memory || new Date())
+            ),
+          },
+        });
+      }
+    }
 
-model ContestPoints {
-  id               String   @id @default(cuid())
-  contestId        String
-  userId           String
-  points      Int
-  rank             Int
-  user            User @relation(fields: [userId], references: [id])
-  @@unique([contestId, userId])
-}
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error handling judge0 update:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
-enum SubmissionStatus {
-  ACCEPTED
-  REJECTED
-  RUNTIME_ERROR
-  COMPILATION_ERROR
-  TIME_LIMIT_EXCEEDED
-  MEMORY_LIMIT_EXCEEDED
-  WRONG_ANSWER
-  PENDING
-}
-
-enum TestCaseResult {
-  AC
-  FAIL
-  TLE
-  COMPILATION_ERROR
-  PENDING
-}
-
-enum SubmissionResult {
-  AC
-  REJECTED
-  PENDING
-}
-
-enum UserRole {
-  ADMIN
-  USER
-}
-
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-}
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`Server is running on port ${process.env.PORT || 3001}`);
+});
