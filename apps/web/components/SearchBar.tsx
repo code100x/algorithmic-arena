@@ -100,14 +100,17 @@ export function SearchBar({ problems }: { problems: z.infer<typeof problemSchema
         </div>
         <div className="h-[400px] overflow-y-scroll" ref={scrollableContainerRef}>
           {searchProblems.map((problem, index) => (
-            <div key={problem.id} className={`p-2 ${index === selectedIndex ? "bg-blue-600/20" : ""}`}>
+            <div key={problem.id} className={`p-2 border-b border-gray-400 dark:border-gray-600 ${index === selectedIndex ? "bg-blue-600/20" : ""}`}>
               <Link href={`/problem/${problem.id}`} passHref>
                 <p id={`problem-link-${index}`} tabIndex={-1} style={{ display: "none" }}>
                   Navigate
                 </p>
               </Link>
-              <p>Title: {problem.title}</p>
-              <p>Difficulty: {problem.difficulty}</p>
+              <div className="flex w-full justify-between items-center ">
+                <p className="text-[20px]" >{problem.title}</p>
+                <p className="text-[12px] text-gray-700 dark:text-gray-400">{problem.difficulty}</p>
+              </div>
+              <div className="text-[14px] text-gray-700 dark:text-gray-400" >Solved: {problem.solved}</div>
             </div>
           ))}
         </div>
