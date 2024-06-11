@@ -96,6 +96,12 @@ model Submission {
   user            User @relation(fields: [userId], references: [id])
   language    Language @relation(fields: [languageId], references: [id])
   problem     Problem @relation(fields: [problemId], references: [id])
+  judge0Status SubmissionStatus?
+  judge0Stdout String?
+  judge0Stderr String?
+  judge0CompileOutput String?
+  judge0Time Float?
+  judge0Memory Int?
 }
 
 model Language {
@@ -118,8 +124,7 @@ model TestCase {
   submissionId      String
   memory            Int?
   time              Float?
-  judge0TrackingId  String    @unique
-  @@index([judge0TrackingId])
+  judge0TrackingId  String?
 }
 
 model ContestSubmission {
@@ -143,6 +148,17 @@ model ContestPoints {
   rank             Int
   user            User @relation(fields: [userId], references: [id])
   @@unique([contestId, userId])
+}
+
+enum SubmissionStatus {
+  ACCEPTED
+  REJECTED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+  TIME_LIMIT_EXCEEDED
+  MEMORY_LIMIT_EXCEEDED
+  WRONG_ANSWER
+  PENDING
 }
 
 enum TestCaseResult {
