@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev1": "npm run build && node dist/index.js",
-    "build": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
-    "start": "node dist/index.js"
+    "build1": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "start1": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
