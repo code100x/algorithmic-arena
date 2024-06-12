@@ -78,7 +78,7 @@ function Submissions({ problem }: { problem: IProblem }) {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
-        `/api/submission/bulk?problemId=${problem.id}`
+        `/api/submission/bulk?problemId=${problem.id}`,
       );
       setSubmissions(response.data.submissions || []);
     };
@@ -100,7 +100,7 @@ function SubmitProblem({
   contestId?: string;
 }) {
   const [language, setLanguage] = useState(
-    Object.keys(LANGUAGE_MAPPING)[0] as string
+    Object.keys(LANGUAGE_MAPPING)[0] as string,
   );
   const [code, setCode] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
@@ -112,7 +112,7 @@ function SubmitProblem({
     const defaultCode: { [key: string]: string } = {};
     problem.defaultCode.forEach((code) => {
       const language = Object.keys(LANGUAGE_MAPPING).find(
-        (language) => LANGUAGE_MAPPING[language]?.internal === code.languageId
+        (language) => LANGUAGE_MAPPING[language]?.internal === code.languageId,
       );
       if (!language) return;
       defaultCode[language] = code.code;
@@ -150,7 +150,7 @@ function SubmitProblem({
 
   async function submit() {
     setStatus(SubmitStatus.PENDING);
-    setTestcases((t) => t.map((tc) => ({ ...tc, status: "PENDING" })));
+    setTestcases(t => t.map(tc => ({...tc, status: "PENDING" })));
     const response = await axios.post(`/api/submission/`, {
       code: code[language],
       languageId: language,
@@ -167,7 +167,8 @@ function SubmitProblem({
       <Select
         value={language}
         defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}>
+        onValueChange={(value) => setLanguage(value)}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
