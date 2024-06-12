@@ -22,10 +22,10 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
-  const userId = session.user.id;
+  const userId = session.user.id
   //using the ratelimt function from lib, 1 req per 10 seconds
   const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
 
@@ -87,17 +87,17 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
-      }
+      },
     );
   }
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId
+    submissionInput.data.languageId,
   );
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(
     "##USER_CODE_HERE##",
-    submissionInput.data.code
+    submissionInput.data.code,
   );
 
   const response = await axios.post(
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
           process.env.JUDGE0_CALLBACK_URL ??
           "https://judge0-callback.100xdevs.com/submission-callback",
       })),
-    }
+    },
   );
 
   const submission = await db.submission.create({
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-    }
+    },
   );
 }
 
@@ -156,7 +156,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
   const url = new URL(req.url);
@@ -170,7 +170,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -188,7 +188,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
-      }
+      },
     );
   }
 
@@ -205,6 +205,6 @@ export async function GET(req: NextRequest) {
     },
     {
       status: 200,
-    }
+    },
   );
 }
