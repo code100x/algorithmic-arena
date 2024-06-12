@@ -94,8 +94,13 @@ export async function POST(req: NextRequest) {
       problemId: submissionInput.data.problemId,
       code: submissionInput.data.code,
       activeContestId: submissionInput.data.activeContestId,
-      testcases: response.data.map((data: { token: string }) => data.token),
+      testcases: {
+        connect: response.data
+      }
     },
+    include: {
+      testcases: true
+    }
   });
 
   return NextResponse.json(
@@ -140,6 +145,9 @@ export async function GET(req: NextRequest) {
     where: {
       id: submissionId,
     },
+    include: {
+      testcases: true
+    }
   });
 
   if (!submission) {
@@ -152,17 +160,12 @@ export async function GET(req: NextRequest) {
       }
     );
   }
-  const testCases = await db.submissions.findMany({
-    where: {
-      token: { in: submission.testcases },
-    },
-  });
 
   if (!submission.memory || !submission.time) {
-    const pendingTestcases = testCases.filter(
+    const pendingTestcases = submission.testcases.filter(
       (testcase) => testcase.status_id === 1 || testcase.status_id === 2
     );
-    const failedTestcases = testCases.filter(
+    const failedTestcases = submission.testcases.filter(
       (testcase) => testcase.status_id !== 3
     );
 
@@ -176,15 +179,16 @@ export async function GET(req: NextRequest) {
         data: {
           status: accepted ? "AC" : "REJECTED",
           time: Math.max(
-            ...testCases.map((testcase) => Number(testcase.time || "0"))
+            ...submission.testcases.map((testcase) => Number(testcase.time || "0"))
           ),
           memory: Math.max(
-            ...testCases.map((testcase) => testcase.memory || 0)
+            ...submission.testcases.map((testcase) => testcase.memory || 0)
           ),
         },
         include: {
           problem: true,
           activeContest: true,
+          testcases: true
         },
       });
     }
@@ -241,7 +245,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(
     {
       submission,
-      testCases,
     },
     {
       status: 200,

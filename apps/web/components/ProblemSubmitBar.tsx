@@ -130,19 +130,19 @@ function SubmitProblem({
     const response = await axios.get(`/api/submission/?id=${id}`);
 
     if (response.data.submission.status === "PENDING") {
-      setTestcases(response.data.testCases);
+      setTestcases(response.data.submission.testcases);
       await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
       pollWithBackoff(id, retries - 1);
     } else {
       if (response.data.submission.status === "AC") {
         setStatus(SubmitStatus.ACCEPTED);
-        setTestcases(response.data.testCases);
+        setTestcases(response.data.submission.testcases);
         toast.success("Accepted!");
         return;
       } else {
         setStatus(SubmitStatus.FAILED);
         toast.error("Failed :(");
-        setTestcases(response.data.testCases);
+        setTestcases(response.data.submission.testcases);
         return;
       }
     }
@@ -190,7 +190,7 @@ function SubmitProblem({
           height={"60vh"}
           value={code[language]}
           theme="vs-dark"
-          onMount={() => {}}
+          onMount={() => { }}
           options={{
             fontSize: 14,
             scrollBeyondLastLine: false,

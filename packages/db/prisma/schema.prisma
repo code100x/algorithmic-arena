@@ -90,7 +90,7 @@ model Submission {
   status          SubmissionResult @default(PENDING)
   memory          Int?
   time            Float?
-  testcases       String[]
+  testcases       submissions[]
   activeContest   Contest?         @relation(fields: [activeContestId], references: [id])
   user            User             @relation(fields: [userId], references: [id])
   problem         Problem          @relation(fields: [problemId], references: [id])
@@ -172,23 +172,23 @@ model schema_migrations {
 }
 
 model submissions {
-  id                                         Int       @id @default(autoincrement())
+  id                                         Int         @id @default(autoincrement())
   source_code                                String?
   language_id                                Int?
   stdin                                      String?
   expected_output                            String?
   stdout                                     String?
   status_id                                  Int?
-  created_at                                 DateTime? @db.Timestamp(6)
-  finished_at                                DateTime? @db.Timestamp(6)
-  time                                       Decimal?  @db.Decimal
+  created_at                                 DateTime?   @db.Timestamp(6)
+  finished_at                                DateTime?   @db.Timestamp(6)
+  time                                       Decimal?    @db.Decimal
   memory                                     Int?
   stderr                                     String?
-  token                                      String?   @db.VarChar
+  token                                      String?     @db.VarChar @unique
   number_of_runs                             Int?
-  cpu_time_limit                             Decimal?  @db.Decimal
-  cpu_extra_time                             Decimal?  @db.Decimal
-  wall_time_limit                            Decimal?  @db.Decimal
+  cpu_time_limit                             Decimal?    @db.Decimal
+  cpu_extra_time                             Decimal?    @db.Decimal
+  wall_time_limit                            Decimal?    @db.Decimal
   memory_limit                               Int?
   stack_limit                                Int?
   max_processes_and_or_threads               Int?
@@ -199,13 +199,15 @@ model submissions {
   exit_code                                  Int?
   exit_signal                                Int?
   message                                    String?
-  wall_time                                  Decimal?  @db.Decimal
-  compiler_options                           String?   @db.VarChar
-  command_line_arguments                     String?   @db.VarChar
+  wall_time                                  Decimal?    @db.Decimal
+  compiler_options                           String?     @db.VarChar
+  command_line_arguments                     String?     @db.VarChar
   redirect_stderr_to_stdout                  Boolean?
-  callback_url                               String?   @db.VarChar
+  callback_url                               String?     @db.VarChar
   additional_files                           Bytes?
   enable_network                             Boolean?
+  Submission                                 Submission? @relation(fields: [submissionId], references: [id])
+  submissionId                               String?
 
   @@index([token], map: "index_submissions_on_token")
 }

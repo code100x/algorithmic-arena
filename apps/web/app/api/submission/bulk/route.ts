@@ -38,6 +38,9 @@ export async function GET(req: NextRequest) {
       userId: session.user.id,
     },
     take: 10,
+    include: {
+      testcases: true,
+    },
     orderBy: {
       createdAt: "desc",
     },
