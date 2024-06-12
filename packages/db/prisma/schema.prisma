@@ -8,139 +8,143 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  name      String?
-  token     String?
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  name               String?
+  image              String?
+  token              String?
+  password           String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   contestSubmissions ContestSubmission[]
-  role      UserRole   @default(USER)
-  submissions Submission[]
-  contestPoints ContestPoints[]
+  role               UserRole            @default(USER)
+  submissions        Submission[]
+  contestPoints      ContestPoints[]
 }
 
 model Contest {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  startTime   DateTime
-  hidden      Boolean    @default(true)
-  submissions Submission[]
-  endTime     DateTime
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problems    ContestProblem[]
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  startTime          DateTime
+  hidden             Boolean             @default(true)
+  submissions        Submission[]
+  endTime            DateTime
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  problems           ContestProblem[]
   contestSubmissions ContestSubmission[]
-  leaderboard Boolean    @default(false)
+  leaderboard        Boolean             @default(false)
 }
 
 model ContestProblem {
-  id          String
-  contestId   String
-  problemId   String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  contest     Contest @relation(fields: [contestId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
-  index       Int
-  solved      Int    @default(0)
+  id        String
+  contestId String
+  problemId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  contest   Contest  @relation(fields: [contestId], references: [id])
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  index     Int
+  solved    Int      @default(0)
 
   @@id([contestId, problemId])
 }
 
 model Problem {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  hidden      Boolean    @default(true)
-  slug        String     @unique
-  solved      Int    @default(0)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  difficulty  Difficulty @default(MEDIUM)
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  hidden             Boolean             @default(true)
+  slug               String              @unique
+  solved             Int                 @default(0)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  difficulty         Difficulty          @default(MEDIUM)
   contestSubmissions ContestSubmission[]
-  contests    ContestProblem[]
-  submissions Submission[]
-  defaultCode DefaultCode[]
+  contests           ContestProblem[]
+  submissions        Submission[]
+  defaultCode        DefaultCode[]
 }
 
 model DefaultCode {
-  id          String     @id @default(cuid())
-  languageId  Int
-  problemId   String
-  code        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problem     Problem @relation(fields: [problemId], references: [id])
-  language    Language   @relation(fields: [languageId], references: [id])
+  id         String   @id @default(cuid())
+  languageId Int
+  problemId  String
+  code       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  problem    Problem  @relation(fields: [problemId], references: [id])
+  language   Language @relation(fields: [languageId], references: [id])
+
   @@unique([problemId, languageId])
 }
 
 model Submission {
-  id          String   @id @default(cuid())
-  problemId   String
-  userId      String
-  languageId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  code        String
-  fullCode    String
+  id              String           @id @default(cuid())
+  problemId       String
+  userId          String
+  languageId      Int
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  code            String
+  fullCode        String
   activeContestId String?
-  status      SubmissionResult @default(PENDING)
-  testcases   TestCase[]
-  memory            Int?
-  time              Float?
-  activeContest     Contest? @relation(fields: [activeContestId], references: [id])
-  user            User @relation(fields: [userId], references: [id])
-  language    Language @relation(fields: [languageId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
+  status          SubmissionResult @default(PENDING)
+  testcases       TestCase[]
+  memory          Int?
+  time            Float?
+  activeContest   Contest?         @relation(fields: [activeContestId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+  language        Language         @relation(fields: [languageId], references: [id])
+  problem         Problem          @relation(fields: [problemId], references: [id])
 }
 
 model Language {
-  id        Int   @id @default(autoincrement())
-  name      String
-  judge0Id  Int   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Submission Submission[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  judge0Id    Int           @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Submission  Submission[]
   DefaultCode DefaultCode[]
 }
 
 model TestCase {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  status            TestCaseResult @default(PENDING)
-  index             Int
-  submission        Submission @relation(fields: [submissionId], references: [id])
-  submissionId      String
-  memory            Int?
-  time              Float?
-  judge0TrackingId  String    @unique
+  id               String         @id @default(cuid())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  status           TestCaseResult @default(PENDING)
+  index            Int
+  submission       Submission     @relation(fields: [submissionId], references: [id])
+  submissionId     String
+  memory           Int?
+  time             Float?
+  judge0TrackingId String         @unique
 }
 
 model ContestSubmission {
-  id           String   @id @default(cuid())
+  id           String  @id @default(cuid())
   userId       String
   problemId    String
   contestId    String
   submissionId String // purely for auditing
   points       Int
-  user         User @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id])
   problem      Problem @relation(fields: [problemId], references: [id])
   contest      Contest @relation(fields: [contestId], references: [id])
+
   @@unique([userId, problemId, contestId])
 }
 
 model ContestPoints {
-  id               String   @id @default(cuid())
-  contestId        String
-  userId           String
-  points      Int
-  rank             Int
-  user            User @relation(fields: [userId], references: [id])
+  id        String @id @default(cuid())
+  contestId String
+  userId    String
+  points    Int
+  rank      Int
+  user      User   @relation(fields: [userId], references: [id])
+
   @@unique([contestId, userId])
 }
 
