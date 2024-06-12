@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev1": "npm run build && node dist/index.js",
     "build": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "node dist/index.js"
   },
