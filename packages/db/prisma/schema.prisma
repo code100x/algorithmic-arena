@@ -168,3 +168,66 @@ enum Difficulty {
   MEDIUM
   HARD
 }
+
+model ar_internal_metadata {
+  key        String   @id @db.VarChar
+  value      String?  @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model clients {
+  id String @id @db.VarChar
+}
+
+model languages {
+  id          Int      @id @default(autoincrement())
+  name        String?  @db.VarChar
+  compile_cmd String?  @db.VarChar
+  run_cmd     String?  @db.VarChar
+  source_file String?  @db.VarChar
+  is_archived Boolean? @default(false)
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
+}
+
+model submissions {
+  id                                         Int       @id @default(autoincrement())
+  source_code                                String?
+  language_id                                Int?
+  stdin                                      String?
+  expected_output                            String?
+  stdout                                     String?
+  status_id                                  Int?
+  created_at                                 DateTime? @db.Timestamp(6)
+  finished_at                                DateTime? @db.Timestamp(6)
+  time                                       Decimal?  @db.Decimal
+  memory                                     Int?
+  stderr                                     String?
+  token                                      String?   @db.VarChar
+  number_of_runs                             Int?
+  cpu_time_limit                             Decimal?  @db.Decimal
+  cpu_extra_time                             Decimal?  @db.Decimal
+  wall_time_limit                            Decimal?  @db.Decimal
+  memory_limit                               Int?
+  stack_limit                                Int?
+  max_processes_and_or_threads               Int?
+  enable_per_process_and_thread_time_limit   Boolean?
+  enable_per_process_and_thread_memory_limit Boolean?
+  max_file_size                              Int?
+  compile_output                             String?
+  exit_code                                  Int?
+  exit_signal                                Int?
+  message                                    String?
+  wall_time                                  Decimal?  @db.Decimal
+  compiler_options                           String?   @db.VarChar
+  command_line_arguments                     String?   @db.VarChar
+  redirect_stderr_to_stdout                  Boolean?
+  callback_url                               String?   @db.VarChar
+  additional_files                           Bytes?
+  enable_network                             Boolean?
+
+  @@index([token], map: "index_submissions_on_token")
+}

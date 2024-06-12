@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run build && node dist/index.js",
+    "dev": "nodemon src/index.ts",
     "build": "npx esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "node dist/index.js"
   },
@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "express": "^4.19.2",
-    "@repo/db": "*"
+    "@repo/db": "*",
+    "esbuild": "0.21.5"
   }
 }
