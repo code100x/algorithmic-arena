@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SubmissionInput } from "@repo/common/zod";
 import { getProblem } from "../../lib/problems";
-import { JUDGE0_URI } from "../../lib/config";
 import axios from "axios";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
@@ -9,6 +8,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
 import { getPoints } from "./points";
+
+const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
