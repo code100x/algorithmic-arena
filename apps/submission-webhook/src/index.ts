@@ -40,12 +40,11 @@ app.put("/submission-callback", async (req, res) => {
   });
 
   const pendingTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status === "PENDING",
+    (testcase) => testcase.status === "PENDING"
   );
   const failedTestcases = allTestcaseData.filter(
-    (testcase) => testcase.status !== "AC",
+    (testcase) => testcase.status !== "AC"
   );
-
 
   // This logic is fairly ugly
   // We should have another async process update the status of the submission.
@@ -60,16 +59,16 @@ app.put("/submission-callback", async (req, res) => {
       data: {
         status: accepted ? "AC" : "REJECTED",
         time: Math.max(
-          ...allTestcaseData.map((testcase) => Number(testcase.time || "0")),
+          ...allTestcaseData.map((testcase) => Number(testcase.time || "0"))
         ),
         memory: Math.max(
-          ...allTestcaseData.map((testcase) => testcase.memory || 0),
+          ...allTestcaseData.map((testcase) => testcase.memory || 0)
         ),
       },
       include: {
         problem: true,
         activeContest: true,
-      }
+      },
     });
 
     if (response.activeContestId && response.activeContest) {
@@ -79,9 +78,11 @@ app.put("/submission-callback", async (req, res) => {
         response.problemId,
         response.problem.difficulty,
         response.activeContest?.startTime,
-        response.activeContest?.endTime,
+        response.activeContest?.endTime
       );
 
+      if (points === 0) return;
+      
       await prismaClient.contestSubmission.upsert({
         where: {
           userId_problemId_contestId: {
@@ -102,6 +103,7 @@ app.put("/submission-callback", async (req, res) => {
         },
       });
     }
+
     // increase the solve count here, or asynchronously later
   }
   res.send("Received");

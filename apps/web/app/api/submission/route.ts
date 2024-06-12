@@ -8,6 +8,7 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
+import { getPoints } from "./points";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -82,9 +83,6 @@ export async function POST(req: NextRequest) {
         source_code: problem.fullBoilerplateCode,
         stdin: input,
         expected_output: problem.outputs[index],
-        // callback_url:
-        //   process.env.JUDGE0_CALLBACK_URL ??
-        //   "https://judge0-callback.100xdevs.com/submission-callback",
       })),
     }
   );
@@ -142,7 +140,7 @@ export async function GET(req: NextRequest) {
       id: submissionId,
     },
   });
-  console.log(submission?.status);
+
   if (!submission) {
     return NextResponse.json(
       {
@@ -158,6 +156,7 @@ export async function GET(req: NextRequest) {
       token: { in: submission.testcases },
     },
   });
+
   if (!submission.memory || !submission.time) {
     const pendingTestcases = testCases.filter(
       (testcase) => testcase.status_id === 1 || testcase.status_id === 2
@@ -189,6 +188,54 @@ export async function GET(req: NextRequest) {
       });
     }
   }
+
+  if (submission.activeContestId) {
+    var contestSubmission = await db.submission.findUnique({
+      where: {
+        id: submissionId,
+      },
+      include: {
+        activeContest: true,
+        problem: true,
+      },
+    });
+    if (
+      !contestSubmission ||
+      !contestSubmission.activeContestId ||
+      !contestSubmission.activeContest?.startTime
+    )
+      return;
+
+    const points = await getPoints(
+      contestSubmission.activeContestId,
+      contestSubmission.userId,
+      contestSubmission.problemId,
+      contestSubmission.problem.difficulty,
+      contestSubmission.activeContest?.startTime,
+      contestSubmission.activeContest?.endTime
+    );
+
+    await db.contestSubmission.upsert({
+      where: {
+        userId_problemId_contestId: {
+          contestId: submission.activeContestId,
+          userId: submission.userId,
+          problemId: submission.problemId,
+        },
+      },
+      create: {
+        submissionId: submission.id,
+        userId: submission.userId,
+        problemId: submission.problemId,
+        contestId: submission.activeContestId,
+        points,
+      },
+      update: {
+        points,
+      },
+    });
+  }
+  // increase the solve count here, or asynchronously later
 
   return NextResponse.json(
     {
