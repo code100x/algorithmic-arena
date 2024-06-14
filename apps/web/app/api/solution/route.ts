@@ -15,9 +15,9 @@ export const POST = async (req: NextRequest) => {
       }
     );
   }
-  const data = JSON.stringify(req.body);
+  const data = await req.json();
   const res = SolutionInput.safeParse(data);
-  if (!res.success || !data) {
+  if (!res.success) {
     return NextResponse.json(
       {
         message: "Invalid input",
@@ -28,7 +28,18 @@ export const POST = async (req: NextRequest) => {
     );
   }
   //Add
-  //   const solution=await db.solution.create({
-
-  //   })
+  const solution = await db.solution.create({
+    data: {
+      userId: session.user.id,
+      languageId: parseInt(data.languageId),
+      problemId: data.problemId,
+      code: data.code,
+      title: data.title,
+      explaination: data.explaination,
+    },
+  });
+  return NextResponse.json(
+    { message: "solution added successfully" },
+    { status: 202 }
+  );
 };

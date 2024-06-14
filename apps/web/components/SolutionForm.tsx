@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
+import { toast } from "react-toastify";
 
 interface propss {
   type: string;
@@ -32,28 +33,42 @@ interface propss {
   problemId: string;
   languageId: any;
 }
-const SolutionForm = ({
-  type,
-  otherInfo,
-  //   explaination,
-  //   code,
-  //   problemId,
-  //   languageId,
-}: any) => {
+const SolutionForm = ({ type, problem }: any) => {
   const [submission, setSubmissions] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [explaination, setExplaintation] = useState("");
   const [subId, setSubId] = useState(null);
   const [language, setLanguage] = useState(
     Object.keys(LANGUAGE_MAPPING)[0] as string
   );
   const [code, setCode] = useState<Record<string, string>>({});
-  const handleClick = () => {
-    if (1) {
-    } else {
+  const handleClick = async () => {
+    const body = {
+      title,
+      explaination,
+      problemId: "",
+      languageId: "",
+      code: code[language],
+    };
+    const result = SolutionInput.safeParse(body);
+    if (!result.success) {
+      toast.error("fill all the fileds before submitting");
+      return;
+    }
+    try {
+      if (type == "add") {
+        const res = await axios.post("/api/solution", body);
+        toast.success("solution added successfully");
+      } else {
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("something went wrong");
     }
   };
   useEffect(() => {
     const defaultCode: { [key: string]: string } = {};
-    otherInfo.problem.defaultCode.forEach((code: any) => {
+    problem.defaultCode.forEach((code: any) => {
       const language = Object.keys(LANGUAGE_MAPPING).find(
         (language) => LANGUAGE_MAPPING[language]?.internal === code.languageId
       );
@@ -72,7 +87,10 @@ const SolutionForm = ({
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("api/sbumission/:${subId}");
-      setCode(response.data.submission.code);
+      setCode({
+        ...code,
+        [response.data.submission.language]: response.data.submission.code,
+      });
       setLanguage(response.data.submission.language);
     };
     if (subId) {
@@ -84,13 +102,25 @@ const SolutionForm = ({
       <form className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">
           <label>Title</label>
-          <Input type="text" placeholder="Easy to understand c++ sol." />
+          <Input
+            required={true}
+            type="text"
+            placeholder="Easy to understand c++ sol."
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
         </div>
         <div className="flex flex-col gap-3">
           <label>Explaination</label>
           <Textarea
             placeholder="Simply use sort build-in function."
             className="h-[150px]"
+            value={explaination}
+            onChange={(e) => {
+              setExplaintation(e.target.value);
+            }}
           />
         </div>
         <div className="flex flex-col gap-3">

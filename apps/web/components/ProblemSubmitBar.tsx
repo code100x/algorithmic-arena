@@ -211,7 +211,7 @@ function SubmitProblem({
             : "Login to submit"}
         </Button>
         {session.data?.user && status == "AC" ? (
-          <SolutionDialog type="add" otherInfo={{ problem }} />
+          <SolutionDialog type="add" problem />
         ) : null}
       </div>
       <RenderTestcase testcases={testcases} />
