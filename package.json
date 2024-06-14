@@ -25,6 +25,7 @@
   ],
   "dependencies": {
     "@icons-pack/react-simple-icons": "^9.5.0",
-    "@prisma/client": "^5.15.0"
+    "@prisma/client": "^5.15.0",
+    "nodemon": "^3.1.3"
   }
 }
