@@ -19,6 +19,7 @@ model User {
   role      UserRole   @default(USER)
   submissions Submission[]
   contestPoints ContestPoints[]
+  solution Solution[]
 }
 
 model Contest {
@@ -34,6 +35,20 @@ model Contest {
   problems    ContestProblem[]
   contestSubmissions ContestSubmission[]
   leaderboard Boolean    @default(false)
+}
+
+model Solution{
+  id           String @id @default(uuid())
+  userId       String
+  problemId    String
+  languageId   Int
+  title        String
+  explaination String  
+  code         String
+  createdAt    DateTime   @default(now())
+  user         User @relation(fields: [userId],references: [id])
+  problem      Problem @relation(fields: [problemId], references: [id])
+  language     Language @relation(fields: [languageId],references: [id])
 }
 
 model ContestProblem {
@@ -64,6 +79,7 @@ model Problem {
   contests    ContestProblem[]
   submissions Submission[]
   defaultCode DefaultCode[]
+  solution Solution[]
 }
 
 model DefaultCode {
@@ -106,6 +122,7 @@ model Language {
   updatedAt DateTime @updatedAt
   Submission Submission[]
   DefaultCode DefaultCode[]
+  solution    Solution[]
 }
 
 model TestCase {
@@ -167,4 +184,9 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
 }

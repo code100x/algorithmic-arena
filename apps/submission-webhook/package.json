@@ -12,8 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/db": "*",
     "@types/express": "^4.17.21",
     "express": "^4.19.2",
-    "@repo/db": "*"
+    "typescript": "^5.4.5"
   }
 }

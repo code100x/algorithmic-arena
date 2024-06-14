@@ -9,5 +9,5 @@ import { addProblemsInDB } from "./updateQuestion";
       judge0Id: LANGUAGE_MAPPING[language].judge0,
     })),
   }))();
-  
-  addProblemsInDB();
+
+addProblemsInDB();
