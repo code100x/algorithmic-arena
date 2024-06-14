@@ -18,7 +18,7 @@ import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
 import SolutionDialog from "./SolutionDialog";
-
+//import { submissions as SubmissionsType } from "@prisma/client";
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
   PENDING = "PENDING",
@@ -130,19 +130,19 @@ function SubmitProblem({
     const response = await axios.get(`/api/submission/?id=${id}`);
 
     if (response.data.submission.status === "PENDING") {
-      setTestcases(response.data.testCases);
+      setTestcases(response.data.submission.testcases);
       await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
       pollWithBackoff(id, retries - 1);
     } else {
       if (response.data.submission.status === "AC") {
         setStatus(SubmitStatus.ACCEPTED);
-        setTestcases(response.data.testCases);
+        setTestcases(response.data.submission.testcases);
         toast.success("Accepted!");
         return;
       } else {
         setStatus(SubmitStatus.FAILED);
         toast.error("Failed :(");
-        setTestcases(response.data.testCases);
+        setTestcases(response.data.submission.testcases);
         return;
       }
     }
@@ -166,7 +166,7 @@ function SubmitProblem({
       <Select
         value={language}
         defaultValue="javascript"
-        onValueChange={(value) => setLanguage(value)}
+        onValueChange={(value: any) => setLanguage(value)}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
@@ -219,20 +219,26 @@ function SubmitProblem({
   );
 }
 
-function renderResult(status: string) {
+function renderResult(status: number | null) {
   switch (status) {
-    case "AC":
-      return <CheckIcon className="h-6 w-6 text-green-500" />;
-    case "FAIL":
-      return <CircleX className="h-6 w-6 text-red-500" />;
-    case "TLE":
-      return <ClockIcon className="h-6 w-6 text-red-500" />;
-    case "COMPILATION_ERROR":
-      return <CircleX className="h-6 w-6 text-red-500" />;
-    case "PENDING":
+    case 1:
       return <ClockIcon className="h-6 w-6 text-yellow-500" />;
+    case 2:
+      return <ClockIcon className="h-6 w-6 text-yellow-500" />;
+    case 3:
+      return <CheckIcon className="h-6 w-6 text-green-500" />;
+    case 4:
+      return <CircleX className="h-6 w-6 text-red-500" />;
+    case 5:
+      return <ClockIcon className="h-6 w-6 text-red-500" />;
+    case 6:
+      return <CircleX className="h-6 w-6 text-red-500" />;
+    case 13:
+      return <div className="text-gray-500">Internal Error!</div>;
+    case 14:
+      return <div className="text-gray-500">Exec Format Error!</div>;
     default:
-      return <div className="text-gray-500"></div>;
+      return <div className="text-gray-500">Runtime Error!</div>;
   }
 }
 
@@ -245,7 +251,7 @@ function RenderTestcase({ testcases }: { testcases: any[] }) {
             <div className="">Test #{index + 1}</div>
           </div>
           <div className="p-2 flex justify-center">
-            {renderResult(testcase.status)}
+            {renderResult(testcase.status_id)}
           </div>
         </div>
       ))}

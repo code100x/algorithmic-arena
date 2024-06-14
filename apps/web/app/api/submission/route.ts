@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SubmissionInput } from "@repo/common/zod";
 import { getProblem } from "../../lib/problems";
-import { JUDGE0_URI } from "../../lib/config";
 import axios from "axios";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
+import { createClient } from "redis";
+
+const redis = createClient();
+await redis.connect();
+
+const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -18,10 +23,10 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
-  const userId = session.user.id
+  const userId = session.user.id;
   //using the ratelimt function from lib, 1 req per 10 seconds
   const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
 
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
 
@@ -61,17 +66,17 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId,
+    submissionInput.data.languageId
   );
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(
     "##USER_CODE_HERE##",
-    submissionInput.data.code,
+    submissionInput.data.code
   );
 
   const response = await axios.post(
@@ -82,33 +87,26 @@ export async function POST(req: NextRequest) {
         source_code: problem.fullBoilerplateCode,
         stdin: input,
         expected_output: problem.outputs[index],
-        callback_url:
-          process.env.JUDGE0_CALLBACK_URL ??
-          "https://judge0-callback.100xdevs.com/submission-callback",
       })),
-    },
+    }
   );
 
   const submission = await db.submission.create({
     data: {
       userId: session.user.id,
       problemId: submissionInput.data.problemId,
-      languageId: LANGUAGE_MAPPING[submissionInput.data.languageId]?.internal!,
       code: submissionInput.data.code,
-      fullCode: problem.fullBoilerplateCode,
-      status: "PENDING",
       activeContestId: submissionInput.data.activeContestId,
+      testcases: {
+        connect: response.data,
+      },
+    },
+    include: {
+      testcases: true,
     },
   });
 
-  await db.testCase.createMany({
-    data: problem.inputs.map((input, index) => ({
-      submissionId: submission.id,
-      status: "PENDING",
-      index,
-      judge0TrackingId: response.data[index].token,
-    })),
-  });
+  await redis.rPush("submission_queue", submission.id);
 
   return NextResponse.json(
     {
@@ -117,7 +115,7 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }
 
@@ -130,7 +128,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
   const url = new URL(req.url);
@@ -144,14 +142,16 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
 
-  const submission = await db.submission.findUnique({
+  var submission = await db.submission.findUnique({
     where: {
       id: submissionId,
-      userId: session.user.id,
+    },
+    include: {
+      testcases: true,
     },
   });
 
@@ -162,23 +162,18 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
-  const testCases = await db.testCase.findMany({
-    where: {
-      submissionId: submissionId,
-    },
-  });
+  // increase the solve count here, or asynchronously later
 
   return NextResponse.json(
     {
       submission,
-      testCases,
     },
     {
       status: 200,
-    },
+    }
   );
 }

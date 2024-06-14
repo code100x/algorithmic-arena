@@ -8,33 +8,33 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  name      String?
-  token     String?
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  name               String?
+  token              String?
+  password           String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
   contestSubmissions ContestSubmission[]
   role      UserRole   @default(USER)
   submissions Submission[]
   contestPoints ContestPoints[]
-  solution Solution[]
+  solution      Solution[]
 }
 
 model Contest {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  startTime   DateTime
-  hidden      Boolean    @default(true)
-  submissions Submission[]
-  endTime     DateTime
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problems    ContestProblem[]
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  startTime          DateTime
+  hidden             Boolean             @default(true)
+  submissions        Submission[]
+  endTime            DateTime
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  problems           ContestProblem[]
   contestSubmissions ContestSubmission[]
-  leaderboard Boolean    @default(false)
+  leaderboard        Boolean             @default(false)
 }
 
 model Solution{
@@ -52,121 +52,99 @@ model Solution{
 }
 
 model ContestProblem {
-  id          String
-  contestId   String
-  problemId   String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  contest     Contest @relation(fields: [contestId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
-  index       Int
-  solved      Int    @default(0)
+  id        String
+  contestId String
+  problemId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  contest   Contest  @relation(fields: [contestId], references: [id])
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  index     Int
+  solved    Int      @default(0)
 
   @@id([contestId, problemId])
 }
 
 model Problem {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  hidden      Boolean    @default(true)
-  slug        String     @unique
-  solved      Int    @default(0)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  difficulty  Difficulty @default(MEDIUM)
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  hidden             Boolean             @default(true)
+  slug               String              @unique
+  solved             Int                 @default(0)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  difficulty         Difficulty          @default(MEDIUM)
   contestSubmissions ContestSubmission[]
-  contests    ContestProblem[]
-  submissions Submission[]
-  defaultCode DefaultCode[]
-  solution Solution[]
+  contests           ContestProblem[]
+  submissions        Submission[]
+  defaultCode        DefaultCode[]
+  solution           Solution[]
 }
 
 model DefaultCode {
-  id          String     @id @default(cuid())
-  languageId  Int
-  problemId   String
-  code        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  problem     Problem @relation(fields: [problemId], references: [id])
-  language    Language   @relation(fields: [languageId], references: [id])
+  id         String   @id @default(cuid())
+  languageId Int
+  problemId  String
+  code       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  problem    Problem  @relation(fields: [problemId], references: [id])
+  language   Language @relation(fields: [languageId], references: [id])
+
   @@unique([problemId, languageId])
 }
 
 model Submission {
-  id          String   @id @default(cuid())
-  problemId   String
-  userId      String
-  languageId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  code        String
-  fullCode    String
+  id              String           @id @default(cuid())
+  problemId       String
+  userId          String
+  code            String
   activeContestId String?
-  status      SubmissionResult @default(PENDING)
-  testcases   TestCase[]
-  memory            Int?
-  time              Float?
-  activeContest     Contest? @relation(fields: [activeContestId], references: [id])
-  user            User @relation(fields: [userId], references: [id])
-  language    Language @relation(fields: [languageId], references: [id])
-  problem     Problem @relation(fields: [problemId], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime?        @updatedAt
+  status          SubmissionResult @default(PENDING)
+  memory          Int?
+  time            Float?
+  testcases       submissions[]
+  activeContest   Contest?         @relation(fields: [activeContestId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+  problem         Problem          @relation(fields: [problemId], references: [id])
 }
 
 model Language {
-  id        Int   @id @default(autoincrement())
-  name      String
-  judge0Id  Int   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Submission Submission[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  judge0Id    Int           @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   DefaultCode DefaultCode[]
   solution    Solution[]
 }
 
-model TestCase {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  status            TestCaseResult @default(PENDING)
-  index             Int
-  submission        Submission @relation(fields: [submissionId], references: [id])
-  submissionId      String
-  memory            Int?
-  time              Float?
-  judge0TrackingId  String    @unique
-}
-
 model ContestSubmission {
-  id           String   @id @default(cuid())
+  id           String  @id @default(cuid())
   userId       String
   problemId    String
   contestId    String
   submissionId String // purely for auditing
   points       Int
-  user         User @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id])
   problem      Problem @relation(fields: [problemId], references: [id])
   contest      Contest @relation(fields: [contestId], references: [id])
+
   @@unique([userId, problemId, contestId])
 }
 
 model ContestPoints {
-  id               String   @id @default(cuid())
-  contestId        String
-  userId           String
-  points      Int
-  rank             Int
-  user            User @relation(fields: [userId], references: [id])
-  @@unique([contestId, userId])
-}
+  id        String @id @default(cuid())
+  contestId String
+  userId    String
+  points    Int
+  rank      Int
+  user      User   @relation(fields: [userId], references: [id])
 
-enum TestCaseResult {
-  AC
-  FAIL
-  TLE
-  COMPILATION_ERROR
-  PENDING
+  @@unique([contestId, userId])
 }
 
 enum SubmissionResult {
@@ -186,7 +164,68 @@ enum Difficulty {
   HARD
 }
 
-enum VoteType {
-  UPVOTE
-  DOWNVOTE
+
+model ar_internal_metadata {
+  key        String   @id @db.VarChar
+  value      String?  @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model clients {
+  id String @id @db.VarChar
+}
+
+model languages {
+  id          Int      @id @default(autoincrement())
+  name        String?  @db.VarChar
+  compile_cmd String?  @db.VarChar
+  run_cmd     String?  @db.VarChar
+  source_file String?  @db.VarChar
+  is_archived Boolean? @default(false)
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
+}
+
+model submissions {
+  id                                         Int         @id @default(autoincrement())
+  source_code                                String?
+  language_id                                Int?
+  stdin                                      String?
+  expected_output                            String?
+  stdout                                     String?
+  status_id                                  Int?
+  created_at                                 DateTime?   @db.Timestamp(6)
+  finished_at                                DateTime?   @db.Timestamp(6)
+  time                                       Decimal?    @db.Decimal
+  memory                                     Int?
+  stderr                                     String?
+  token                                      String?     @db.VarChar @unique
+  number_of_runs                             Int?
+  cpu_time_limit                             Decimal?    @db.Decimal
+  cpu_extra_time                             Decimal?    @db.Decimal
+  wall_time_limit                            Decimal?    @db.Decimal
+  memory_limit                               Int?
+  stack_limit                                Int?
+  max_processes_and_or_threads               Int?
+  enable_per_process_and_thread_time_limit   Boolean?
+  enable_per_process_and_thread_memory_limit Boolean?
+  max_file_size                              Int?
+  compile_output                             String?
+  exit_code                                  Int?
+  exit_signal                                Int?
+  message                                    String?
+  wall_time                                  Decimal?    @db.Decimal
+  compiler_options                           String?     @db.VarChar
+  command_line_arguments                     String?     @db.VarChar
+  redirect_stderr_to_stdout                  Boolean?
+  callback_url                               String?     @db.VarChar
+  additional_files                           Bytes?
+  enable_network                             Boolean?
+  Submission                                 Submission? @relation(fields: [submissionId], references: [id])
+  submissionId                               String?
+
+  @@index([token], map: "index_submissions_on_token")
 }
