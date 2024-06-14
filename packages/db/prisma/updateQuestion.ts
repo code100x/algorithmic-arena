@@ -16,7 +16,7 @@ function promisifedReadFile(path: string): Promise<string> {
 
 async function main(problemSlug: string, problemTitle: string) {
   const problemStatement = await promisifedReadFile(
-    `${MOUNT_PATH}/${problemSlug}/Problem.md`,
+    `${MOUNT_PATH}/${problemSlug}/Problem.md`
   );
 
   const problem = await prismaClient.problem.upsert({
@@ -27,6 +27,7 @@ async function main(problemSlug: string, problemTitle: string) {
       title: problemSlug,
       slug: problemSlug,
       description: problemStatement,
+      hidden: false,
     },
     update: {
       description: problemStatement,
@@ -36,7 +37,7 @@ async function main(problemSlug: string, problemTitle: string) {
   await Promise.all(
     Object.keys(LANGUAGE_MAPPING).map(async (language) => {
       const code = await promisifedReadFile(
-        `${MOUNT_PATH}/${problemSlug}/boilerplate/function.${language}`,
+        `${MOUNT_PATH}/${problemSlug}/boilerplate/function.${language}`
       );
       await prismaClient.defaultCode.upsert({
         where: {
@@ -54,21 +55,18 @@ async function main(problemSlug: string, problemTitle: string) {
           code,
         },
       });
-    }),
+    })
   );
 }
 
-export function addProblemsInDB(){
-fs.readdir(MOUNT_PATH, (err, dirs) => {
+export function addProblemsInDB() {
+  fs.readdir(MOUNT_PATH, (err, dirs) => {
     if (err) {
-        console.error('Error reading directory:', err);
-        return;
+      console.error("Error reading directory:", err);
+      return;
     }
     dirs.forEach(async (dir) => {
-       await main(dir, dir);
+      await main(dir, dir);
     });
-})
-
+  });
 }
-
-

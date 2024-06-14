@@ -1,0 +1,15 @@
+{
+  "name": "sweeper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@repo/db": "*"
+  },
+  "scripts": {
+    "build": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap",
+    "start": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap && nodemon dist/index.js",
+    "dev": "nodemon ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
