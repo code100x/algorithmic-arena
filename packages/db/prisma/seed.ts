@@ -1,6 +1,7 @@
 import { prismaClient } from "../src";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { addProblemsInDB } from "./updateQuestion";
+import languages from "../src/languages";
 (async () =>
   await prismaClient.language.createMany({
     data: Object.keys(LANGUAGE_MAPPING).map((language) => ({
@@ -9,5 +10,6 @@ import { addProblemsInDB } from "./updateQuestion";
       judge0Id: LANGUAGE_MAPPING[language].judge0,
     })),
   }))();
-  
-  addProblemsInDB();
+(async () => await prismaClient.languages.createMany({ data: languages }))();
+
+addProblemsInDB();

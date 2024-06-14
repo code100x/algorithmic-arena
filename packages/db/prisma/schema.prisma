@@ -148,14 +148,6 @@ model ContestPoints {
   @@unique([contestId, userId])
 }
 
-enum TestCaseResult {
-  AC
-  FAIL
-  TLE
-  COMPILATION_ERROR
-  PENDING
-}
-
 enum SubmissionResult {
   AC
   REJECTED
