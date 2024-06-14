@@ -51,11 +51,11 @@ export class FullProblemDefinitionParser {
       .map((field) => `${this.mapTypeToCpp(field.type)} ${field.name}`)
       .join(", ");
     const inputReads = this.inputFields
-      .map((field) => {
+      .map((field, index) => {
         if (field.type.startsWith("list<")) {
-          return `int size_${field.name};\n  std::cin >> size_${field.name};\n  ${this.mapTypeToCpp(field.type)} ${field.name}(size_${field.name});\n  for(int i = 0; i < size_${field.name}; ++i) std::cin >> ${field.name}[i];`;
+          return `int size_${field.name};\n  std::istringstream(lines[${index}]) >> size_${field.name};\n  ${this.mapTypeToCpp(field.type)} ${field.name}(size_${field.name});\n  if(!size_${field.name}==0) {\n  \tstd::istringstream iss(lines[${index + 1}]);\n  \tfor (int i=0; i < size_arr; i++) iss >> arr[i];\n  }`;
         } else {
-          return `std::cin >> ${field.name};`;
+          return `${this.mapTypeToCpp(field.type)} ${field.name};\n  std::istringstream(lines[${index}]) >> ${field.name};`;
         }
       })
       .join("\n  ");
@@ -63,20 +63,28 @@ export class FullProblemDefinitionParser {
     const functionCall = `${outputType} result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
     const outputWrite = `std::cout << result << std::endl;`;
 
-    return `
-#include <iostream>
+    return `#include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <climits>
 
 ##USER_CODE_HERE##
 
 int main() {
+  std::ifstream file("/dev/problems/${this.problemName.toLowerCase().replace(" ", "-")}/tests/inputs/##INPUT_FILE_INDEX##.txt");
+  std::vector<std::string> lines;
+  std::string line;
+  while (std::getline(file, line)) lines.push_back(line);
+
+  file.close();
   ${inputReads}
   ${functionCall}
   ${outputWrite}
   return 0;
 }
-    `;
+`;
   }
 
   generateJs(): string {
@@ -94,10 +102,9 @@ int main() {
     const functionCall = `const result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
     const outputWrite = `console.log(result);`;
 
-    return `
-##USER_CODE_HERE##
+    return `##USER_CODE_HERE##
 
-const input = require('fs').readFileSync('/dev/stdin', 'utf8').trim().split('\\n').join(' ').split(' ');
+const input = require('fs').readFileSync('/dev/problems/${this.problemName.toLowerCase().replace(" ", "-")}/tests/inputs/##INPUT_FILE_INDEX##.txt', 'utf8').trim().split('\\n').join(' ').split(' ');
 ${inputReads}
 ${functionCall}
 ${outputWrite}
@@ -111,29 +118,51 @@ ${outputWrite}
     const inputReads = this.inputFields
       .map((field) => {
         if (field.type.startsWith("list<")) {
-          return `let size_${field.name}: usize = input.next().unwrap().parse().unwrap();\nlet ${field.name}: ${this.mapTypeToRust(field.type)} = input.take(size_${field.name}).map(|s| s.parse().unwrap()).collect();`;
+          return `let size_${field.name}: usize = lines.next().and_then(|line| line.parse().ok()).unwrap_or(0);\n\tlet ${field.name}: ${this.mapTypeToRust(field.type)} = parse_input(lines, size_${field.name});`;
         } else {
-          return `let ${field.name}: ${this.mapTypeToRust(field.type)} = input.next().unwrap().parse().unwrap();`;
+          return `let ${field.name}: ${this.mapTypeToRust(field.type)} = lines.next().unwrap().parse().unwrap();`;
         }
       })
       .join("\n  ");
+    const containsVector = this.inputFields.find((field) =>
+      field.type.startsWith("list<")
+    );
     const outputType = this.mapTypeToRust(this.outputFields[0].type);
     const functionCall = `let result = ${this.functionName}(${this.inputFields.map((field) => field.name).join(", ")});`;
     const outputWrite = `println!("{}", result);`;
 
-    return `
-use std::io::{self, BufRead};
+    return `use std::fs::read_to_string;
+use std::io::{self};
+use std::str::Lines;
 
 ##USER_CODE_HERE##
 
-fn main() {
-  let stdin = io::stdin();
-  let mut input = stdin.lock().lines().map(|l| l.unwrap());
+fn main() -> io::Result<()> {
+  let input = read_to_string("/dev/problems/${this.problemName.toLowerCase().replace(" ", "-")}/tests/inputs/##INPUT_FILE_INDEX##.txt")?;
+  let mut lines = input.lines();
   ${inputReads}
   ${functionCall}
   ${outputWrite}
+  Ok(())
+}${
+  containsVector
+    ? `\nfn parse_input(mut input: Lines, size_arr: usize) -> Vec<i32> {
+    let arr: Vec<i32> = input
+        .next()
+        .unwrap_or_default()
+        .split_whitespace()
+        .filter_map(|x| x.parse().ok())
+        .collect();
+
+    if size_arr == 0 {
+        Vec::new()
+    } else {
+        arr
+    }
+}`
+    : ""
 }
-    `;
+`;
   }
 
   mapTypeToCpp(type: string): string {
