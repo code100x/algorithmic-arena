@@ -7,7 +7,10 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
-import { getPoints } from "./points";
+import { createClient } from "redis";
+
+const redis = createClient();
+await redis.connect();
 
 const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
 
@@ -95,13 +98,15 @@ export async function POST(req: NextRequest) {
       code: submissionInput.data.code,
       activeContestId: submissionInput.data.activeContestId,
       testcases: {
-        connect: response.data
-      }
+        connect: response.data,
+      },
     },
     include: {
-      testcases: true
-    }
+      testcases: true,
+    },
   });
+
+  await redis.rPush("submission_queue", submission.id);
 
   return NextResponse.json(
     {
@@ -146,8 +151,8 @@ export async function GET(req: NextRequest) {
       id: submissionId,
     },
     include: {
-      testcases: true
-    }
+      testcases: true,
+    },
   });
 
   if (!submission) {
@@ -161,85 +166,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if (!submission.memory || !submission.time) {
-    const pendingTestcases = submission.testcases.filter(
-      (testcase) => testcase.status_id === 1 || testcase.status_id === 2
-    );
-    const failedTestcases = submission.testcases.filter(
-      (testcase) => testcase.status_id !== 3
-    );
-
-    if (pendingTestcases.length === 0) {
-      const accepted = failedTestcases.length === 0;
-      submission = await db.submission.update({
-        where: {
-          id: submissionId,
-          userId: session.user.id,
-        },
-        data: {
-          status: accepted ? "AC" : "REJECTED",
-          time: Math.max(
-            ...submission.testcases.map((testcase) => Number(testcase.time || "0"))
-          ),
-          memory: Math.max(
-            ...submission.testcases.map((testcase) => testcase.memory || 0)
-          ),
-        },
-        include: {
-          problem: true,
-          activeContest: true,
-          testcases: true
-        },
-      });
-    }
-  }
-
-  if (submission.activeContestId) {
-    var contestSubmission = await db.submission.findUnique({
-      where: {
-        id: submissionId,
-      },
-      include: {
-        activeContest: true,
-        problem: true,
-      },
-    });
-    if (
-      !contestSubmission ||
-      !contestSubmission.activeContestId ||
-      !contestSubmission.activeContest?.startTime
-    )
-      return;
-
-    const points = await getPoints(
-      contestSubmission.activeContestId,
-      contestSubmission.userId,
-      contestSubmission.problemId,
-      contestSubmission.problem.difficulty,
-      contestSubmission.activeContest?.startTime,
-      contestSubmission.activeContest?.endTime
-    );
-
-    await db.contestSubmission.upsert({
-      where: {
-        userId_problemId_contestId: {
-          contestId: submission.activeContestId,
-          userId: submission.userId,
-          problemId: submission.problemId,
-        },
-      },
-      create: {
-        submissionId: submission.id,
-        userId: submission.userId,
-        problemId: submission.problemId,
-        contestId: submission.activeContestId,
-        points,
-      },
-      update: {
-        points,
-      },
-    });
-  }
   // increase the solve count here, or asynchronously later
 
   return NextResponse.json(
