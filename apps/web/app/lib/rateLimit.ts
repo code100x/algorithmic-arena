@@ -1,8 +1,12 @@
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis(process.env.REDIS_URL || "");
 
-export async function rateLimit(userId: string, limit: number, duration: number): Promise<boolean> {
+export async function rateLimit(
+  userId: string,
+  limit: number,
+  duration: number
+): Promise<boolean> {
   const key = `rate_limit:${userId}`;
   const currentTime = Math.floor(Date.now() / 1000);
 
@@ -28,4 +32,3 @@ export async function rateLimit(userId: string, limit: number, duration: number)
     return false; // In case of any error, block the request to be safe
   }
 }
-
