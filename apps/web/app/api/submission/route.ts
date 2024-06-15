@@ -7,12 +7,12 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
-import { createClient } from "redis";
-
-const redis = createClient();
-await redis.connect();
 
 const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
+
+const SECRET_KEY = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!;
+const CLOUDFLARE_TURNSTILE_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -53,6 +53,27 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  let formData = new FormData();
+  formData.append("secret", SECRET_KEY);
+  formData.append("response", submissionInput.data.token);
+
+  const result = await fetch(CLOUDFLARE_TURNSTILE_URL, {
+    body: formData,
+    method: "POST",
+  });
+  const challengeSucceeded = (await result.json()).success;
+
+  if (!challengeSucceeded.success) {
+    return NextResponse.json(
+      {
+        message: "Invalid reCAPTCHA token",
+      },
+      {
+        status: 403,
+      }
+    );
+  }
+
   const dbProblem = await db.problem.findUnique({
     where: {
       id: submissionInput.data.problemId,
@@ -78,14 +99,15 @@ export async function POST(req: NextRequest) {
     "##USER_CODE_HERE##",
     submissionInput.data.code
   );
-
   const response = await axios.post(
     `${JUDGE0_URI}/submissions/batch?base64_encoded=false`,
     {
       submissions: problem.inputs.map((input, index) => ({
         language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.judge0,
-        source_code: problem.fullBoilerplateCode,
-        stdin: input,
+        source_code: problem.fullBoilerplateCode.replace(
+          "##INPUT_FILE_INDEX##",
+          index.toString()
+        ),
         expected_output: problem.outputs[index],
       })),
     }
@@ -105,8 +127,6 @@ export async function POST(req: NextRequest) {
       testcases: true,
     },
   });
-
-  await redis.rPush("submission_queue", submission.id);
 
   return NextResponse.json(
     {
