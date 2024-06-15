@@ -10,7 +10,6 @@ export default async function ProblemPage({
   };
 }) {
   const problem = await getProblem(problemId);
-
   if (!problem) {
     return <div>Problem not found</div>;
   }

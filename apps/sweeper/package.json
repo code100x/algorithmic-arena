@@ -11,6 +11,7 @@
     "build": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap",
     "start": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap && nodemon dist/index.js",
     "dev": "nodemon ./src/index.ts",
+    "docker": "nodemon ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

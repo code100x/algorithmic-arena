@@ -7,10 +7,6 @@ import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
-import { createClient } from "redis";
-
-const redis = createClient();
-await redis.connect();
 
 const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
 
@@ -103,14 +99,15 @@ export async function POST(req: NextRequest) {
     "##USER_CODE_HERE##",
     submissionInput.data.code
   );
-
   const response = await axios.post(
     `${JUDGE0_URI}/submissions/batch?base64_encoded=false`,
     {
       submissions: problem.inputs.map((input, index) => ({
         language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.judge0,
-        source_code: problem.fullBoilerplateCode,
-        stdin: input,
+        source_code: problem.fullBoilerplateCode.replace(
+          "##INPUT_FILE_INDEX##",
+          index.toString()
+        ),
         expected_output: problem.outputs[index],
       })),
     }
@@ -130,8 +127,6 @@ export async function POST(req: NextRequest) {
       testcases: true,
     },
   });
-
-  await redis.rPush("submission_queue", submission.id);
 
   return NextResponse.json(
     {
