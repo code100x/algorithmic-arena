@@ -18,6 +18,7 @@ import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
 import { submissions as SubmissionsType } from "@prisma/client";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
@@ -55,8 +56,7 @@ export const ProblemSubmitBar = ({
               defaultValue="problem"
               className="rounded-md p-1"
               value={activeTab}
-              onValueChange={setActiveTab}
-            >
+              onValueChange={setActiveTab}>
               <TabsList className="grid grid-cols-2 w-full">
                 <TabsTrigger value="problem">Submit</TabsTrigger>
                 <TabsTrigger value="submissions">Submissions</TabsTrigger>
@@ -106,6 +106,7 @@ function SubmitProblem({
   const [code, setCode] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
   const [testcases, setTestcases] = useState<any[]>([]);
+  const [token, setToken] = useState<string>("");
   const session = useSession();
 
   useEffect(() => {
@@ -157,6 +158,7 @@ function SubmitProblem({
         languageId: language,
         problemId: problem.id,
         activeContestId: contestId,
+        token: token,
       });
       pollWithBackoff(response.data.id, 10);
     } catch (e) {
@@ -172,8 +174,7 @@ function SubmitProblem({
       <Select
         value={language}
         defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}
-      >
+        onValueChange={(value) => setLanguage(value)}>
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
@@ -190,7 +191,7 @@ function SubmitProblem({
           height={"60vh"}
           value={code[language]}
           theme="vs-dark"
-          onMount={() => { }}
+          onMount={() => {}}
           options={{
             fontSize: 14,
             scrollBeyondLastLine: false,
@@ -204,12 +205,17 @@ function SubmitProblem({
         />
       </div>
       <div className="flex justify-end">
+        <Turnstile
+          onSuccess={(token: string) => {
+            setToken(token);
+          }}
+          siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+        />
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"
           className="mt-4 align-right"
-          onClick={session.data?.user ? submit : () => signIn()}
-        >
+          onClick={session.data?.user ? submit : () => signIn()}>
           {session.data?.user
             ? status === SubmitStatus.PENDING
               ? "Submitting"

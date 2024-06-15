@@ -5,4 +5,5 @@ export const SubmissionInput = z.object({
   languageId: z.enum(["js", "cpp", "rs"]),
   problemId: z.string(),
   activeContestId: z.string().optional(),
+  token: z.string(),
 });
