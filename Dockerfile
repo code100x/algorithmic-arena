@@ -18,4 +18,4 @@ EXPOSE 3000
 WORKDIR /usr/src/app
 
 # Command to start both services
-CMD ["yarn", "dev"]
+CMD ["yarn", "run", "dev:docker"]
