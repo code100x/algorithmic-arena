@@ -43,3 +43,53 @@ export const POST = async (req: NextRequest) => {
     { status: 202 }
   );
 };
+export const GET = async (req: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return NextResponse.json(
+      {
+        message: "You must be logged in to view submissions",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const url = new URL(req.url);
+  const searchParams = new URLSearchParams(url.search);
+  console.log("searchParams", searchParams);
+  const problemId = searchParams.get("problemId");
+  if (!problemId) {
+    return NextResponse.json(
+      {
+        message: "Invalid problem id",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+  const sols = await db.solution.findMany({
+    where: { problemId: problemId },
+    include: {
+      user: {
+        select: {
+          email: true,
+        },
+      },
+      language: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  return NextResponse.json(
+    {
+      data: sols,
+    },
+    {
+      status: 202,
+    }
+  );
+};

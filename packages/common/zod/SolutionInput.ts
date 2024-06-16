@@ -5,5 +5,5 @@ export const SolutionInput = z.object({
   explaination: z.string(),
   code: z.string(),
   problemId: z.string(),
-  languageId: z.string(),
+  languageId: z.number(),
 });

@@ -15,6 +15,7 @@ import SolutionDialog from "./SolutionDialog";
 import axios from "axios";
 import { revalidatePath } from "next/cache";
 const Solution = ({
+  id,
   title,
   explaination,
   code,
@@ -27,7 +28,7 @@ const Solution = ({
   const handleDelete = async () => {
     toast("Deleting the solution");
     try {
-      const res = await axios.delete(`/api/solution/:${23}`);
+      const res = await axios.delete(`/api/solution/${id}`);
       revalidatePath(`/solutions/:${problemId}`);
       toast.success("solution deleted successfully");
       router.push(`/solutions/:${problemId}`);
@@ -47,18 +48,32 @@ const Solution = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="flex flex-col items-start">
               <DropdownMenuItem>
-                <TrashIcon
-                  width={30}
-                  height={20}
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleDelete();
-                  }}
-                />
+                <p className="flex">
+                  {" "}
+                  Delete
+                  <TrashIcon
+                    width={30}
+                    height={20}
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete();
+                    }}
+                  />
+                </p>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <SolutionDialog type="update" />
+                <p className="flex">
+                  {" "}
+                  Copy
+                  <CopyIcon
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      navigator.clipboard.writeText(code);
+                      toast.success("copied");
+                    }}
+                  />{" "}
+                </p>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -84,15 +99,8 @@ const Solution = ({
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-start">
             <p className="text-gray-500 dark:text-gray-400 my-2">Code</p>
-            <CopyIcon
-              className="cursor-pointer"
-              onClick={(e) => {
-                navigator.clipboard.writeText(code);
-                toast.success("copied");
-              }}
-            />
           </div>
           <Editor
             height="500px"

@@ -6,7 +6,20 @@ import {
   CardFooter,
 } from "@repo/ui/card";
 import { PrimaryButton } from "./LinkButton";
-
+const formatDate = (timestamp: any) => {
+  const date = new Date(timestamp);
+  const options: any = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+    timeZone: "UTC",
+  };
+  return date.toLocaleString(options);
+};
 export const SolutionsCard = ({
   id,
   title,
@@ -14,31 +27,31 @@ export const SolutionsCard = ({
   createdAt,
   language,
 }: any) => {
-  const duration =
-    (new Date().getTime() - new Date(createdAt).getTime()) / (1000 * 60 * 60);
+  const time = formatDate(createdAt);
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>{title}</CardTitle>
-          <p className="text-gray-500 dark:text-gray-400">{language}</p>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-start gap-3">
-          <p className="text-gray-500 dark:text-gray-400">
-            created by ${email}
-          </p>
-          <p className="text-gray-500 dark:text-gray-400">
-            uploaded ${duration > 48 ? "long time" : duration} ago
-          </p>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <div className="flex items-center justify-end">
-          <PrimaryButton href={`/solution/:${id}`}>Show</PrimaryButton>
-        </div>
-      </CardFooter>
-    </Card>
+    <div className="w-full">
+      <Card className="w-full">
+        <CardHeader>
+          <div>
+            <CardTitle>{title} </CardTitle>
+            <p className="text-gray-500 dark:text-gray-400">
+              created by {email}
+            </p>
+            <p className="text-gray-500 dark:text-gray-400">{language}</p>
+          </div>
+        </CardHeader>
+        <CardContent className="w-full">
+          <div className="flex items-center justify-start gap-3"></div>
+        </CardContent>
+        <CardFooter>
+          <div className="flex items-center justify-end gap-10">
+            <PrimaryButton href={`/solution/${id}`}>Show</PrimaryButton>
+            <p className="text-gray-500 dark:text-gray-400">
+              uploaded on {time}
+            </p>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };

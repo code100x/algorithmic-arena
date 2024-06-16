@@ -11,45 +11,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@repo/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@repo/ui/dropdown";
 import { useEffect, useState } from "react";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
 import { toast } from "react-toastify";
 
-interface propss {
-  type: string;
-  title: string;
-  explaination: string;
-  code: string;
-  problemId: string;
-  languageId: any;
-}
-const SolutionForm = ({ type, problem }: any) => {
-  const [submission, setSubmissions] = useState<any[]>([]);
+const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
   const [title, setTitle] = useState("");
   const [explaination, setExplaintation] = useState("");
-  const [subId, setSubId] = useState(null);
+  const [languageIds, setLanguageIds] = useState([]);
   const [language, setLanguage] = useState(
     Object.keys(LANGUAGE_MAPPING)[0] as string
   );
   const [code, setCode] = useState<Record<string, string>>({});
   const handleClick = async () => {
+    const languageId: any[] = languageIds.filter((ele: any) => {
+      if (ele.name == language) {
+        return true;
+      }
+    });
+    if (!languageId) {
+      return;
+    }
     const body = {
       title,
       explaination,
-      problemId: "",
-      languageId: "",
+      problemId: problem.id,
+      languageId: languageId[0].id,
       code: code[language],
     };
+    console.log("body", body);
     const result = SolutionInput.safeParse(body);
     if (!result.success) {
       toast.error("fill all the fileds before submitting");
@@ -67,6 +59,17 @@ const SolutionForm = ({ type, problem }: any) => {
     }
   };
   useEffect(() => {
+    const fetchLanguageId = async () => {
+      try {
+        const res = await axios.get("/api/language");
+        setLanguageIds(res.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchLanguageId();
+  }, []);
+  useEffect(() => {
     const defaultCode: { [key: string]: string } = {};
     problem.defaultCode.forEach((code: any) => {
       const language = Object.keys(LANGUAGE_MAPPING).find(
@@ -78,25 +81,9 @@ const SolutionForm = ({ type, problem }: any) => {
     setCode(defaultCode);
   }, []);
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(`/api/submission/bulk?problemId=${""}`);
-      setSubmissions(response.data.submissions || []);
-    };
-    //fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get("api/sbumission/:${subId}");
-      setCode({
-        ...code,
-        [response.data.submission.language]: response.data.submission.code,
-      });
-      setLanguage(response.data.submission.language);
-    };
-    if (subId) {
-      fetchData();
-    }
-  }, [subId]);
+    setLanguage(subLang);
+    setCode({ ...code, [language]: subCode });
+  });
   return (
     <div className="my-2">
       <form className="flex flex-col gap-3">
@@ -124,28 +111,6 @@ const SolutionForm = ({ type, problem }: any) => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger>Select Submission</DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Select a submission id</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {submission.map((sub) => {
-                  if (sub.status == "AC") {
-                    return (
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSubId(sub.id);
-                        }}
-                      >
-                        {sub.id.subset(0, 8)}
-                      </DropdownMenuItem>
-                    );
-                  }
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
           <label>Code</label>
           <Label htmlFor="language">Language</Label>
           <Select
@@ -186,11 +151,11 @@ const SolutionForm = ({ type, problem }: any) => {
         <div className="flex items-center justify-end">
           <Button
             variant={"default"}
+            className="bg-green-600 w-1/4"
             onClick={(e) => {
               e.preventDefault();
               handleClick();
             }}
-            className="w-1/4"
           >
             {type == "update" ? "Update" : "Add"}
           </Button>

@@ -17,8 +17,10 @@ import { ISubmission, SubmissionTable } from "./SubmissionTable";
 import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
+import { submissions as SubmissionsType } from "@prisma/client";
+import { Turnstile } from "@marsidev/react-turnstile";
 import SolutionDialog from "./SolutionDialog";
-//import { submissions as SubmissionsType } from "@prisma/client";
+import { SolutionsCard } from "./SolutionsCard";
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
   PENDING = "PENDING",
@@ -49,7 +51,7 @@ export const ProblemSubmitBar = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
       <div className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div>
           <div>
             <Tabs
               defaultValue="problem"
@@ -57,9 +59,10 @@ export const ProblemSubmitBar = ({
               value={activeTab}
               onValueChange={setActiveTab}
             >
-              <TabsList className="grid grid-cols-2 w-full">
+              <TabsList className="grid grid-cols-3 gap-3 w-full">
                 <TabsTrigger value="problem">Submit</TabsTrigger>
                 <TabsTrigger value="submissions">Submissions</TabsTrigger>
+                <TabsTrigger value="solutions">Solutions</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -68,11 +71,51 @@ export const ProblemSubmitBar = ({
           <SubmitProblem problem={problem} contestId={contestId} />
         </div>
         {activeTab === "submissions" && <Submissions problem={problem} />}
+        {activeTab === "solutions" && <Solutions problem={problem} />}
       </div>
     </div>
   );
 };
-
+function Solutions({ problem }: { problem: IProblem }) {
+  const [sols, setSols] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/api/solution?problemId=${problem.id}`);
+        console.log(res.data.data);
+        setSols(res.data.data);
+      } catch (err) {
+        toast.error("something went wrong while getting solution");
+      }
+    };
+    fetchData();
+  }, []);
+  return (
+    <div className="w-full">
+      {sols.length == 0 && (
+        <div className="flex justify-center items-center min-h-[100%]">
+          <p>No Added Solutions</p>
+        </div>
+      )}
+      <div className=" mx-3 my-1  ">
+        {sols.map((ele: any) => {
+          return (
+            <div key={ele.id} className="w-full">
+              <SolutionsCard
+                title={ele.title}
+                id={ele.id}
+                email={ele.user.email}
+                createdAt={ele.createdAt}
+                language={ele.language.name}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function Submissions({ problem }: { problem: IProblem }) {
   const [submissions, setSubmissions] = useState<ISubmission[]>([]);
 
@@ -106,6 +149,7 @@ function SubmitProblem({
   const [code, setCode] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
   const [testcases, setTestcases] = useState<any[]>([]);
+  const [token, setToken] = useState<string>("");
   const session = useSession();
 
   useEffect(() => {
@@ -151,13 +195,20 @@ function SubmitProblem({
   async function submit() {
     setStatus(SubmitStatus.PENDING);
     setTestcases((t) => t.map((tc) => ({ ...tc, status: "PENDING" })));
-    const response = await axios.post(`/api/submission/`, {
-      code: code[language],
-      languageId: language,
-      problemId: problem.id,
-      activeContestId: contestId,
-    });
-    pollWithBackoff(response.data.id, 10);
+    try {
+      const response = await axios.post(`/api/submission/`, {
+        code: code[language],
+        languageId: language,
+        problemId: problem.id,
+        activeContestId: contestId,
+        token: token,
+      });
+      pollWithBackoff(response.data.id, 10);
+    } catch (e) {
+      //@ts-ignore
+      toast.error(e.response.statusText);
+      setStatus(SubmitStatus.SUBMIT);
+    }
   }
 
   return (
@@ -165,8 +216,8 @@ function SubmitProblem({
       <Label htmlFor="language">Language</Label>
       <Select
         value={language}
-        defaultValue="javascript"
-        onValueChange={(value: any) => setLanguage(value)}
+        defaultValue="cpp"
+        onValueChange={(value) => setLanguage(value)}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
@@ -197,7 +248,13 @@ function SubmitProblem({
           defaultLanguage="javascript"
         />
       </div>
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-3 items-center">
+        <Turnstile
+          onSuccess={(token: string) => {
+            setToken(token);
+          }}
+          siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+        />
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"
@@ -210,9 +267,15 @@ function SubmitProblem({
               : "Submit"
             : "Login to submit"}
         </Button>
-        {session.data?.user && status == "AC" ? (
-          <SolutionDialog type="add" problem />
-        ) : null}
+
+        {session.data?.user && status === "ACCEPTED" && (
+          <SolutionDialog
+            type="add"
+            problem={problem}
+            code={code[language]}
+            language={language}
+          />
+        )}
       </div>
       <RenderTestcase testcases={testcases} />
     </div>

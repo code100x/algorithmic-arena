@@ -12,6 +12,8 @@ import {
   TableCell,
 } from "@repo/ui/table";
 import { CheckIcon, ClockIcon, CircleX } from "lucide-react";
+import SolutionDialog from "./SolutionDialog";
+// import { getProblem } from "../app/lib/problems";
 export interface ISubmission {
   id: string;
   time: string;
@@ -80,6 +82,7 @@ export function SubmissionTable({
             <TableHead>Tests Passed</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Memory</TableHead>
+            <TableHead>Add to solutons</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -92,13 +95,16 @@ export function SubmissionTable({
               <TableCell>
                 {
                   submission.testcases.filter(
-                    (testcase) => testcase.status === "AC",
+                    (testcase) => testcase.status === "AC"
                   ).length
                 }
                 /{submission.testcases.length}
               </TableCell>
               <TableCell>{submission.time}</TableCell>
               <TableCell>{submission.memory}</TableCell>
+              <TableCell>
+                {submission.status == "AC" ? "YES" : "NILL"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

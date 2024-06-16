@@ -22,23 +22,33 @@ export const getSolutions = async (id: string) => {
 };
 
 export const getSolution = async (id: string) => {
-  const solution = await db.solution.findFirst({
-    where: {
-      id: id,
-    },
-    include: {
-      user: {
-        select: {
-          email: true,
+  try {
+    const solution = await db.solution.findFirst({
+      where: {
+        id: id,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
+        problem: {
+          select: {
+            title: true,
+            defaultCode: true,
+          },
+        },
+        language: {
+          select: {
+            name: true,
+          },
         },
       },
-      problem: {
-        select: {
-          title: true,
-          defaultCode: true,
-        },
-      },
-    },
-  });
-  return solution;
+    });
+    console.log("solution", solution);
+    return solution;
+  } catch (err) {
+    console.log(err);
+  }
 };

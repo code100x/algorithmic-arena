@@ -14,7 +14,8 @@ RUN cd packages/db && npx prisma generate
 
 # Expose ports for both applications
 EXPOSE 3000
-EXPOSE 3001 
+
+WORKDIR /usr/src/app
 
 # Command to start both services
 CMD ["yarn", "run", "dev:docker"]

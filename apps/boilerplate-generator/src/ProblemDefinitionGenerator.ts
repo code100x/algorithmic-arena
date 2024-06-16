@@ -49,7 +49,7 @@ export class ProblemDefinitionParser {
 
   generateCpp(): string {
     const inputs = this.inputFields
-      .map((field) => `${field.type} ${field.name}`)
+      .map((field) => `${this.mapTypeToCpp(field.type)} ${field.name}`)
       .join(", ");
     return `${this.outputFields[0].type} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
   }
@@ -85,6 +85,29 @@ export class ProblemDefinitionParser {
         return "Vec<String>";
       case "list<bool>":
         return "Vec<bool>";
+      default:
+        return "unknown";
+    }
+  }
+
+  mapTypeToCpp(type: string): string {
+    switch (type) {
+      case "int":
+        return "int";
+      case "float":
+        return "float";
+      case "string":
+        return "std::string";
+      case "bool":
+        return "bool";
+      case "list<int>":
+        return "std::vector<int>";
+      case "list<float>":
+        return "std::vector<float>";
+      case "list<string>":
+        return "std::vector<std::string>";
+      case "list<bool>":
+        return "std::vector<bool>";
       default:
         return "unknown";
     }

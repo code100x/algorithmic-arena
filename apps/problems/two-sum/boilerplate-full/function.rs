@@ -1,14 +1,15 @@
-
-use std::io::{self, BufRead};
+use std::fs::read_to_string;
+use std::io::{self};
+use std::str::Lines;
 
 ##USER_CODE_HERE##
 
-fn main() {
-  let stdin = io::stdin();
-  let mut input = stdin.lock().lines().map(|l| l.unwrap());
-  let num1: i32 = input.next().unwrap().parse().unwrap();
-  let num2: i32 = input.next().unwrap().parse().unwrap();
+fn main() -> io::Result<()> {
+  let input = read_to_string("/dev/problems/two-sum/tests/inputs/##INPUT_FILE_INDEX##.txt")?;
+  let mut lines = input.lines();
+  let num1: i32 = lines.next().unwrap().parse().unwrap();
+  let num2: i32 = lines.next().unwrap().parse().unwrap();
   let result = sum(num1, num2);
   println!("{}", result);
+  Ok(())
 }
-    
