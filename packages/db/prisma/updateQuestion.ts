@@ -1,6 +1,6 @@
+import prismaClient from "../src";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import fs from "fs";
-import { prismaClient } from "../src";
 
 const MOUNT_PATH = process.env.MOUNT_PATH ?? "../../apps/problems";
 function promisifedReadFile(path: string): Promise<string> {
@@ -39,6 +39,20 @@ async function main(problemSlug: string, problemTitle: string) {
       const code = await promisifedReadFile(
         `${MOUNT_PATH}/${problemSlug}/boilerplate/function.${language}`
       );
+
+      const languageExists = await prismaClient.language.findUnique({
+        where: {
+          id: LANGUAGE_MAPPING[language].internal,
+        },
+      });
+
+      if (!languageExists) {
+        console.error(
+          `Language with id ${LANGUAGE_MAPPING[language].internal} does not exist.`
+        );
+        return;
+      }
+
       await prismaClient.defaultCode.upsert({
         where: {
           problemId_languageId: {
