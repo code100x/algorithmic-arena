@@ -1,0 +1,233 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: algo-100xdevs
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs-app
+  namespace: algo-100xdevs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nextjs-app
+  template:
+    metadata:
+      labels:
+        app: nextjs-app
+    spec:
+      containers:
+      - name: nextjs-app
+        image: nextjs-app-image:latest
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-app-service
+  namespace: algo-100xdevs
+spec:
+  type: ClusterIP
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-api
+  namespace: algo-100xdevs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: judge0-api
+  template:
+    metadata:
+      labels:
+        app: judge0-api
+    spec:
+      containers:
+      - name: judge0-api
+        image: judge0-api-image:latest
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: judge0-api-service
+  namespace: algo-100xdevs
+spec:
+  type: ClusterIP
+  selector:
+    app: judge0-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: algo-100xdevs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: algo-100xdevs
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: algo-100xdevs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-storage
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: algo-100xdevs
+spec:
+  type: ClusterIP
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge0-worker
+  namespace: algo-100xdevs
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: judge0-worker
+  template:
+    metadata:
+      labels:
+        app: judge0-worker
+    spec:
+      containers:
+      - name: judge0-worker
+        image: judge0-worker-image:latest
+        env:
+        - name: JUDGE0_API_URL
+          value: "http://judge0-api-service.algo-100xdevs.svc.cluster.local"
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: judge0-worker-hpa
+  namespace: algo-100xdevs
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: judge0-worker
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loadbalancer
+  namespace: algo-100xdevs
+spec:
+  type: LoadBalancer
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
