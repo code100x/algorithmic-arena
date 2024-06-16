@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { db } from ".";
+import db from "@repo/db/client";
 import { authOptions } from "../lib/auth";
 
 export const getContest = async (contestId: string) => {

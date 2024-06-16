@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+  app:
+    image: 100xvevs/algo-arena:latest
+    container_name: algo-arena
+    environment:
+      - NEXTAUTH_URL=
+      - NEXTAUTH_SECRET=
+      # - NEXTAUTH_URL_INTERNAL=
+      - DATABASE_URL=
+      - REDIS_URL=
+      - JUDGE0_URI=
+      - MOUNT_PATH=/problems
+      - NODE_ENV=production
+      - PORT=443
+    ports:
+      - '443:443'  # Next.js app
+    volumes:
+      - ~/algorithmic-arena/apps/problems/:/problems

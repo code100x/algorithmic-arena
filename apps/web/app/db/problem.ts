@@ -1,4 +1,4 @@
-import { db } from ".";
+import db from "@repo/db/client";
 
 export const getProblem = async (problemId: string, contestId?: string) => {
   if (contestId) {

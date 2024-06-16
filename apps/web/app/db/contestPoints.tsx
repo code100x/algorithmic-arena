@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
-import { db } from "./index";
+import db from "@repo/db/client";
 
 export const getContestPoints = async (
   contestId: string,
