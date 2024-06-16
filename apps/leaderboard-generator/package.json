@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "leaderboard:create": "CONTEST_ID=clx19tibu00054lu9fpb3c3zx ts-node src/index.ts"
+    "build": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap",
+    "leaderboard:create": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@repo/db": "*",
+    "esbuild": "^0.21.5"
   },
   "keywords": [],
   "author": "",

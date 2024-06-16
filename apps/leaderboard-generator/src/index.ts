@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "@repo/db/src";
 
 async function main(contestId: string) {
   const userPoints = new Map<string, number>();
@@ -16,7 +15,7 @@ async function main(contestId: string) {
     if (userPoints.has(submission.userId)) {
       userPoints.set(
         submission.userId,
-        userPoints.get(submission.userId)! + submission.points,
+        userPoints.get(submission.userId)! + submission.points
       );
     } else {
       userPoints.set(submission.userId, submission.points);
@@ -24,7 +23,7 @@ async function main(contestId: string) {
   });
 
   const sortedUserPoints = Array.from(userPoints.entries()).sort(
-    (a, b) => b[1] - a[1],
+    (a, b) => b[1] - a[1]
   );
 
   // clean existing leaderboard

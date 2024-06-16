@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   app:
-    image: 100xvevs/algo-arena:latest
+    image: 100xdevs/algo-arena:latest
     container_name: algo-arena
     environment:
       - NEXTAUTH_URL=
