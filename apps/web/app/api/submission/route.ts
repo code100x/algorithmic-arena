@@ -10,6 +10,10 @@ import { rateLimit } from "../../lib/rateLimit";
 
 const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
 
+const SECRET_KEY = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!;
+const CLOUDFLARE_TURNSTILE_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -45,6 +49,27 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 400,
+      }
+    );
+  }
+
+  let formData = new FormData();
+  formData.append("secret", SECRET_KEY);
+  formData.append("response", submissionInput.data.token);
+
+  const result = await fetch(CLOUDFLARE_TURNSTILE_URL, {
+    body: formData,
+    method: "POST",
+  });
+  const challengeSucceeded = (await result.json()).success;
+
+  if (!challengeSucceeded.success) {
+    return NextResponse.json(
+      {
+        message: "Invalid reCAPTCHA token",
+      },
+      {
+        status: 403,
       }
     );
   }
