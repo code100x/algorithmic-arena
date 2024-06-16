@@ -27,6 +27,7 @@ const page = async ({ params }: { params: { id: string } }) => {
           problemId={data.problemId}
           language={data.language.name}
           code={data.code}
+          id={data.id}
         />
       )}
     </div>

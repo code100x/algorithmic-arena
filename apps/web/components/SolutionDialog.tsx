@@ -1,3 +1,4 @@
+"use client";
 import SolutionForm from "./SolutionForm";
 import { Button } from "@repo/ui/button";
 import {
@@ -9,9 +10,11 @@ import {
   DialogTrigger,
 } from "@repo/ui/dialog";
 import { Pencil } from "lucide-react";
+import { useState } from "react";
 const SolutionDialog = ({ type, problem, code, language }: any) => {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="">
         {type == "add" ? (
           <Button className="bg-green-600 mt-4 align-right" variant={"default"}>
@@ -23,7 +26,7 @@ const SolutionDialog = ({ type, problem, code, language }: any) => {
       </DialogTrigger>
       <DialogContent className="overflow-hidden overflow-y-auto h-[90dvh]">
         <DialogHeader>
-          <DialogTitle>Solution</DialogTitle>
+          <DialogTitle>{type == "add" ? "Add" : "Update"} Solution</DialogTitle>
         </DialogHeader>
         <DialogDescription>
           <SolutionForm
@@ -31,6 +34,7 @@ const SolutionDialog = ({ type, problem, code, language }: any) => {
             problem={problem}
             subCode={code}
             subLang={language}
+            setOpen={setOpen}
           />
         </DialogDescription>
       </DialogContent>

@@ -11,9 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown";
-import SolutionDialog from "./SolutionDialog";
 import axios from "axios";
-import { revalidatePath } from "next/cache";
+import { useState } from "react";
 const Solution = ({
   id,
   title,
@@ -24,14 +23,17 @@ const Solution = ({
   problem,
   problemId,
 }: any) => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const handleDelete = async () => {
     toast("Deleting the solution");
     try {
+      console.log(id);
       const res = await axios.delete(`/api/solution/${id}`);
-      revalidatePath(`/solutions/:${problemId}`);
+      console.log(res.data);
       toast.success("solution deleted successfully");
-      router.push(`/solutions/:${problemId}`);
+      setOpen(false);
+      router.back();
     } catch (err) {
       console.log(err);
       toast.error("something went wrong on deleting solution");
@@ -42,37 +44,39 @@ const Solution = ({
       <div className="border border-gray-400 px-4 py-2 rounded-xl">
         <div className="flex justify-between my-2">
           <p className="font-[20px] text-2xl text-center ">Solution</p>
-          <DropdownMenu>
+          <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger>
               <EllipsisVertical />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="flex flex-col items-start">
-              <DropdownMenuItem>
-                <p className="flex">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDelete();
+                }}
+                className="cursor-pointer"
+              >
+                <p className="flex gap-3">
                   {" "}
-                  Delete
+                  delete
                   <TrashIcon
                     width={30}
                     height={20}
                     className="cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleDelete();
-                    }}
                   />
                 </p>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <p className="flex">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  navigator.clipboard.writeText(code);
+                  toast.success("copied");
+                }}
+                className="cursor-pointer"
+              >
+                <p className="flex gap-3">
                   {" "}
-                  Copy
-                  <CopyIcon
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      navigator.clipboard.writeText(code);
-                      toast.success("copied");
-                    }}
-                  />{" "}
+                  copy code
+                  <CopyIcon className="cursor-pointer" />{" "}
                 </p>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -83,7 +87,7 @@ const Solution = ({
             <span className="text-gray-500 dark:text-gray-400">Problem</span>{" "}
             {problem}
           </p>
-          <PrimaryButton href={`/problem/:${problemId}`}>
+          <PrimaryButton href={`/problem/${problemId}`}>
             Solve yourself
           </PrimaryButton>
         </div>
@@ -114,7 +118,6 @@ const Solution = ({
               minimap: { enabled: false },
               automaticLayout: true,
               scrollBeyondLastLine: false,
-              renderIndentGuides: true,
             }}
           />
         </div>

@@ -17,13 +17,11 @@ import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
 import { toast } from "react-toastify";
 
-const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
+const SolutionForm = ({ type, problem, subCode, subLang, setOpen }: any) => {
   const [title, setTitle] = useState("");
   const [explaination, setExplaintation] = useState("");
   const [languageIds, setLanguageIds] = useState([]);
-  const [language, setLanguage] = useState(
-    Object.keys(LANGUAGE_MAPPING)[0] as string
-  );
+  const [language, setLanguage] = useState(subLang);
   const [code, setCode] = useState<Record<string, string>>({});
   const handleClick = async () => {
     const languageId: any[] = languageIds.filter((ele: any) => {
@@ -51,6 +49,7 @@ const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
       if (type == "add") {
         const res = await axios.post("/api/solution", body);
         toast.success("solution added successfully");
+        setOpen(false);
       } else {
       }
     } catch (err) {
@@ -78,12 +77,9 @@ const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
       if (!language) return;
       defaultCode[language] = code.code;
     });
+    defaultCode[language] = subCode;
     setCode(defaultCode);
   }, []);
-  useEffect(() => {
-    setLanguage(subLang);
-    setCode({ ...code, [language]: subCode });
-  });
   return (
     <div className="my-2">
       <form className="flex flex-col gap-3">
@@ -111,11 +107,10 @@ const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <label>Code</label>
           <Label htmlFor="language">Language</Label>
           <Select
             value={language}
-            defaultValue="cpp"
+            defaultValue={language}
             onValueChange={(value) => setLanguage(value)}
           >
             <SelectTrigger>
@@ -129,6 +124,7 @@ const SolutionForm = ({ type, problem, subCode, subLang }: any) => {
               ))}
             </SelectContent>
           </Select>
+          <label>Code</label>
           <div className="pt-4 rounded-md">
             <Editor
               height={"60vh"}

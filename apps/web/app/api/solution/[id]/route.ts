@@ -15,8 +15,8 @@ export const DELETE = async (req: NextRequest) => {
     );
   }
   const url = new URL(req.url);
-  const searchParams = new URLSearchParams(url.search);
-  const id = searchParams.get("id");
+  const id = url.pathname.split("/").pop();
+
   if (!id) {
     return NextResponse.json(
       {
@@ -27,17 +27,30 @@ export const DELETE = async (req: NextRequest) => {
       }
     );
   }
-  const del = await db.solution.delete({
-    where: { id: id },
-  });
-  return NextResponse.json(
-    {
-      message: "solution deleted successfully",
-    },
-    {
-      status: 202,
-    }
-  );
+  try {
+    const del = await db.solution.delete({
+      where: { id: id },
+    });
+    console.log(del);
+    return NextResponse.json(
+      {
+        message: "solution deleted successfully",
+      },
+      {
+        status: 202,
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      {
+        message: "something went wrong",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 };
 
 export const PUT = async (req: NextRequest) => {

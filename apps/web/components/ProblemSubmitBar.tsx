@@ -50,7 +50,7 @@ export const ProblemSubmitBar = ({
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-      <div className="grid gap-4">
+      <div className="grid gap-2">
         <div>
           <div>
             <Tabs
@@ -81,16 +81,26 @@ function Solutions({ problem }: { problem: IProblem }) {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const res = await axios.get(`/api/solution?problemId=${problem.id}`);
         console.log(res.data.data);
         setSols(res.data.data);
+        setLoading(false);
       } catch (err) {
         toast.error("something went wrong while getting solution");
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
+  if (loading) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
   return (
     <div className="w-full">
       {sols.length == 0 && (
