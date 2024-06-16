@@ -84,19 +84,16 @@ model Submission {
   id              String           @id @default(cuid())
   problemId       String
   userId          String
-  languageId      Int
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
   code            String
-  fullCode        String
   activeContestId String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime?        @updatedAt
   status          SubmissionResult @default(PENDING)
-  testcases       TestCase[]
   memory          Int?
   time            Float?
+  testcases       submissions[]
   activeContest   Contest?         @relation(fields: [activeContestId], references: [id])
   user            User             @relation(fields: [userId], references: [id])
-  language        Language         @relation(fields: [languageId], references: [id])
   problem         Problem          @relation(fields: [problemId], references: [id])
 }
 
@@ -106,21 +103,7 @@ model Language {
   judge0Id    Int           @unique
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  Submission  Submission[]
   DefaultCode DefaultCode[]
-}
-
-model TestCase {
-  id               String         @id @default(cuid())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  status           TestCaseResult @default(PENDING)
-  index            Int
-  submission       Submission     @relation(fields: [submissionId], references: [id])
-  submissionId     String
-  memory           Int?
-  time             Float?
-  judge0TrackingId String         @unique
 }
 
 model ContestSubmission {
@@ -163,4 +146,69 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+}
+
+model ar_internal_metadata {
+  key        String   @id @db.VarChar
+  value      String?  @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+}
+
+model clients {
+  id String @id @db.VarChar
+}
+
+model languages {
+  id          Int      @id @default(autoincrement())
+  name        String?  @db.VarChar
+  compile_cmd String?  @db.VarChar
+  run_cmd     String?  @db.VarChar
+  source_file String?  @db.VarChar
+  is_archived Boolean? @default(false)
+}
+
+model schema_migrations {
+  version String @id @db.VarChar
+}
+
+model submissions {
+  id                                         Int         @id @default(autoincrement())
+  source_code                                String?
+  language_id                                Int?
+  stdin                                      String?
+  expected_output                            String?
+  stdout                                     String?
+  status_id                                  Int?
+  created_at                                 DateTime?   @db.Timestamp(6)
+  finished_at                                DateTime?   @db.Timestamp(6)
+  time                                       Decimal?    @db.Decimal
+  memory                                     Int?
+  stderr                                     String?
+  token                                      String?     @unique @db.VarChar
+  number_of_runs                             Int?
+  cpu_time_limit                             Decimal?    @db.Decimal
+  cpu_extra_time                             Decimal?    @db.Decimal
+  wall_time_limit                            Decimal?    @db.Decimal
+  memory_limit                               Int?
+  stack_limit                                Int?
+  max_processes_and_or_threads               Int?
+  enable_per_process_and_thread_time_limit   Boolean?
+  enable_per_process_and_thread_memory_limit Boolean?
+  max_file_size                              Int?
+  compile_output                             String?
+  exit_code                                  Int?
+  exit_signal                                Int?
+  message                                    String?
+  wall_time                                  Decimal?    @db.Decimal
+  compiler_options                           String?     @db.VarChar
+  command_line_arguments                     String?     @db.VarChar
+  redirect_stderr_to_stdout                  Boolean?
+  callback_url                               String?     @db.VarChar
+  additional_files                           Bytes?
+  enable_network                             Boolean?
+  Submission                                 Submission? @relation(fields: [submissionId], references: [id])
+  submissionId                               String?
+
+  @@index([token], map: "index_submissions_on_token")
 }
