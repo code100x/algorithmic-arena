@@ -51,7 +51,7 @@ export const ProblemSubmitBar = ({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
       <div className="grid gap-2">
-        <div>
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <Tabs
               defaultValue="problem"
@@ -59,7 +59,7 @@ export const ProblemSubmitBar = ({
               value={activeTab}
               onValueChange={setActiveTab}
             >
-              <TabsList className="grid grid-cols-3 gap-3 w-full">
+              <TabsList className="grid grid-cols-3 w-full">
                 <TabsTrigger value="problem">Submit</TabsTrigger>
                 <TabsTrigger value="submissions">Submissions</TabsTrigger>
                 <TabsTrigger value="solutions">Solutions</TabsTrigger>

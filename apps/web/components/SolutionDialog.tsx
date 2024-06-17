@@ -1,6 +1,7 @@
 "use client";
 import SolutionForm from "./SolutionForm";
 import { Button } from "@repo/ui/button";
+
 import {
   Dialog,
   DialogContent,
@@ -24,7 +25,7 @@ const SolutionDialog = ({ type, problem, code, language }: any) => {
           <Pencil width={30} height={20} />
         )}
       </DialogTrigger>
-      <DialogContent className="overflow-hidden overflow-y-auto h-[90dvh]">
+      <DialogContent className="overflow-hidden overflow-y-auto overflow-x-auto  h-[90dvh] max-w-5xl">
         <DialogHeader>
           <DialogTitle>{type == "add" ? "Add" : "Update"} Solution</DialogTitle>
         </DialogHeader>

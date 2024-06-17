@@ -13,7 +13,8 @@
     "./tabs": "./src/@/components/ui/tabs.tsx",
     "./dropdown": "./src/@/components/ui/dropdown-menu.tsx",
     "./input": "./src/@/components/ui/input.tsx",
-    "./dialog": "./src/@/components/ui/dialog.tsx"
+    "./dialog": "./src/@/components/ui/dialog.tsx",
+    "./popover": "./src/@components/ui/dialog.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -35,6 +36,7 @@
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-tabs": "^1.0.4"
   }

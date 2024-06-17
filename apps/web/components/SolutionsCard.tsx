@@ -29,8 +29,8 @@ export const SolutionsCard = ({
 }: any) => {
   const time = formatDate(createdAt);
   return (
-    <div className="w-full">
-      <Card className="w-full">
+    <div>
+      <Card>
         <CardHeader>
           <div>
             <CardTitle>{title} </CardTitle>
@@ -44,7 +44,7 @@ export const SolutionsCard = ({
           <div className="flex items-center justify-start gap-3"></div>
         </CardContent>
         <CardFooter>
-          <div className="flex items-center justify-end gap-10">
+          <div className="flex items-center justify-between gap-10 w-full">
             <PrimaryButton href={`/solution/${id}`}>Show</PrimaryButton>
             <p className="text-gray-500 dark:text-gray-400">
               uploaded on {time}

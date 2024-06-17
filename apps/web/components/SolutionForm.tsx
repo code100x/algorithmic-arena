@@ -3,7 +3,7 @@ import { SolutionInput } from "@repo/common/zod";
 import { Input } from "@repo/ui/input";
 import Editor from "@monaco-editor/react";
 import axios from "axios";
-import { Textarea } from "@repo/ui/textarea";
+import ReactMarkdown from "react-markdown";
 import {
   Select,
   SelectContent,
@@ -16,10 +16,16 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { Button } from "@repo/ui/button";
 import { Label } from "@repo/ui/label";
 import { toast } from "react-toastify";
+import MarkdownIt from "markdown-it";
+import MarkdownEditor from "react-markdown-editor-lite";
+import "react-markdown-editor-lite/lib/index.css";
 
 const SolutionForm = ({ type, problem, subCode, subLang, setOpen }: any) => {
+  const mdParser = new MarkdownIt(/* Markdown-it options */);
   const [title, setTitle] = useState("");
-  const [explaination, setExplaintation] = useState("");
+  const [explaination, setExplaintation] = useState(
+    `## Intution:\n ## Approch:\n ## Time complexity:\n## spaceComplexity:`
+  );
   const [languageIds, setLanguageIds] = useState([]);
   const [language, setLanguage] = useState(subLang);
   const [code, setCode] = useState<Record<string, string>>({});
@@ -80,8 +86,13 @@ const SolutionForm = ({ type, problem, subCode, subLang, setOpen }: any) => {
     defaultCode[language] = subCode;
     setCode(defaultCode);
   }, []);
+  function handleEditorChange({ html, text }: any) {
+    console.log(html, text);
+    console.log("handleEditorChange", html, text);
+    setExplaintation(text);
+  }
   return (
-    <div className="my-2">
+    <div className="my-2 mx-2">
       <form className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">
           <label>Title</label>
@@ -95,15 +106,13 @@ const SolutionForm = ({ type, problem, subCode, subLang, setOpen }: any) => {
             }}
           />
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 px-2">
           <label>Explaination</label>
-          <Textarea
-            placeholder="Simply use sort build-in function."
-            className="h-[150px]"
+          <MarkdownEditor
             value={explaination}
-            onChange={(e) => {
-              setExplaintation(e.target.value);
-            }}
+            style={{ height: "500px" }}
+            renderHTML={(code) => mdParser.render(code)}
+            onChange={handleEditorChange}
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -146,6 +155,7 @@ const SolutionForm = ({ type, problem, subCode, subLang, setOpen }: any) => {
         </div>
         <div className="flex items-center justify-end">
           <Button
+            disabled={title.length == 0}
             variant={"default"}
             className="bg-green-600 w-1/4"
             onClick={(e) => {
