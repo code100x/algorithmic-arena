@@ -12,6 +12,7 @@ import {
   TableCell,
 } from "@repo/ui/table";
 import { CheckIcon, ClockIcon, CircleX } from "lucide-react";
+// import { getProblem } from "../app/lib/problems";
 export interface ISubmission {
   id: string;
   time: string;
@@ -92,7 +93,7 @@ export function SubmissionTable({
               <TableCell>
                 {
                   submission.testcases.filter(
-                    (testcase) => testcase.status === "AC",
+                    (testcase) => testcase.status === "AC"
                   ).length
                 }
                 /{submission.testcases.length}

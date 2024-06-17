@@ -16,9 +16,10 @@ model User {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   contestSubmissions ContestSubmission[]
-  role               UserRole            @default(USER)
-  submissions        Submission[]
-  contestPoints      ContestPoints[]
+  role      UserRole   @default(USER)
+  submissions Submission[]
+  contestPoints ContestPoints[]
+  solution      Solution[]
 }
 
 model Contest {
@@ -34,6 +35,20 @@ model Contest {
   problems           ContestProblem[]
   contestSubmissions ContestSubmission[]
   leaderboard        Boolean             @default(false)
+}
+
+model Solution{
+  id           String @id @default(uuid())
+  userId       String
+  problemId    String
+  languageId   Int
+  title        String
+  explaination String  
+  code         String
+  createdAt    DateTime   @default(now())
+  user         User @relation(fields: [userId],references: [id])
+  problem      Problem @relation(fields: [problemId], references: [id])
+  language     Language @relation(fields: [languageId],references: [id])
 }
 
 model ContestProblem {
@@ -64,6 +79,7 @@ model Problem {
   contests           ContestProblem[]
   submissions        Submission[]
   defaultCode        DefaultCode[]
+  solution           Solution[]
 }
 
 model DefaultCode {
@@ -103,6 +119,7 @@ model Language {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   DefaultCode DefaultCode[]
+  solution    Solution[]
 }
 
 model ContestSubmission {
@@ -146,6 +163,7 @@ enum Difficulty {
   MEDIUM
   HARD
 }
+
 
 model ar_internal_metadata {
   key        String   @id @db.VarChar

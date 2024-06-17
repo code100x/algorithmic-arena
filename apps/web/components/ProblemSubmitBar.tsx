@@ -19,7 +19,8 @@ import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
 import { submissions as SubmissionsType } from "@prisma/client";
 import { Turnstile } from "@marsidev/react-turnstile";
-
+import SolutionDialog from "./SolutionDialog";
+import { SolutionsCard } from "./SolutionsCard";
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
   PENDING = "PENDING",
@@ -49,17 +50,19 @@ export const ProblemSubmitBar = ({
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-      <div className="grid gap-4">
+      <div className="grid gap-2">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Tabs
               defaultValue="problem"
               className="rounded-md p-1"
               value={activeTab}
-              onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-2 w-full">
+              onValueChange={setActiveTab}
+            >
+              <TabsList className="grid grid-cols-3 w-full">
                 <TabsTrigger value="problem">Submit</TabsTrigger>
                 <TabsTrigger value="submissions">Submissions</TabsTrigger>
+                <TabsTrigger value="solutions">Solutions</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -68,11 +71,61 @@ export const ProblemSubmitBar = ({
           <SubmitProblem problem={problem} contestId={contestId} />
         </div>
         {activeTab === "submissions" && <Submissions problem={problem} />}
+        {activeTab === "solutions" && <Solutions problem={problem} />}
       </div>
     </div>
   );
 };
-
+function Solutions({ problem }: { problem: IProblem }) {
+  const [sols, setSols] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`/api/solution?problemId=${problem.id}`);
+        console.log(res.data.data);
+        setSols(res.data.data);
+        setLoading(false);
+      } catch (err) {
+        toast.error("something went wrong while getting solution");
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+  if (loading) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+  return (
+    <div className="w-full">
+      {sols.length == 0 && (
+        <div className="flex justify-center items-center min-h-[100%]">
+          <p>No Added Solutions</p>
+        </div>
+      )}
+      <div className=" mx-3 my-1  ">
+        {sols.map((ele: any) => {
+          return (
+            <div key={ele.id} className="w-full">
+              <SolutionsCard
+                title={ele.title}
+                id={ele.id}
+                email={ele.user.email}
+                createdAt={ele.createdAt}
+                language={ele.language.name}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function Submissions({ problem }: { problem: IProblem }) {
   const [submissions, setSubmissions] = useState<ISubmission[]>([]);
 
@@ -174,7 +227,8 @@ function SubmitProblem({
       <Select
         value={language}
         defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}>
+        onValueChange={(value) => setLanguage(value)}
+      >
         <SelectTrigger>
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
@@ -204,7 +258,7 @@ function SubmitProblem({
           defaultLanguage="javascript"
         />
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-3 items-center">
         <Turnstile
           onSuccess={(token: string) => {
             setToken(token);
@@ -215,13 +269,23 @@ function SubmitProblem({
           disabled={status === SubmitStatus.PENDING}
           type="submit"
           className="mt-4 align-right"
-          onClick={session.data?.user ? submit : () => signIn()}>
+          onClick={session.data?.user ? submit : () => signIn()}
+        >
           {session.data?.user
             ? status === SubmitStatus.PENDING
               ? "Submitting"
               : "Submit"
             : "Login to submit"}
         </Button>
+
+        {session.data?.user && status === "ACCEPTED" && (
+          <SolutionDialog
+            type="add"
+            problem={problem}
+            code={code[language]}
+            language={language}
+          />
+        )}
       </div>
       <RenderTestcase testcases={testcases} />
     </div>
@@ -251,7 +315,7 @@ function renderResult(status: number | null) {
   }
 }
 
-function RenderTestcase({ testcases }: { testcases: SubmissionsType[] }) {
+function RenderTestcase({ testcases }: { testcases: any[] }) {
   return (
     <div className="grid grid-cols-6 gap-4">
       {testcases.map((testcase, index) => (

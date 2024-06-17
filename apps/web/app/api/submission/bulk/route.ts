@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
     take: 10,
     include: {
       testcases: true,
+      problem: true,
     },
     orderBy: {
       createdAt: "desc",
