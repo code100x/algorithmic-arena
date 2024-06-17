@@ -16,9 +16,9 @@ cp apps/web/.env.example apps/web/.env
 cp packages/db/.env.example packages/db/.env
 ```
 5. Update the mount path in the ``apps/web/.env``
-6. Migrate Database
+6. Migrate Database and install local package
 ```bash
-npx turbo dg:migrate
+npx turbo dg:migrate && yarn install
 ```
 7. Start Dev
 ```bash
@@ -44,9 +44,9 @@ cp apps/web/.env.example apps/web/.env
 cp packages/db/.env.example packages/db/.env
 ```
 6. Update the mount path in the ``apps/web/.env``
-7. Migrate Database
+7. Migrate Database and install local package
 ```bash
-npx turbo dg:migrate
+npx turbo dg:migrate && yarn install
 ```
 8. Start Dev
 ```bash
