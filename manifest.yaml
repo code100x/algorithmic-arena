@@ -4,6 +4,7 @@ metadata:
   name: algo-100xdevs
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,6 +27,7 @@ spec:
         - containerPort: 3000
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,6 +43,7 @@ spec:
       targetPort: 3000
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -63,6 +66,7 @@ spec:
         - containerPort: 3000
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,6 +82,7 @@ spec:
       targetPort: 3000
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -111,6 +116,7 @@ spec:
           storage: 10Gi
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -126,6 +132,7 @@ spec:
       targetPort: 5432
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -159,6 +166,7 @@ spec:
           storage: 10Gi
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -174,6 +182,7 @@ spec:
       targetPort: 6379
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -197,6 +206,71 @@ spec:
           value: "http://judge0-api-service.algo-100xdevs.svc.cluster.local"
 
 ---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-exporter
+  namespace: algo-100xdevs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-exporter
+  template:
+    metadata:
+      labels:
+        app: redis-exporter
+    spec:
+      containers:
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        ports:
+        - containerPort: 9121
+        env:
+        - name: REDIS_ADDR
+          value: "redis-service:6379"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: algo-100xdevs
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'kubernetes-redis-exporter'
+        static_configs:
+        - targets: ['redis-exporter:9121']
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-adapter-config
+  namespace: algo-100xdevs
+data:
+  config.yaml: |
+    rules:
+    - seriesQuery: 'redis_queue_length'
+      resources:
+        overrides:
+          namespace:
+            resource: "namespace"
+          pod:
+            resource: "pod"
+      name:
+        matches: "^(.*)_total$"
+        as: "custom.redis.queue_length"
+      metricsQuery: 'redis_queue_length{queue="judge0_queue"}'
+
+---
+
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -210,14 +284,16 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
+  - type: Pods
+    pods:
+      metric:
+        name: custom.redis.queue_length
       target:
-        type: Utilization
-        averageUtilization: 50
+        type: AverageValue
+        averageValue: "50"
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
