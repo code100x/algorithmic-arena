@@ -53,4 +53,4 @@ npx turbo dg:migrate
 yarn dev
 ```
 
-### JUDGE0 is only Tested with Linux Docker Runtime. You might face issues in Windows
+### If you use JUDGE0 in windows, change the mount path to have the \ instead of / for the mounting of judge0.conf and mounting of problems.
