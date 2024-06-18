@@ -1,11 +1,11 @@
 # Local Development Setup
 ### All Sevices withing Docker
 NOTE: Do not update any of the ENV files for this particular configuration. ( Except the mount path for problems )
-1. Start the services
+1. Update the ``##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR##`` in the docker-compose file
+2. Start the services
 ```bash
 docker-compose up -d
 ```
-2. Update the ``##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR##`` in the docker-compose file
 3. Install dependencies
 ```bash
 yarn install
@@ -18,7 +18,7 @@ cp packages/db/.env.example packages/db/.env
 5. Update the mount path in the ``apps/web/.env``
 6. Migrate Database and install local package
 ```bash
-npx turbo dg:migrate && yarn install
+npx turbo db:migrate && yarn install
 ```
 7. Start Dev
 ```bash
@@ -46,7 +46,7 @@ cp packages/db/.env.example packages/db/.env
 6. Update the mount path in the ``apps/web/.env``
 7. Migrate Database and install local package
 ```bash
-npx turbo dg:migrate && yarn install
+npx turbo db:migrate && yarn install
 ```
 8. Start Dev
 ```bash
