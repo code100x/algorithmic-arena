@@ -1,13 +1,12 @@
-name: Linting and formatting on PR
+name: Build and push PR
+
 on:
-  merge:
+  push:
     branches:
       - 'main'
     
 jobs:
-
   Continuous-Integration:
-
     name: Builds and pushes to Docker Hub
     runs-on: ubuntu-latest
     steps:
