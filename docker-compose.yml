@@ -9,7 +9,7 @@ services:
   #     dockerfile: Dockerfile
   #   container_name: app-container
   #   environment:
-  #     - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+  #     - DATABASE_URL=postgresql://postgres:supersecurepassword@db:5432/algo-arena
   #   ports:
   #     - '3000:3000'  # Next.js app
   #   depends_on:
