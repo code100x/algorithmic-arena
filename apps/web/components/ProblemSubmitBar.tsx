@@ -191,7 +191,7 @@ function SubmitProblem({
           height={"60vh"}
           value={code[language]}
           theme="vs-dark"
-          onMount={() => {}}
+          onMount={() => { }}
           options={{
             fontSize: 14,
             scrollBeyondLastLine: false,
@@ -205,12 +205,14 @@ function SubmitProblem({
         />
       </div>
       <div className="flex justify-end">
-        <Turnstile
-          onSuccess={(token: string) => {
-            setToken(token);
-          }}
-          siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
-        />
+        {process.env.NODE_ENV === "production" ?
+          <Turnstile
+            onSuccess={(token: string) => {
+              setToken(token);
+            }}
+            siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+          /> : null
+        }
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"

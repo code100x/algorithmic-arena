@@ -1,31 +1,30 @@
 version: '3.5'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: app-container
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-    ports:
-      - '3000:3000'  # Next.js app
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - type: bind
-        source: .
-        target: /usr/src/app
+  # Next Auth Not Working in Docker
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: app-container
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:supersecurepassword@db:5432/algo-arena
+  #   ports:
+  #     - '3000:3000'  # Next.js app
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   volumes:
+  #     - type: bind
+  #       source: .
+  #       target: /usr/src/app
 
   db:
     image: postgres:alpine
     container_name: db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+    env_file: judge0.conf
     ports:
       - '5432:5432'
     healthcheck:
@@ -41,7 +40,7 @@ services:
     volumes:
       - ./judge0.conf:/judge0.conf:ro
       - type: bind
-        source: /home/sujith/projects/algorithmic-arena/apps/problems
+        source: "##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR## [repo]/apps/problems"
         target: /dev/problems
     ports:
       - "2358:2358"
@@ -56,7 +55,7 @@ services:
     volumes:
       - ./judge0.conf:/judge0.conf:ro
       - type: bind
-        source: /home/sujith/projects/algorithmic-arena/apps/problems
+        source: "##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR## [repo]/apps/problems"
         target: /dev/problems
     privileged: true
     restart: always
@@ -71,6 +70,8 @@ services:
     ]
     env_file: judge0.conf
     restart: always
+    ports: 
+      - '6379:6379'
     logging:
       driver: none
 

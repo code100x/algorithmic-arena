@@ -28,6 +28,9 @@
     "db:generate": {
       "cache": false
     },
+    "db:migrate": {
+      "cache": false
+    },
     "boiler:generate": {
       "cache": false
     }

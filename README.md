@@ -1,81 +1,56 @@
-# Turborepo starter
+# Local Development Setup
+### All Sevices withing Docker
+NOTE: Do not update any of the ENV files for this particular configuration. ( Except the mount path for problems )
+1. Update the ``##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR##`` in the docker-compose file
+2. Start the services
+```bash
+docker-compose up -d
+```
+3. Install dependencies
+```bash
+yarn install
+```
+4. Copy env files
+```bash
+cp apps/web/.env.example apps/web/.env
+cp packages/db/.env.example packages/db/.env
+```
+5. Update the mount path in the ``apps/web/.env``
+6. Migrate Database and install local package
+```bash
+npx turbo db:migrate && yarn install
+```
+7. Start Dev
+```bash
+yarn dev
+```
+---
+### Own Configuration
 
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
+1.Configure the judge0.conf
+  - Update the POSTGRES and REDIS configurations based on your local databases
+2. Update the ``##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR##`` in the docker-compose file
+3. Start only judge0 service
+```bash
+docker-compose up server workers -d
+```
+4. Install dependencies
+```bash
+yarn install
+```
+5. Copy env files and configure with the same conf you updated in the judge0
+```bash
+cp apps/web/.env.example apps/web/.env
+cp packages/db/.env.example packages/db/.env
+```
+6. Update the mount path in the ``apps/web/.env``
+7. Migrate Database and install local package
+```bash
+npx turbo db:migrate && yarn install
+```
+8. Start Dev
+```bash
+yarn dev
 ```
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+### If you use JUDGE0 in windows, change the mount path to have the \ instead of / for the mounting of judge0.conf and mounting of problems.
