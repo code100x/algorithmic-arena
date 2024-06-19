@@ -128,7 +128,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class function {
+public class Main {
     
     ##USER_CODE_HERE##
 
