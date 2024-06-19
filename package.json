@@ -7,7 +7,8 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev:docker": "npm run prisma:docker && yarn dev",
-    "prisma:docker": "cd packages/db && npx prisma migrate dev --skip-seed && npx prisma db seed"
+    "prisma:docker": "cd packages/db && npx prisma db push --force-reset && npx prisma db seed",
+    "start:web": "cd apps/web && npm run start"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
