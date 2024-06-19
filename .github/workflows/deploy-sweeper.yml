@@ -17,7 +17,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Copy Docker image to root
-        run: cp docker/sweeper/Dockerfile .
+        run: cp ./docker/sweeper/Dockerfile .
 
       - name: Build Docker Image
         run: docker build --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} -t 100xdevs/algo-sweeper:${{ github.sha }} .
