@@ -22,4 +22,4 @@ WORKDIR /usr/src/app
 
 # Command to start both services
 RUN npm run build --prefix apps/sweeper
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:sweeper"]

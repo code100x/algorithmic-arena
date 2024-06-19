@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sweeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sweeper
+  template:
+    metadata:
+      labels:
+        app: sweeper
+    spec:
+      containers:
+        - name: sweeper
+          image: 100xdevs/algo-sweeper:0fe12be062f044430c383358cd149c599a97c9ef
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: algo-arena-db
+                  key: DATABASE_URL
+            - name: JUDGE0_URI
+              valueFrom:
+                secretKeyRef:
+                  name: algo-arena-db
+                  key: JUDGE0_URI
+                  # simple string REDIS_HOST is redis.default.svc.cluster.local
+            - name: REDIS_HOST
+              value: redis.default.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              value: "asd"
+            - name: POSTGRES_HOST
+              value: "postgres.default.svc.cluster.local"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "algo-arena"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "supersecurepassword"
+          volumeMounts:
+            - name: problems-pv
+              mountPath: /problems
+      volumes:
+        - name: problems-pv
+          persistentVolumeClaim:
+            claimName: problems-claim
