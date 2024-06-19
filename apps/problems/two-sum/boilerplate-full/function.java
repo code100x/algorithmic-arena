@@ -7,7 +7,7 @@ public class Main {
     ##USER_CODE_HERE##
 
     public static void main(String[] args) {
-        String filePath = "/WebDevelopment/algorithmic-arena/apps/problems/two-sum/tests/inputs/##INPUT_FILE_INDEX##.txt"; 
+        String filePath = "/dev/problems/two-sum/tests/inputs/##INPUT_FILE_INDEX##.txt"; 
         List<String> lines = readLinesFromFile(filePath);
         int num1 = Integer.parseInt(lines.get(0).trim());
   int num2 = Integer.parseInt(lines.get(1).trim());
