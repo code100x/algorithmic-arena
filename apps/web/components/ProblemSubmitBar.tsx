@@ -205,6 +205,7 @@ function SubmitProblem({
         />
       </div>
       <div className="flex justify-end">
+        {JSON.stringify(process.env)}
         {process.env.NODE_ENV === "production" ?
           <Turnstile
             onSuccess={(token: string) => {
