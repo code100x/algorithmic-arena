@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 # Copy the entire monorepo into the container
 COPY ./packages /usr/src/app/packages
 COPY ./apps/web /usr/src/app/apps/web
-COPY package* /usr/src/app/
+COPY package.json /usr/src/app/package.json
+COPY package-lock.json /usr/src/app/package-lock.json
 COPY turbo.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
 

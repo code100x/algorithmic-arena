@@ -1,6 +1,9 @@
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL || "");
+function getRedisClient() {
+  const redis = new Redis(process.env.REDIS_URL || "");
+  return redis;
+}
 
 export async function rateLimit(
   userId: string,
@@ -11,6 +14,7 @@ export async function rateLimit(
   const currentTime = Math.floor(Date.now() / 1000);
 
   try {
+    const redis = getRedisClient();
     // Start a Redis transaction
     const transaction = redis.multi();
     transaction.zremrangebyscore(key, 0, currentTime - duration);
