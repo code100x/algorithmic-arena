@@ -206,12 +206,12 @@ function SubmitProblem({
       </div>
       <div className="flex justify-end">
         {JSON.stringify(process.env)}
-        {process.env.NODE_ENV === "production" ?
+        {process.env.NEXT_PUBLIC_NODE_ENV === "production" ?
           <Turnstile
             onSuccess={(token: string) => {
               setToken(token);
             }}
-            siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+            siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
           /> : null
         }
         <Button
