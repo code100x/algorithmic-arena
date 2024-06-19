@@ -10,6 +10,9 @@ spec:
     - hosts:
       - algo.100xdevs.com
       secretName: nginx-tls
+    - hosts:
+      - db.algo.100xdevs.com
+      secretName: algo-db-tls
   rules:
     - host: algo.100xdevs.com
       http:
@@ -21,13 +24,13 @@ spec:
                 name: algo-next
                 port:
                   number: 80
-    - host: algo2.100xdevs.com
+    - host: db.algo.100xdevs.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: nginx
+                name: algo-db
                 port:
                   number: 80

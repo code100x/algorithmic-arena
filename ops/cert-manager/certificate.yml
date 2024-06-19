@@ -11,3 +11,17 @@ spec:
   commonName: algo.100xdevs.com
   dnsNames:
   - algo.100xdevs.com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: algo-db-cert
+  namespace: default
+spec:
+  secretName: algo-db-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: db.algo.100xdevs.com
+  dnsNames:
+  - db.algo.100xdevs.com

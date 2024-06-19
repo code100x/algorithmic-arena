@@ -19,6 +19,7 @@ spec:
           image: 100xdevs/algo-next:dd58bbdf8980c18482e71dfc6bad04bd40c91793
           ports:
             - containerPort: 3000
+            - containerPort: 5555
           env:
             - name: DATABASE_URL
               valueFrom:
@@ -57,3 +58,10 @@ spec:
             limits:
               cpu: 2000m 
               memory: 512Mi
+          volumeMounts:
+            - name: problems-pv
+              mountPath: /problems
+      volumes:
+        - name: problems-pv
+          persistentVolumeClaim:
+            claimName: problems-claim
