@@ -67,6 +67,13 @@ export class ProblemDefinitionParser {
     return `fn ${this.functionName}(${inputs}) -> ${outputType} {\n    // Implementation goes here\n    result\n}`;
   }
 
+  generateJava(): string{
+    const inputs = this.inputFields
+      .map((field) => `${this.mapTypeToJava(field.type)} ${field.name}`)
+      .join(", ");
+    return `public static ${this.mapTypeToJava(this.outputFields[0].type)} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
+  }
+
   mapTypeToRust(type: string): string {
     switch (type) {
       case "int":
@@ -112,4 +119,27 @@ export class ProblemDefinitionParser {
         return "unknown";
     }
   }
+
+  mapTypeToJava(type:string):string {
+  switch (type) {
+    case "int":
+      return "int";
+    case "float":
+      return "float";
+    case "string":
+      return "String";
+    case "bool":
+      return "boolean";
+    case "list<int>":
+      return "List<Integer>";
+    case "list<float>":
+      return "List<Float>";
+    case "list<string>":
+      return "List<String>";
+    case "list<bool>":
+      return "List<Boolean>";
+    default:
+      return "unknown";
+  }
+}
 }
