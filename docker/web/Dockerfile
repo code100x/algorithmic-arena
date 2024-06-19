@@ -1,5 +1,6 @@
 FROM node:20-alpine
 
+ARG DATABASE_URL
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
@@ -15,7 +16,7 @@ COPY tsconfig.json /usr/src/app/
 RUN npm install
 
 # Generate Prisma client
-RUN cd packages/db && npx prisma generate
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL npx prisma generate
 
 # Expose ports for both applications
 EXPOSE 3000

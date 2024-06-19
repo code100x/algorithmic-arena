@@ -1,4 +1,4 @@
-name: Build and push PR
+name: Build and push Web
 
 on:
   push:
