@@ -61,8 +61,9 @@ export async function POST(req: NextRequest) {
     body: formData,
     method: "POST",
   });
-  const challengeSucceeded = (await result.json()).success;
-  console.log(await result.json());
+  const challengeResult = await result.json();
+  const challengeSucceeded = (challengeResult).success;
+  console.log(challengeResult);
   console.log({
     SECRET_KEY,
     token: submissionInput.data.token,
