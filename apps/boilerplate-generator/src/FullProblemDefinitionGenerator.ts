@@ -133,7 +133,7 @@ public class Main {
     ##USER_CODE_HERE##
 
     public static void main(String[] args) {
-        String filePath = "/WebDevelopment/algorithmic-arena/apps/problems/${this.problemName.toLowerCase().replace(" ", "-")}/tests/inputs/##INPUT_FILE_INDEX##.txt"; 
+        String filePath = "/dev/problems/${this.problemName.toLowerCase().replace(" ", "-")}/tests/inputs/##INPUT_FILE_INDEX##.txt"; 
         List<String> lines = readLinesFromFile(filePath);
         ${inputReads}
         ${functionCall}
