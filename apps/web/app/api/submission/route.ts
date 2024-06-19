@@ -62,6 +62,11 @@ export async function POST(req: NextRequest) {
     method: "POST",
   });
   const challengeSucceeded = (await result.json()).success;
+  console.log(await result.json());
+  console.log({
+    SECRET_KEY,
+    token: submissionInput.data.token,
+  });
 
   if (!challengeSucceeded.success && process.env.NODE_ENV === "production") {
     return NextResponse.json(
