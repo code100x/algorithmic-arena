@@ -9,3 +9,5 @@ export default function Page(): JSX.Element {
     </main>
   );
 }
+
+export const dynamic = "force-dynamic"
