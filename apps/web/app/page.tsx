@@ -1,3 +1,4 @@
+
 import { Landing } from "../components/Landing";
 import styles from "./page.module.css";
 
