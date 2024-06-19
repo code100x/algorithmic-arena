@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: algo-next
-          image: 100xdevs/algo-next:30530d895853b09d7e0b4d80ef0e014e8158f59e
+          image: 100xdevs/algo-next:e27a5c3f3f538f9c00313041242f50d1852ea871
           ports:
             - containerPort: 3000
             - containerPort: 5555
@@ -51,16 +51,18 @@ spec:
                 configMapKeyRef:
                   name: algo-arena-config
                   key: MOUNT_PATH
+            - name: NEXT_PUBLIC_NODE_ENV
+              value: production
             - name: CLOUDFLARE_TURNSTILE_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: algo-arena-db
                   key: CLOUDFLARE_TURNSTILE_SECRET_KEY
-            - name: CLOUDFLARE_TURNSTILE_SITE_KEY
+            - name: NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY
               valueFrom:
                 secretKeyRef:
                   name: algo-arena-db
-                  key: CLOUDFLARE_TURNSTILE_SITE_KEY
+                  key: NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY
           resources:
             requests:
               cpu: 100m
