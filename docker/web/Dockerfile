@@ -25,4 +25,4 @@ WORKDIR /usr/src/app
 
 # Command to start both services
 RUN npm run build --prefix apps/web
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:web"]
