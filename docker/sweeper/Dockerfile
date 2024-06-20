@@ -13,14 +13,16 @@ COPY pnpm-workspace.yaml /usr/src/app/pnpm-workspace.yaml
 COPY turbo.json /usr/src/app/turbo.json
 COPY tsconfig.json /usr/src/app/tsconfig.json
 
+RUN npm install pnpm -g -y
+
 # Install dependencies
 RUN pnpm install
 
 # Generate Prisma client
 RUN cd packages/db && DATABASE_URL=$DATABASE_URL pnpm dlx prisma generate
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/apps/sweeper
 
 # Command to start both services
-RUN pnpm run build --prefix apps/sweeper
-CMD ["pnpm", "run", "start:sweeper"]
+RUN  pnpm run build
+CMD ["pnpm", "run", "start"]
