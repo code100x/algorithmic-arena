@@ -10,8 +10,8 @@ COPY ./apps/sweeper /usr/src/app/apps/sweeper
 COPY package.json /usr/src/app/package.json
 COPY pnpm-lock.yaml /usr/src/app/pnpm-lock.yaml
 COPY pnpm-workspace.yaml /usr/src/app/pnpm-workspace.yaml
-COPY turbo.json /usr/src/app/
-COPY tsconfig.json /usr/src/app/
+COPY turbo.json /usr/src/app/turbo.json
+COPY tsconfig.json /usr/src/app/tsconfig.json
 
 # Install dependencies
 RUN pnpm install

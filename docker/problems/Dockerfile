@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY ./apps/problems /usr/src/app/apps/problems
 
+RUN npm install pnpm -g -y
+
 # Install dependencies
 RUN pnpm install
 
