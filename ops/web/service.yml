@@ -10,3 +10,16 @@ spec:
       targetPort: 3000 
       protocol: TCP
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: algo-db
+spec:
+  selector:
+    app: algo-next
+  ports:
+    - port: 80
+      targetPort: 5555
+      protocol: TCP
+  type: ClusterIP

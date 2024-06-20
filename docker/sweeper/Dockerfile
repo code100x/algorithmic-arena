@@ -1,5 +1,6 @@
 FROM node:20-alpine
 
+ARG DATABASE_URL
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
@@ -15,10 +16,10 @@ COPY tsconfig.json /usr/src/app/
 RUN npm install
 
 # Generate Prisma client
-RUN cd packages/db && npx prisma generate
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL npx prisma generate
 
 WORKDIR /usr/src/app
 
 # Command to start both services
 RUN npm run build --prefix apps/sweeper
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:sweeper"]

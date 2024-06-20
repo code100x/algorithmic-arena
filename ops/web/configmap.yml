@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: algo-arena-config
 data:
-  MOUNT_PATH: /home/ubuntu/algorithmic-arena/apps/problems
+  MOUNT_PATH: /problems
   NEXTAUTH_URL: https://algo.100xdevs.com
