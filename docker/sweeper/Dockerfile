@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY ./packages /usr/src/app/packages
 COPY ./apps/sweeper /usr/src/app/apps/sweeper
 COPY package.json /usr/src/app/package.json
-COPY pnpm-lock.json /usr/src/app/pnpm-lock.json
+COPY pnpm-lock.yaml /usr/src/app/pnpm-lock.yaml
 COPY pnpm-workspace.yaml /usr/src/app/pnpm-workspace.yaml
 COPY turbo.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
