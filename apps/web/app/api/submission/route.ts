@@ -63,13 +63,8 @@ export async function POST(req: NextRequest) {
   });
   const challengeResult = await result.json();
   const challengeSucceeded = (challengeResult).success;
-  console.log(challengeResult);
-  console.log({
-    SECRET_KEY,
-    token: submissionInput.data.token,
-  });
 
-  if (!challengeSucceeded.success && process.env.NODE_ENV === "production") {
+  if (!challengeSucceeded && process.env.NODE_ENV === "production") {
     return NextResponse.json(
       {
         message: "Invalid reCAPTCHA token",
