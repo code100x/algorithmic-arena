@@ -13,13 +13,13 @@ COPY turbo.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
 # Generate Prisma client
-RUN cd packages/db && DATABASE_URL=$DATABASE_URL npx prisma generate
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL pnpm dlx prisma generate
 
 WORKDIR /usr/src/app
 
 # Command to start both services
-RUN npm run build --prefix apps/sweeper
-CMD ["npm", "run", "start:sweeper"]
+RUN pnpm run build --prefix apps/sweeper
+CMD ["pnpm", "run", "start:sweeper"]

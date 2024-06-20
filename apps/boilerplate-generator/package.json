@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.12.12",
-    "antlr4": "^4.13.1-patch-1"
+    "antlr4": "^4.13.1-patch-1",
+    "esbuild": "^0.21.5"
   }
 }

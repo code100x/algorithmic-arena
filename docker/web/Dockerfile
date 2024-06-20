@@ -13,10 +13,10 @@ COPY turbo.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
 # Generate Prisma client
-RUN cd packages/db && DATABASE_URL=$DATABASE_URL npx prisma generate
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL pnpm dlx prisma generate
 
 # Expose ports for both applications
 EXPOSE 3000
@@ -24,5 +24,5 @@ EXPOSE 3000
 WORKDIR /usr/src/app
 
 # Command to start both services
-RUN npm run build --prefix apps/web
-CMD ["npm", "run", "start:web"]
+RUN pnpm run build --prefix apps/web
+CMD ["pnpm", "run", "start:web"]
