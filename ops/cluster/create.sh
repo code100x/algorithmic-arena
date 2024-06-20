@@ -1,1 +1,0 @@
-eksctl create cluster --name prod --region ap-south-1 --nodegroup-name linux-prod --node-type t2.medium --nodes 2 

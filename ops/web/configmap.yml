@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: algo-arena-config
-data:
-  MOUNT_PATH: /problems
-  NEXTAUTH_URL: https://algo.100xdevs.com
