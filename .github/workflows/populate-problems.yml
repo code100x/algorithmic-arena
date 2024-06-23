@@ -1,0 +1,46 @@
+name: Populate problems
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/problems/**"
+
+jobs:
+  populate_problems:
+    name: Populate problems
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          cd ./packages/db
+          npm i
+          npx prisma generate
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v39
+      - name: List all changed files and add them to DB
+        run: |
+          cd ./packages/db
+          npm i -g ts-node
+          declare -A folderSet
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ "$file" == apps/problems/* ]]; then
+              folderName=$(awk -F/ '{print $3}' <<< "$file")
+              folderSet["$folderName"]=1
+            fi
+          done
+          for folderName in "${!folderSet[@]}"; do
+            echo "Populating for $folderName"
+            npm run addProblem -- $folderName
+          done
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

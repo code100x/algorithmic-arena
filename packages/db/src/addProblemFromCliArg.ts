@@ -4,7 +4,7 @@ import { addProblem } from "../prisma/updateQuestion";
   const problemSlug = process.argv[2];
   if (!problemSlug) process.exit(1);
   try {
-    await addProblem(problemSlug, problemSlug);
+    await addProblem(problemSlug, problemSlug, true);
   } catch (e) {
     console.error(`An error occurred while populating ${problemSlug}`);
     console.error(e);
