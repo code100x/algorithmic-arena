@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate dev",
-    "db:seed": "npx prisma db seed"
+    "db:seed": "npx prisma db seed",
+    "addProblem": "ts-node src/addProblemFromCliArg.ts"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -22,5 +23,8 @@
   },
   "exports": {
     "./client": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8"
   }
 }
