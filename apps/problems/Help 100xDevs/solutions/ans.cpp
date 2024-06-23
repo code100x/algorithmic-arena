@@ -49,9 +49,10 @@ bool testcases = 0;
 
 void solve()
 {
-    int n,k; cin >> n >> k;
+    int n,k; cin >> n;
     vi a(n); cin >> a;
-
+    cin >> k;
+    
     auto b = a;
     sort(all(a));
 
