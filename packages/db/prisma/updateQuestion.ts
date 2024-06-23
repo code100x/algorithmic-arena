@@ -14,7 +14,7 @@ function promisifedReadFile(path: string): Promise<string> {
   });
 }
 
-async function main(problemSlug: string, problemTitle: string) {
+export async function addProblem(problemSlug: string, problemTitle: string) {
   const problemStatement = await promisifedReadFile(
     `${MOUNT_PATH}/${problemSlug}/Problem.md`
   );
@@ -66,7 +66,7 @@ export function addProblemsInDB() {
       return;
     }
     dirs.forEach(async (dir) => {
-      await main(dir, dir);
+      await addProblem(dir, dir);
     });
   });
 }
