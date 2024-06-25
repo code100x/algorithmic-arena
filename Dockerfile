@@ -7,10 +7,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install dependencies
-RUN yarn install
+RUN pnpm install
 
 # Generate Prisma client
-RUN cd packages/db && npx prisma generate
+RUN cd packages/db && pnpm dlx prisma generate
 
 # Expose ports for both applications
 EXPOSE 3000
@@ -18,4 +18,4 @@ EXPOSE 3000
 WORKDIR /usr/src/app
 
 # Command to start both services
-CMD ["yarn", "run", "dev:docker"]
+CMD ["pnpm", "run", "dev:docker"]

@@ -207,12 +207,14 @@ function SubmitProblem({
         />
       </div>
       <div className="flex justify-end">
-          <Turnstile
+        {process.env.NODE_ENV === "production" ?
+          < Turnstile
             onSuccess={(token: string) => {
               setToken(token);
             }}
             siteKey={TURNSTILE_SITE_KEY}
-          />
+          /> : null
+        }
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"
