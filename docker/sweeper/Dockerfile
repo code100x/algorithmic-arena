@@ -1,5 +1,6 @@
 FROM node:20-alpine
 
+ARG DATABASE_URL
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
@@ -7,18 +8,21 @@ WORKDIR /usr/src/app
 COPY ./packages /usr/src/app/packages
 COPY ./apps/sweeper /usr/src/app/apps/sweeper
 COPY package.json /usr/src/app/package.json
-COPY package-lock.json /usr/src/app/package-lock.json
-COPY turbo.json /usr/src/app/
-COPY tsconfig.json /usr/src/app/
+COPY pnpm-lock.yaml /usr/src/app/pnpm-lock.yaml
+COPY pnpm-workspace.yaml /usr/src/app/pnpm-workspace.yaml
+COPY turbo.json /usr/src/app/turbo.json
+COPY tsconfig.json /usr/src/app/tsconfig.json
+
+RUN npm install pnpm -g -y
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
 # Generate Prisma client
-RUN cd packages/db && npx prisma generate
+RUN cd packages/db && DATABASE_URL=$DATABASE_URL pnpm dlx prisma generate
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/apps/sweeper
 
 # Command to start both services
-RUN npm run build --prefix apps/sweeper
-CMD ["npm", "run", "start"]
+RUN  pnpm run build
+CMD ["pnpm", "run", "start"]

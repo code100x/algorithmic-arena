@@ -20,6 +20,8 @@ import { signIn, useSession } from "next-auth/react";
 import { submissions as SubmissionsType } from "@prisma/client";
 import { Turnstile } from "@marsidev/react-turnstile";
 
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || "0x4AAAAAAAc4qhUEsytXspC_";
+
 enum SubmitStatus {
   SUBMIT = "SUBMIT",
   PENDING = "PENDING",
@@ -206,11 +208,11 @@ function SubmitProblem({
       </div>
       <div className="flex justify-end">
         {process.env.NODE_ENV === "production" ?
-          <Turnstile
+          < Turnstile
             onSuccess={(token: string) => {
               setToken(token);
             }}
-            siteKey={process.env.CLOUDFLARE_TURNSTILE_SITE_KEY!}
+            siteKey={TURNSTILE_SITE_KEY}
           /> : null
         }
         <Button

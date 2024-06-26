@@ -4,9 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@repo/db": "*",
+    "@repo/db": "workspace:*",
     "esbuild": "^0.21.5",
-    "nodemon": "^3.1.3"
+    "nodemon": "^3.1.3",
+    "ts-node": "^10.9.2"
   },
   "scripts": {
     "build": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js --sourcemap",
@@ -14,5 +15,8 @@
     "dev": "nodemon ./src/index.ts",
     "docker": "nodemon ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.6"
   }
 }

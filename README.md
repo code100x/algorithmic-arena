@@ -8,7 +8,7 @@ docker-compose up -d
 ```
 3. Install dependencies
 ```bash
-yarn install
+pnpm install
 ```
 4. Copy env files
 ```bash
@@ -18,11 +18,11 @@ cp packages/db/.env.example packages/db/.env
 5. Update the mount path in the ``apps/web/.env``
 6. Migrate Database and install local package
 ```bash
-npx turbo db:migrate && yarn install
+pnpm dlx turbo db:migrate && yarn install
 ```
 7. Start Dev
 ```bash
-yarn dev
+pnpm dev
 ```
 ---
 ### Own Configuration
@@ -36,7 +36,7 @@ docker-compose up server workers -d
 ```
 4. Install dependencies
 ```bash
-yarn install
+pnpm install
 ```
 5. Copy env files and configure with the same conf you updated in the judge0
 ```bash
@@ -46,11 +46,11 @@ cp packages/db/.env.example packages/db/.env
 6. Update the mount path in the ``apps/web/.env``
 7. Migrate Database and install local package
 ```bash
-npx turbo db:migrate && yarn install
+pnpm dlx turbo db:migrate && yarn install
 ```
 8. Start Dev
 ```bash
-yarn dev
+pnpm dev
 ```
 
 ### If you use JUDGE0 in windows, change the mount path to have the \ instead of / for the mounting of judge0.conf and mounting of problems.

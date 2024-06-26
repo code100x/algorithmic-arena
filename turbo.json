@@ -3,7 +3,7 @@
   "globalDependencies": [
     "**/.env.*local"
   ],
-  "tasks": {
+  "pipeline": {
     "build": {
       "dependsOn": [
         "^build"
