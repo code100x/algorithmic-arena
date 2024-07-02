@@ -1,6 +1,6 @@
-Problem Name: "Intersection Of Sets"
-Function Name: intersect
+Problem Name: "Balanced Arrays"
+Function Name: solve
 Input Structure:
 Input Field: list<int> A
 Output Structure:
-Output Field: list<int> ans
+Output Field: int result
