@@ -1,12 +1,20 @@
 import Redis from "ioredis";
 
-const redis = new Redis(process.env.REDIS_URL);
+function getRedisClient() {
+  const redis = new Redis(process.env.REDIS_URL || "");
+  return redis;
+}
 
-export async function rateLimit(userId: string, limit: number, duration: number): Promise<boolean> {
+export async function rateLimit(
+  userId: string,
+  limit: number,
+  duration: number
+): Promise<boolean> {
   const key = `rate_limit:${userId}`;
   const currentTime = Math.floor(Date.now() / 1000);
 
   try {
+    const redis = getRedisClient();
     // Start a Redis transaction
     const transaction = redis.multi();
     transaction.zremrangebyscore(key, 0, currentTime - duration);
@@ -28,4 +36,3 @@ export async function rateLimit(userId: string, limit: number, duration: number)
     return false; // In case of any error, block the request to be safe
   }
 }
-

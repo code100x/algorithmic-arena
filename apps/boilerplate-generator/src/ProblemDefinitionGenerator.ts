@@ -49,9 +49,9 @@ export class ProblemDefinitionParser {
 
   generateCpp(): string {
     const inputs = this.inputFields
-      .map((field) => `${field.type} ${field.name}`)
+      .map((field) => `${this.mapTypeToCpp(field.type)} ${field.name}`)
       .join(", ");
-    return `${this.outputFields[0].type} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
+    return `${this.mapTypeToCpp(this.outputFields[0].type)} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
   }
 
   generateJs(): string {
@@ -65,6 +65,13 @@ export class ProblemDefinitionParser {
       .join(", ");
     const outputType = this.mapTypeToRust(this.outputFields[0].type);
     return `fn ${this.functionName}(${inputs}) -> ${outputType} {\n    // Implementation goes here\n    result\n}`;
+  }
+
+  generateJava(): string{
+    const inputs = this.inputFields
+      .map((field) => `${this.mapTypeToJava(field.type)} ${field.name}`)
+      .join(", ");
+    return `public static ${this.mapTypeToJava(this.outputFields[0].type)} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
   }
 
   mapTypeToRust(type: string): string {
@@ -89,4 +96,50 @@ export class ProblemDefinitionParser {
         return "unknown";
     }
   }
+
+  mapTypeToCpp(type: string): string {
+    switch (type) {
+      case "int":
+        return "int";
+      case "float":
+        return "float";
+      case "string":
+        return "std::string";
+      case "bool":
+        return "bool";
+      case "list<int>":
+        return "std::vector<int>";
+      case "list<float>":
+        return "std::vector<float>";
+      case "list<string>":
+        return "std::vector<std::string>";
+      case "list<bool>":
+        return "std::vector<bool>";
+      default:
+        return "unknown";
+    }
+  }
+
+  mapTypeToJava(type:string):string {
+  switch (type) {
+    case "int":
+      return "int";
+    case "float":
+      return "float";
+    case "string":
+      return "String";
+    case "bool":
+      return "boolean";
+    case "list<int>":
+      return "List<Integer>";
+    case "list<float>":
+      return "List<Float>";
+    case "list<string>":
+      return "List<String>";
+    case "list<bool>":
+      return "List<Boolean>";
+    default:
+      return "unknown";
+  }
+}
 }

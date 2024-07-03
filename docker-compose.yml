@@ -1,40 +1,84 @@
 version: '3.5'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: app-container
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-    ports:
-      - '3000:3000'  # Next.js app
-      - '3001:3001'  # Express webhook
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - .:/usr/src/app
+  # Next Auth Not Working in Docker
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: app-container
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:supersecurepassword@db:5432/algo-arena
+  #   ports:
+  #     - '3000:3000'  # Next.js app
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   volumes:
+  #     - type: bind
+  #       source: .
+  #       target: /usr/src/app
 
   db:
     image: postgres:alpine
     container_name: db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+    env_file: judge0.conf
     ports:
       - '5432:5432'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER']
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: none
 
+  server:
+    image: judge0/judge0:1.13.1
+    volumes:
+      - ./judge0.conf:/judge0.conf:ro
+      - type: bind
+        source: "##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR## [repo]/apps/problems"
+        target: /dev/problems
+    ports:
+      - "2358:2358"
+    privileged: true
+    restart: always
+    logging:
+      driver: none
+
+  workers:
+    image: judge0/judge0:1.13.1
+    command: ["./scripts/workers"]
+    volumes:
+      - ./judge0.conf:/judge0.conf:ro
+      - type: bind
+        source: "##YOUR_LOCAL_PATH_TO_PROBLEMS_DIR## [repo]/apps/problems"
+        target: /dev/problems
+    privileged: true
+    restart: always
+    logging:
+      driver: none
+
+  redis:
+    image: redis:7.2.4
+    command: [
+      "bash", "-c",
+      'docker-entrypoint.sh --appendonly no --requirepass "$$REDIS_PASSWORD"'
+    ]
+    env_file: judge0.conf
+    restart: always
+    ports: 
+      - '6379:6379'
+    logging:
+      driver: none
+    volumes:
+      - cache:/data
 volumes:
-  postgres-data:
-    external: false
+  postgres_data:
+  cache:
+    driver: local

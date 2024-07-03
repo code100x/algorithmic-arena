@@ -5,19 +5,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:seed": "prisma db seed"
+    "db:generate": "pnpm dlx prisma generate",
+    "db:migrate": "pnpm dlx prisma migrate dev",
+    "db:seed": "pnpm dlx prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "pnpm dlx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.12.0",
+    "@prisma/client": "5.15.0",
+    "@repo/common": "workspace:*",
     "prisma": "^5.12.0"
   },
   "exports": {
     "./client": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.6"
   }
 }

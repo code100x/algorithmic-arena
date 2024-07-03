@@ -1,6 +1,6 @@
 import fs from "fs";
 
-type SUPPORTED_LANGS = "js" | "cpp" | "rs";
+type SUPPORTED_LANGS = "js" | "cpp" | "rs"|"java";
 
 interface Problem {
   id: string;
@@ -59,7 +59,7 @@ async function getProblemInputs(problemId: string): Promise<string[]> {
             files.map((file) => {
               return new Promise<string>((resolve, reject) => {
                 fs.readFile(
-                    `${MOUNT_PATH}/${problemId}/tests/inputs/${file}`,
+                  `${MOUNT_PATH}/${problemId}/tests/inputs/${file}`,
                   { encoding: "utf-8" },
                   (err, data) => {
                     if (err) {

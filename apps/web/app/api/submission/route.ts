@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SubmissionInput } from "@repo/common/zod";
 import { getProblem } from "../../lib/problems";
-import { JUDGE0_URI } from "../../lib/config";
 import axios from "axios";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { db } from "../../db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
+
+const JUDGE0_URI = process.env.JUDGE0_URI || "https://judge.100xdevs.com";
+
+const SECRET_KEY = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!;
+const CLOUDFLARE_TURNSTILE_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -18,10 +23,10 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
-  const userId = session.user.id
+  const userId = session.user.id;
   //using the ratelimt function from lib, 1 req per 10 seconds
   const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
 
@@ -44,7 +49,29 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 400,
+      }
+    );
+  }
+
+  let formData = new FormData();
+  formData.append("secret", SECRET_KEY);
+  formData.append("response", submissionInput.data.token);
+
+  const result = await fetch(CLOUDFLARE_TURNSTILE_URL, {
+    body: formData,
+    method: "POST",
+  });
+  const challengeResult = await result.json();
+  const challengeSucceeded = (challengeResult).success;
+
+  if (!challengeSucceeded && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      {
+        message: "Invalid reCAPTCHA token",
       },
+      {
+        status: 403,
+      }
     );
   }
 
@@ -61,53 +88,45 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
   const problem = await getProblem(
     dbProblem.slug,
-    submissionInput.data.languageId,
+    submissionInput.data.languageId
   );
   problem.fullBoilerplateCode = problem.fullBoilerplateCode.replace(
     "##USER_CODE_HERE##",
-    submissionInput.data.code,
+    submissionInput.data.code
   );
-
   const response = await axios.post(
     `${JUDGE0_URI}/submissions/batch?base64_encoded=false`,
     {
       submissions: problem.inputs.map((input, index) => ({
         language_id: LANGUAGE_MAPPING[submissionInput.data.languageId]?.judge0,
-        source_code: problem.fullBoilerplateCode,
-        stdin: input,
+        source_code: problem.fullBoilerplateCode.replace(
+          "##INPUT_FILE_INDEX##",
+          index.toString()
+        ),
         expected_output: problem.outputs[index],
-        callback_url:
-          process.env.JUDGE0_CALLBACK_URL ??
-          "https://judge0-callback.100xdevs.com/submission-callback",
       })),
-    },
+    }
   );
 
   const submission = await db.submission.create({
     data: {
       userId: session.user.id,
       problemId: submissionInput.data.problemId,
-      languageId: LANGUAGE_MAPPING[submissionInput.data.languageId]?.internal!,
       code: submissionInput.data.code,
-      fullCode: problem.fullBoilerplateCode,
-      status: "PENDING",
       activeContestId: submissionInput.data.activeContestId,
+      testcases: {
+        connect: response.data,
+      },
     },
-  });
-
-  await db.testCase.createMany({
-    data: problem.inputs.map((input, index) => ({
-      submissionId: submission.id,
-      status: "PENDING",
-      index,
-      judge0TrackingId: response.data[index].token,
-    })),
+    include: {
+      testcases: true,
+    },
   });
 
   return NextResponse.json(
@@ -117,7 +136,7 @@ export async function POST(req: NextRequest) {
     },
     {
       status: 200,
-    },
+    }
   );
 }
 
@@ -130,7 +149,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 401,
-      },
+      }
     );
   }
   const url = new URL(req.url);
@@ -144,14 +163,16 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
 
-  const submission = await db.submission.findUnique({
+  var submission = await db.submission.findUnique({
     where: {
       id: submissionId,
-      userId: session.user.id,
+    },
+    include: {
+      testcases: true,
     },
   });
 
@@ -162,23 +183,18 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
-  const testCases = await db.testCase.findMany({
-    where: {
-      submissionId: submissionId,
-    },
-  });
+  // increase the solve count here, or asynchronously later
 
   return NextResponse.json(
     {
       submission,
-      testCases,
     },
     {
       status: 200,
-    },
+    }
   );
 }
