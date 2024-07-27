@@ -1,4 +1,4 @@
-Problem Name: "Print Patterns"
+Problem Name: "Pattern Printing"
 Function Name: solve
 Input Structure:
 Input Field: int x
