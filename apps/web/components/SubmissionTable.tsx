@@ -75,11 +75,11 @@ export function SubmissionTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Submission ID</TableHead>
-            <TableHead>Result</TableHead>
-            <TableHead>Tests Passed</TableHead>
-            <TableHead>Time</TableHead>
-            <TableHead>Memory</TableHead>
+            <TableHead className="text-white">Submission ID</TableHead>
+            <TableHead className="text-white">Result</TableHead>
+            <TableHead className="text-white">Tests Passed</TableHead>
+            <TableHead className="text-white">Time</TableHead>
+            <TableHead className="text-white">Memory</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

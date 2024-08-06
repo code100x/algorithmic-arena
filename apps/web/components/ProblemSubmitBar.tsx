@@ -1,8 +1,10 @@
 "use client";
 import Editor from "@monaco-editor/react";
+import CodeMirrorEditor from "@uiw/react-codemirror";
+import { loadLanguage } from "@uiw/codemirror-extensions-langs";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
+import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { Button } from "@repo/ui/button";
-import { Label } from "@repo/ui/label";
 import {
   Select,
   SelectTrigger,
@@ -50,27 +52,21 @@ export const ProblemSubmitBar = ({
   const [activeTab, setActiveTab] = useState("problem");
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-      <div className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Tabs
-              defaultValue="problem"
-              className="rounded-md p-1"
-              value={activeTab}
-              onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-2 w-full">
-                <TabsTrigger value="problem">Submit</TabsTrigger>
-                <TabsTrigger value="submissions">Submissions</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
-        <div className={`${activeTab === "problem" ? "" : "hidden"}`}>
-          <SubmitProblem problem={problem} contestId={contestId} />
-        </div>
-        {activeTab === "submissions" && <Submissions problem={problem} />}
+    <div>
+      <Tabs
+        defaultValue="problem"
+        className="rounded-md px-2 mb-1 dark:border border border-gray-700/50"
+        value={activeTab}
+        onValueChange={setActiveTab}>
+        <TabsList className="grid grid-cols-2 w-full">
+          <TabsTrigger value="problem">Submit</TabsTrigger>
+          <TabsTrigger value="submissions">Submissions</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <div className={`${activeTab === "problem" ? "" : "hidden"}`}>
+        <SubmitProblem problem={problem} contestId={contestId} />
       </div>
+      {activeTab === "submissions" && <Submissions problem={problem} />}
     </div>
   );
 };
@@ -105,7 +101,9 @@ function SubmitProblem({
   const [language, setLanguage] = useState(
     Object.keys(LANGUAGE_MAPPING)[0] as string
   );
+
   const [code, setCode] = useState<Record<string, string>>({});
+
   const [status, setStatus] = useState<string>(SubmitStatus.SUBMIT);
   const [testcases, setTestcases] = useState<any[]>([]);
   const [token, setToken] = useState<string>("");
@@ -171,44 +169,46 @@ function SubmitProblem({
   }
 
   return (
-    <div>
-      <Label htmlFor="language">Language</Label>
-      <Select
-        value={language}
-        defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select language" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.keys(LANGUAGE_MAPPING).map((language) => (
-            <SelectItem key={language} value={language}>
-              {LANGUAGE_MAPPING[language]?.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <div className="pt-4 rounded-md">
-        <Editor
-          height={"60vh"}
+    <>
+      <div className="min-h-0 flex-grow min-w-full mr-[8px] mb-[8px] rounded-lg overflow-hidden dark:bg-black dark:border dar:border-borders border border-gray-700/50">
+        <div className="h-[50px] bg-black relative dark:border-b dark:border-borders border-b border-b-gray-700/50">
+          <div className="inline-block relative w-fit h-fit rounded-md ml-[13px] top-[8px] px-[6px] py-[6px] text-white hover:text-white cursor-pointer text-[14px] transition select-none">
+            <Select
+              value={language}
+              defaultValue="cpp"
+              onValueChange={(value) => setLanguage(value)}>
+              <SelectTrigger >
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(LANGUAGE_MAPPING).map((language) => (
+                  <SelectItem key={language} value={language}>
+                    {LANGUAGE_MAPPING[language]?.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <CodeMirrorEditor
           value={code[language]}
-          theme="vs-dark"
-          onMount={() => { }}
-          options={{
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-          }}
-          language={LANGUAGE_MAPPING[language]?.monaco}
+          //@ts-ignore
+          extensions={[loadLanguage(LANGUAGE_MAPPING[language]?.monaco ?? "javascript")!]}
+          theme={tokyoNight}
           onChange={(value) => {
-            //@ts-ignore
             setCode({ ...code, [language]: value });
           }}
-          defaultLanguage="javascript"
+          width="100%"
+          height="75vh"
         />
       </div>
-      <div className="flex justify-end">
+
+      <div
+        className="flex justify-end items-center dark:bg-black w-full h-[55px] rounded-lg overflow-hidden dark:border dark:border-borders border border-gray-700/50"
+      >
         {process.env.NODE_ENV === "production" ?
-          < Turnstile
+          <Turnstile
             onSuccess={(token: string) => {
               setToken(token);
             }}
@@ -218,7 +218,7 @@ function SubmitProblem({
         <Button
           disabled={status === SubmitStatus.PENDING}
           type="submit"
-          className="mt-4 align-right"
+          className="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 font-medium rounded-lg px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-800/50 dark:border-gray-700/50 dark:text-green-500 dark:hover:bg-gray-700/50 me-2"
           onClick={session.data?.user ? submit : () => signIn()}>
           {session.data?.user
             ? status === SubmitStatus.PENDING
@@ -228,7 +228,7 @@ function SubmitProblem({
         </Button>
       </div>
       <RenderTestcase testcases={testcases} />
-    </div>
+    </>
   );
 }
 
