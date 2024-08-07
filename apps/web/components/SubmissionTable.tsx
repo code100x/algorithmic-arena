@@ -21,9 +21,11 @@ export interface ISubmission {
   code: string;
   fullCode: string;
   status: string;
+
   testcases: {
-    status: string;
+
     index: number;
+    status_id:number;
   }[];
 }
 
@@ -49,19 +51,19 @@ function getColor(status: string) {
 function getIcon(status: string) {
   switch (status) {
     case "AC":
-      return <CheckIcon className="h-4 w-4" />;
+      return <CheckIcon className="w-4 h-4" />;
     case "FAIL":
-      return <CircleX className="h-4 w-4" />;
+      return <CircleX className="w-4 h-4" />;
     case "REJECTED":
-      return <CircleX className="h-4 w-4" />;
+      return <CircleX className="w-4 h-4" />;
     case "TLE":
-      return <ClockIcon className="h-4 w-4" />;
+      return <ClockIcon className="w-4 h-4" />;
     case "COMPILATION_ERROR":
-      return <CircleX className="h-4 w-4" />;
+      return <CircleX className="w-4 h-4" />;
     case "PENDING":
-      return <ClockIcon className="h-4 w-4" />;
+      return <ClockIcon className="w-4 h-4" />;
     default:
-      return <ClockIcon className="h-4 w-4" />;
+      return <ClockIcon className="w-4 h-4" />;
   }
 }
 
@@ -83,25 +85,25 @@ export function SubmissionTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-  {submissions.map((submission) => (
-    <TableRow key={submission.id}> 
-      <TableCell>{submission.id.substr(0, 8)}</TableCell>
-      <TableCell className={getColor(submission.status)}>
-        {getIcon(submission.status)}
-      </TableCell>
-      <TableCell>
-        {
-          submission.testcases.filter(
-            (testcase) => testcase.status === "AC",
-          ).length
-        }
-        /{submission.testcases.length}
-      </TableCell>
-      <TableCell>{submission.time}</TableCell>
-      <TableCell>{submission.memory}</TableCell>
-    </TableRow>
-  ))}
-</TableBody>
+          {submissions.map((submission) => (
+            <TableRow>
+              <TableCell>{submission.id.substr(0, 8)}</TableCell>
+              <TableCell className={getColor(submission.status)}>
+                {getIcon(submission.status)}
+              </TableCell>
+              <TableCell>
+                {
+                  submission.testcases.filter(
+                    (testcase) => testcase.status_id === 3,
+                  ).length
+                }
+                /{submission.testcases.length}
+              </TableCell>
+              <TableCell>{submission.time}</TableCell>
+              <TableCell>{submission.memory}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
     </div>
   );
