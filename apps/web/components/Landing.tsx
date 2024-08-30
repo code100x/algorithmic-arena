@@ -28,10 +28,11 @@ export function Landing() {
     </div>
   );
 }
+
 function CTA() {
   return (
     <section className="w-full p-10 px-3 flex overflow-x-hidden items-center justify-center">
-      <div className="w-full flex justify-between items-center md:items-end flex-col md:flex-row pt-10 my-5 px-5 md:px-[3rem] mx-4 border-[1px] border-solid border-[hsla(217,33%,17%,1)] gap-3  bg-secondary rounded-xl" style={{ background: "linear-gradient(180deg, #0F172A -63.07%, #020817 54.32%)" }}>
+      <div className="w-full flex justify-between bg-gradient-to-b items-center from-[#F1F5F9] to-[#fff] dark:from-[#0F172A] dark:to-[#020817] md:items-end flex-col md:flex-row pt-10 my-5 px-5 md:px-[3rem] mx-4 border-[1px] border-solid dark:border-[hsla(217,33%,17%,1)] gap-3  bg-secondary rounded-xl" >
         <div className="sm:flex m-2 max-w-sm md:max-w-6xl flex-1 text-center md:text-left flex-col md:py-[2rem] items-center justify-center md:items-start">
           <h1 className="text-3xl md:text-4xl mb-4">Ready to Elevate Your <span className="text-primary font-bold">Coding Skills?</span></h1>
           <p className="text-gray-500 leading-7 mb-2 px-2 md:px-0 dark:text-gray-400 max-w-2xl">
@@ -67,7 +68,7 @@ function Platform({ children }: { children: React.ReactNode }) {
 }
 function FeatureCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="py-5 px-4 border-[1px] sm:max-w-lg border-solid border-[hsla(217,33%,17%,1)] gap-3 flex-wrap bg-secondary rounded-xl" >
+    <div className="py-5 px-4 border-[1px] sm:max-w-lg border-solid dark:border-[hsla(217,33%,17%,1)] gap-3 flex-wrap bg-secondary rounded-xl" >
       <div className="flex mb-4 gap-4 items-center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M4.16663 3.33659C3.70639 3.33659 3.33329 3.70968 3.33329 4.16992V15.8366C3.33329 16.2968 3.70639 16.6699 4.16663 16.6699H15.8333C16.2935 16.6699 16.6666 16.2968 16.6666 15.8366V4.16992C16.6666 3.70968 16.2935 3.33659 15.8333 3.33659H4.16663ZM1.66663 4.16992C1.66663 2.78921 2.78591 1.66992 4.16663 1.66992H15.8333C17.214 1.66992 18.3333 2.78921 18.3333 4.16992V15.8366C18.3333 17.2173 17.214 18.3366 15.8333 18.3366H4.16663C2.78591 18.3366 1.66663 17.2173 1.66663 15.8366V4.16992Z" fill="#4E7AFF" />
@@ -82,7 +83,7 @@ function FeatureCard({ title, description }: { title: string; description: strin
 }
 function Languages() {
   return (
-    <section className="bg-gradient-to-b flex flex-col items-center justify-center from-[#0F172A] to-[#020817] text-center  w-full py-10 sm:py-[10rem] rounded-xl">
+    <section className="bg-gradient-to-b flex flex-col items-center justify-center from-[#F1F5F9] to-[#fff] dark:from-[#0F172A] dark:to-[#020817] text-center  w-full py-10 sm:py-[10rem] rounded-xl">
       <div className="container flex text-center flex-col items-center justify-center ">
         <h1 className="text-3xl md:text-4xl mb-4">Supported <span className="text-primary font-bold">Languages</span></h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-2xl">
