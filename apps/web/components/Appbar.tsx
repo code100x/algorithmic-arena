@@ -11,13 +11,12 @@ import Image from "next/image";
 export function Appbar() {
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
-
   return (
     <header className="bg-background border-b border-gray-800 text-white px-4 md:px-6 py-3 flex items-center justify-between">
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
         <Image src={logo} alt="Code100x" />
         <div className="text-sm font-bold">
-          <div>algorithmic</div>
+          <div className="text-foreground">algorithmic</div>
           <div className="text-primary">arena</div>
         </div>
       </Link>
