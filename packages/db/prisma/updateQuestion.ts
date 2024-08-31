@@ -19,6 +19,9 @@ async function main(problemSlug: string, problemTitle: string) {
     `${MOUNT_PATH}/${problemSlug}/Problem.md`
   );
 
+  const t = await promisifedReadFile(`${MOUNT_PATH}/${problemSlug}/topics.txt`);
+  const topics = t.split(",");
+
   const problem = await prismaClient.problem.upsert({
     where: {
       slug: problemSlug,
@@ -28,9 +31,11 @@ async function main(problemSlug: string, problemTitle: string) {
       slug: problemSlug,
       description: problemStatement,
       hidden: false,
+      topics,
     },
     update: {
       description: problemStatement,
+      topics,
     },
   });
 
@@ -59,7 +64,7 @@ async function main(problemSlug: string, problemTitle: string) {
   );
 }
 
-export function addProblemsInDB() {
+export async function addProblemsInDB() {
   fs.readdir(MOUNT_PATH, (err, dirs) => {
     if (err) {
       console.error("Error reading directory:", err);

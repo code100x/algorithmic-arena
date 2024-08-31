@@ -10,7 +10,10 @@
     "./select": "./src/@/components/ui/select.tsx",
     "./label": "./src/@/components/ui/label.tsx",
     "./textarea": "./src/@/components/ui/textarea.tsx",
-    "./tabs": "./src/@/components/ui/tabs.tsx"
+    "./tabs": "./src/@/components/ui/tabs.tsx",
+    "./badge": "./src/@/components/ui/badge.tsx",
+    "./input": "./src/@/components/ui/input.tsx",
+    "./difficulty-badge": "./src/@/components/difficulty-badge.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -19,6 +22,7 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/common": "workspace:*",
     "@turbo/gen": "^1.12.4",
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",

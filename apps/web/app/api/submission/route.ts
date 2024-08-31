@@ -3,7 +3,7 @@ import { SubmissionInput } from "@repo/common/zod";
 import { getProblem } from "../../lib/problems";
 import axios from "axios";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
-import { db } from "../../db";
+import db from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { rateLimit } from "../../lib/rateLimit";
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
   });
   const challengeResult = await result.json();
-  const challengeSucceeded = (challengeResult).success;
+  const challengeSucceeded = challengeResult.success;
 
   if (!challengeSucceeded && process.env.NODE_ENV === "production") {
     return NextResponse.json(

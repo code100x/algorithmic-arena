@@ -1,4 +1,4 @@
-import { db } from "../db";
+import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
@@ -49,7 +49,6 @@ export const authOptions = {
         password: { label: "password", type: "password", placeholder: "" },
       },
       async authorize(credentials: any) {
-
         if (!credentials.username || !credentials.password) {
           return null;
         }
@@ -86,11 +85,11 @@ export const authOptions = {
         try {
           // sign up
           if (credentials.username.length < 3) {
-            return null
+            return null;
           }
 
           if (credentials.username.password < 3) {
-            return null
+            return null;
           }
 
           const user = await db.user.create({

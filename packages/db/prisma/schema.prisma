@@ -60,6 +60,8 @@ model Problem {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   difficulty         Difficulty          @default(MEDIUM)
+  points             Int                 @default(100)
+  topics             String[]
   contestSubmissions ContestSubmission[]
   contests           ContestProblem[]
   submissions        Submission[]

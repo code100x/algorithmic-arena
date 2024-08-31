@@ -11,7 +11,7 @@ export function Appbar() {
   const isLoading = sessionStatus === "loading";
 
   return (
-    <header className="bg-gray-900 text-white px-4 md:px-6 py-3 flex items-center justify-between">
+    <header className="bg-gray-900 text-white px-4 md:px-6 py-3 flex items-center justify-between h-[72px]">
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
         <CodeIcon className="h-6 w-6" />
         <span className="text-lg font-bold">Code100x</span>
@@ -36,10 +36,9 @@ export function Appbar() {
 
       {!isLoading && !session?.user && (
         <div className="flex items-center gap-4">
-        <ModeToggle />
-        <Button onClick={() => signIn()}>Sign in</Button>
+          <ModeToggle />
+          <Button onClick={() => signIn()}>Sign in</Button>
         </div>
-      
       )}
 
       {isLoading && <div className="flex items-center gap-4"></div>}
