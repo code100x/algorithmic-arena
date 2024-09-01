@@ -41,24 +41,26 @@ const users = [
 ];
 
 export async function addUsers() {
-  users.map(async (u) => {
-    await prisma.user.upsert({
-      where: {
-        id: u.id,
-      },
-      create: {
-        id: u.id,
-        email: u.email,
-        name: u.name,
-        password: await bcrypt.hash(u.password, 10),
-        role: u.role || UserRole.USER,
-      },
-      update: {
-        email: u.email,
-        name: u.name,
-        password: await bcrypt.hash(u.password, 10),
-        role: u.role || UserRole.USER,
-      },
-    });
-  });
+  await Promise.all(
+    users.map(async (u) => {
+      await prisma.user.upsert({
+        where: {
+          id: u.id,
+        },
+        create: {
+          id: u.id,
+          email: u.email,
+          name: u.name,
+          password: await bcrypt.hash(u.password, 10),
+          role: u.role || UserRole.USER,
+        },
+        update: {
+          email: u.email,
+          name: u.name,
+          password: await bcrypt.hash(u.password, 10),
+          role: u.role || UserRole.USER,
+        },
+      });
+    })
+  );
 }

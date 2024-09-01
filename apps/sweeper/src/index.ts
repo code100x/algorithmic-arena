@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, SubmissionResult } from "@prisma/client";
 import { db } from "./db";
 import { updateContest, updateMemoryAndExecutionTime } from "./utils";
 type SubmissionWithTestcases = Prisma.SubmissionGetPayload<{
@@ -52,7 +52,7 @@ async function updateSubmission(queued_Submission: SubmissionWithTestcases) {
         id: queued_Submission.id,
       },
       data: {
-        status: "AC",
+        status: SubmissionResult.ACCEPTED,
       },
     });
   }

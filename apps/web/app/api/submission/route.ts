@@ -120,6 +120,7 @@ export async function POST(req: NextRequest) {
       problemId: submissionInput.data.problemId,
       code: submissionInput.data.code,
       activeContestId: submissionInput.data.activeContestId,
+      languageId: LANGUAGE_MAPPING[submissionInput.data.languageId]!.internal,
       testcases: {
         connect: response.data,
       },

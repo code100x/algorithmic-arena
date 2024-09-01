@@ -87,6 +87,7 @@ model Submission {
   id              String           @id @default(cuid())
   problemId       String
   userId          String
+  languageId      Int
   code            String
   activeContestId String?
   createdAt       DateTime         @default(now())
@@ -94,6 +95,7 @@ model Submission {
   status          SubmissionResult @default(PENDING)
   memory          Int?
   time            Float?
+  language        Language         @relation(fields: [languageId], references: [id])
   testcases       submissions[]
   activeContest   Contest?         @relation(fields: [activeContestId], references: [id])
   user            User             @relation(fields: [userId], references: [id])
@@ -107,6 +109,7 @@ model Language {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   DefaultCode DefaultCode[]
+  Submission  Submission[]
 }
 
 model ContestSubmission {
@@ -135,7 +138,7 @@ model ContestPoints {
 }
 
 enum SubmissionResult {
-  AC
+  ACCEPTED
   REJECTED
   PENDING
 }

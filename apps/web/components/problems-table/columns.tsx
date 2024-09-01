@@ -2,14 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import DifficultyBadge from "@repo/ui/difficulty-badge";
-import {
-  CheckCircle,
-  Clock,
-  XCircle,
-  HelpCircle,
-  Minus,
-  Clock8,
-} from "lucide-react";
+import { Minus } from "lucide-react";
 import { capitalize, cn } from "@repo/common/utils";
 import { Difficulty, SubmissionResult } from "@prisma/client";
 import { problemStatusIcons } from "@/app/lib/icons";

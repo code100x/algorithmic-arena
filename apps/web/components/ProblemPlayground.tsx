@@ -1,27 +1,34 @@
 "use client";
-import Editor from "@monaco-editor/react";
-import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import { Button } from "@repo/ui/button";
-import { Label } from "@repo/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@repo/ui/select";
-import { useEffect, useState } from "react";
-import { LANGUAGE_MAPPING } from "@repo/common/language";
-import axios from "axios";
-import { ISubmission, SubmissionTable } from "./SubmissionTable";
-import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
-import { toast } from "react-toastify";
-import { signIn, useSession } from "next-auth/react";
+import { ProblemWithSubmissions } from "@/app/lib/types";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { Editor } from "@monaco-editor/react";
 import {
   SubmissionResult,
   submissions as SubmissionsType,
 } from "@prisma/client";
-import { Turnstile } from "@marsidev/react-turnstile";
+import { LANGUAGE_MAPPING } from "@repo/common/language";
+import { Button } from "@repo/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/select";
+import axios from "axios";
+import {
+  AlignLeft,
+  CheckIcon,
+  CircleX,
+  ClockIcon,
+  Play,
+  Redo,
+  RefreshCcw,
+  Sparkles,
+} from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const TURNSTILE_SITE_KEY =
   process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
@@ -34,78 +41,11 @@ enum SubmitStatus {
   FAILED = "FAILED",
 }
 
-export interface IProblem {
-  id: string;
-  title: string;
-  description: string;
-  slug: string;
-  defaultCode: {
-    languageId: number;
-    code: string;
-  }[];
-}
-
-export const ProblemSubmitBar = ({
+export default function ProblemPlayground({
   problem,
   contestId,
 }: {
-  problem: IProblem;
-  contestId?: string;
-}) => {
-  const [activeTab, setActiveTab] = useState("problem");
-
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-      <div className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Tabs
-              defaultValue="problem"
-              className="rounded-md p-1"
-              value={activeTab}
-              onValueChange={setActiveTab}
-            >
-              <TabsList className="grid grid-cols-2 w-full">
-                <TabsTrigger value="problem">Submit</TabsTrigger>
-                <TabsTrigger value="submissions">Submissions</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
-        <div className={`${activeTab === "problem" ? "" : "hidden"}`}>
-          <SubmitProblem problem={problem} contestId={contestId} />
-        </div>
-        {activeTab === "submissions" && <Submissions problem={problem} />}
-      </div>
-    </div>
-  );
-};
-
-function Submissions({ problem }: { problem: IProblem }) {
-  const [submissions, setSubmissions] = useState<ISubmission[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `/api/submission/bulk?problemId=${problem.id}`
-      );
-      setSubmissions(response.data.submissions || []);
-    };
-    fetchData();
-  }, []);
-
-  return (
-    <div>
-      <SubmissionTable submissions={submissions} />
-    </div>
-  );
-}
-
-function SubmitProblem({
-  problem,
-  contestId,
-}: {
-  problem: IProblem;
+  problem: ProblemWithSubmissions;
   contestId?: string;
 }) {
   const [language, setLanguage] = useState(
@@ -177,27 +117,42 @@ function SubmitProblem({
   }
 
   return (
-    <div>
-      <Label htmlFor="language">Language</Label>
-      <Select
-        value={language}
-        defaultValue="cpp"
-        onValueChange={(value) => setLanguage(value)}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select language" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.keys(LANGUAGE_MAPPING).map((language) => (
-            <SelectItem key={language} value={language}>
-              {LANGUAGE_MAPPING[language]?.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <div className="pt-4 rounded-md">
+    <div className="flex flex-col gap-6">
+      <div className="flex justify-between gap-6">
+        <div className="min-w-36">
+          <Select
+            value={language}
+            defaultValue="cpp"
+            onValueChange={(value) => setLanguage(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(LANGUAGE_MAPPING).map((language) => (
+                <SelectItem key={language} value={language}>
+                  {LANGUAGE_MAPPING[language]?.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-row gap-3 items-center">
+          <div className="p-2 border rounded-lg">
+            <AlignLeft className="w-4 h-4" />
+          </div>
+          <div className="p-2 border rounded-lg">
+            <Redo className="w-4 h-4" />
+          </div>
+          <div className="p-2 border rounded-lg">
+            <RefreshCcw className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
+      <div className="rounded-xl">
         <Editor
           height={"60vh"}
+          className=""
           value={code[language]}
           theme="vs-dark"
           onMount={() => {}}
@@ -213,27 +168,43 @@ function SubmitProblem({
           defaultLanguage="javascript"
         />
       </div>
-      <div className="flex justify-end">
-        {process.env.NODE_ENV === "production" ? (
-          <Turnstile
-            onSuccess={(token: string) => {
-              setToken(token);
-            }}
-            siteKey={TURNSTILE_SITE_KEY}
-          />
-        ) : null}
-        <Button
-          disabled={status === SubmitStatus.PENDING}
-          type="submit"
-          className="mt-4 align-right"
-          onClick={session.data?.user ? submit : () => signIn()}
-        >
-          {session.data?.user
-            ? status === SubmitStatus.PENDING
-              ? "Submitting"
-              : "Submit"
-            : "Login to submit"}
-        </Button>
+      <div className="flex justify-between rounded-2xl border p-4 items-center">
+        <div className="flex gap-2 items-center">
+          <Sparkles className="w-4 h-4 text-orange-400" />
+          <div className="font-medium text-2xl">Results</div>
+          {process.env.NODE_ENV === "production" ? (
+            <Turnstile
+              onSuccess={(token: string) => {
+                setToken(token);
+              }}
+              siteKey={TURNSTILE_SITE_KEY}
+            />
+          ) : null}
+        </div>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            hidden={!session.data?.user}
+            disabled={status === SubmitStatus.PENDING}
+          >
+            <div className="flex gap-2 items-center">
+              <Play className="w-4 h-4" />
+              {session.data?.user ? "Run Code" : "Login to submit"}
+            </div>
+          </Button>
+          <Button
+            disabled={status === SubmitStatus.PENDING}
+            type="submit"
+            className="text-white bg-blue-600 hover:text-background hover:bg-foreground"
+            onClick={session.data?.user ? submit : () => signIn()}
+          >
+            {session.data?.user
+              ? status === SubmitStatus.PENDING
+                ? "Submitting"
+                : "Submit"
+              : "Login to submit"}
+          </Button>
+        </div>
       </div>
       <RenderTestcase testcases={testcases} />
     </div>

@@ -63,7 +63,6 @@ async function getData(): Promise<ProblemTableType[]> {
 
 export default async function ProblemPage() {
   const data = await getData();
-  console.log(data);
 
   return (
     <div className="w-full basis-2/3">

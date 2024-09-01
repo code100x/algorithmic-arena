@@ -34,9 +34,16 @@ import {
 } from "@repo/ui/select";
 import { Difficulty, SubmissionResult } from "@prisma/client";
 import { capitalize } from "@repo/common/utils";
-import { Search } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@repo/ui/pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -215,25 +222,30 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-start space-x-2">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+      <div className="flex justify-start w-fit">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                isActive={table.getCanPreviousPage()}
+                onClick={() => table.previousPage()}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => table.nextPage()}
+                isActive={table.getCanNextPage()}
+                href="#"
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

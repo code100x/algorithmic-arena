@@ -20,8 +20,8 @@ export function ProblemComponent({
       <TabsContent value="problem" className="w-full">
         <ProblemDescription problem={problem} />
       </TabsContent>
-      <TabsContent value="submissions">
-        <ProblemSubmissions />
+      <TabsContent value="submissions" className="w-full">
+        <ProblemSubmissions problemId={problem.id} />
       </TabsContent>
     </Tabs>
   );
