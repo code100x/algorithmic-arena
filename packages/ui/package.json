@@ -13,7 +13,8 @@
     "./tabs": "./src/@/components/ui/tabs.tsx",
     "./badge": "./src/@/components/ui/badge.tsx",
     "./input": "./src/@/components/ui/input.tsx",
-    "./difficulty-badge": "./src/@/components/difficulty-badge.tsx"
+    "./difficulty-badge": "./src/@/components/difficulty-badge.tsx",
+    "./default-badge": "./src/@/components/default-badge.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

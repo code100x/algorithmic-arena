@@ -19,6 +19,7 @@ export default async function TrendingProblems() {
       solved: true,
       difficulty: true,
       slug: true,
+      _count: { select: { submissions: true } },
     },
   });
 
@@ -37,7 +38,7 @@ export default async function TrendingProblems() {
           >
             <div className="flex flex-col gap-0.5">
               <div className="text-base">{capitalize(p.title)}</div>
-              <div className="text-xs text-muted-foreground">{`${p.solved} submissions`}</div>
+              <div className="text-xs text-muted-foreground">{`${p._count.submissions} submissions`}</div>
             </div>
             <DifficultyBadge difficulty={p.difficulty} />
           </Link>

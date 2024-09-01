@@ -1,4 +1,5 @@
 import { LANGUAGE_MAPPING } from "@repo/common/language";
+import { capitalize } from "@repo/common/utils";
 import fs from "fs";
 import prismaClient from "../src";
 
@@ -22,20 +23,43 @@ async function main(problemSlug: string, problemTitle: string) {
   const t = await promisifedReadFile(`${MOUNT_PATH}/${problemSlug}/topics.txt`);
   const topics = t.split(",");
 
+  const constraints = await promisifedReadFile(
+    `${MOUNT_PATH}/${problemSlug}/constraints.md`
+  );
+
+  const examples: string[] = [];
+  const dirs = fs.readdirSync(`${MOUNT_PATH}/${problemSlug}/examples`);
+  const readExamples = dirs.map(async (dir) => {
+    const example = await promisifedReadFile(
+      `${MOUNT_PATH}/${problemSlug}/examples/${dir}`
+    );
+    return example;
+  });
+
+  await Promise.all(readExamples).then((results) => {
+    examples.push(...results);
+  });
+
   const problem = await prismaClient.problem.upsert({
     where: {
       slug: problemSlug,
     },
     create: {
-      title: problemSlug,
+      title: capitalize(problemTitle),
       slug: problemSlug,
       description: problemStatement,
       hidden: false,
       topics,
+      examples,
+      constraints,
     },
     update: {
+      title: capitalize(problemTitle),
       description: problemStatement,
+      hidden: false,
       topics,
+      examples,
+      constraints,
     },
   });
 

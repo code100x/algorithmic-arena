@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import ProblemDescription from "./ProblemDescription";
+import ProblemSubmissions from "./ProblemSubmissions";
 import { ProblemWithSubmissions } from "@/app/lib/types";
 
 export function ProblemComponent({
@@ -19,7 +20,9 @@ export function ProblemComponent({
       <TabsContent value="problem" className="w-full">
         <ProblemDescription problem={problem} />
       </TabsContent>
-      <TabsContent value="submissions">Change your password here.</TabsContent>
+      <TabsContent value="submissions">
+        <ProblemSubmissions />
+      </TabsContent>
     </Tabs>
   );
 }

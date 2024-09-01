@@ -37,7 +37,7 @@ export async function addSubmissions() {
   ];
 
   submissions.map(async (s) => {
-    await prisma.submission.upsert({
+    const sub = await prisma.submission.upsert({
       where: {
         id: s.id,
       },

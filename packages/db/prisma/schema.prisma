@@ -62,6 +62,8 @@ model Problem {
   difficulty         Difficulty          @default(MEDIUM)
   points             Int                 @default(100)
   topics             String[]
+  examples           String[]
+  constraints        String
   contestSubmissions ContestSubmission[]
   contests           ContestProblem[]
   submissions        Submission[]
