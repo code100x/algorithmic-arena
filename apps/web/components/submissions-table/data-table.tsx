@@ -38,6 +38,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,7 +52,11 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     createdAt: false,
+    id: false,
   });
+  const router = useRouter();
+  const path = usePathname();
+  console.log(path);
 
   const table = useReactTable({
     data,
@@ -136,6 +141,11 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className="cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `${path.split("/")[2]}/submissions/${row.getValue("id")}`
+                    );
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

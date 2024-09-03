@@ -33,7 +33,7 @@ export default async function TrendingProblems() {
         {problems.map((p) => (
           <Link
             key={p.slug}
-            href={`problems/${p.slug}`}
+            href={`problems/${p.id}`}
             className="flex items-center justify-between py-4"
           >
             <div className="flex flex-col gap-0.5">

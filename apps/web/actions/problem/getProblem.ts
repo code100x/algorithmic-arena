@@ -1,10 +1,12 @@
+"use server";
+
 import { authOptions } from "@/app/lib/auth";
 import { ProblemWithSubmissions } from "@/app/lib/types";
 import { Problem } from "@prisma/client";
 import db from "@repo/db/client";
 import { getServerSession } from "next-auth";
 
-export const getProblem = async (problemSlug: string, contestId?: string) => {
+export const getProblem = async (problemId: string, contestId?: string) => {
   const session = await getServerSession(authOptions);
   const userId = !session || !session.user ? "dummy" : session.user.id;
 
@@ -22,7 +24,7 @@ export const getProblem = async (problemSlug: string, contestId?: string) => {
 
     const problem = await db.problem.findFirst({
       where: {
-        slug: problemSlug,
+        id: problemId,
         contests: {
           some: {
             contestId: contestId,
@@ -47,7 +49,7 @@ export const getProblem = async (problemSlug: string, contestId?: string) => {
 
   const problem: ProblemWithSubmissions | null = await db.problem.findFirst({
     where: {
-      slug: problemSlug,
+      id: problemId,
     },
     include: {
       defaultCode: true,

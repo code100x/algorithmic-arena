@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     topics: false,
-    slug: false,
+    id: false,
   });
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
@@ -194,9 +194,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() =>
-                    router.push(`problems/${row.getValue("slug")}`)
-                  }
+                  onClick={() => router.push(`problems/${row.getValue("id")}`)}
                   className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (

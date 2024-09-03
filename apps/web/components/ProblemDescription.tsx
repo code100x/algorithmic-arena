@@ -12,7 +12,6 @@ export default function ProblemDescription({
 }: {
   problem: ProblemWithSubmissions;
 }) {
-  console.log(problem.constraints);
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between w-full">

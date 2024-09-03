@@ -18,7 +18,7 @@ export type ProblemTableType = {
 
 export const columns: ColumnDef<ProblemTableType>[] = [
   {
-    accessorKey: "slug",
+    accessorKey: "id",
   },
   {
     accessorKey: "title",

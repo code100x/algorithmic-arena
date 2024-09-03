@@ -1,12 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import ProblemDescription from "./ProblemDescription";
-import ProblemSubmissions from "./ProblemSubmissions";
 import { ProblemWithSubmissions } from "@/app/lib/types";
+import SubmissionsTable from "./submissions-table/page";
+import { ReactNode } from "react";
 
 export function ProblemComponent({
   problem,
+  children,
 }: {
   problem: ProblemWithSubmissions;
+  children: ReactNode;
 }) {
   return (
     <Tabs
@@ -21,7 +24,7 @@ export function ProblemComponent({
         <ProblemDescription problem={problem} />
       </TabsContent>
       <TabsContent value="submissions" className="w-full">
-        <ProblemSubmissions problemId={problem.id} />
+        {children}
       </TabsContent>
     </Tabs>
   );

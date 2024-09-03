@@ -19,6 +19,7 @@ export type SubmissionWithLang = Prisma.SubmissionGetPayload<{
     memory: true;
     time: true;
     createdAt: true;
+    code: true;
     language: { select: { id: true; name: true } };
   };
 }>;

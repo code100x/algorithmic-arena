@@ -21,6 +21,9 @@ const statusClassname = {
 
 export const columns: ColumnDef<SubmissionsTableType>[] = [
   {
+    accessorKey: "id",
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
