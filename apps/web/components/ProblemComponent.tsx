@@ -1,8 +1,7 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
-import ProblemDescription from "./ProblemDescription";
 import { ProblemWithSubmissions } from "@/app/lib/types";
-import SubmissionsTable from "./submissions-table/page";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { ReactNode } from "react";
+import ProblemDescription from "./ProblemDescription";
 
 export function ProblemComponent({
   problem,

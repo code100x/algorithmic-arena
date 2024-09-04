@@ -14,6 +14,7 @@
     "./badge": "./src/@/components/ui/badge.tsx",
     "./input": "./src/@/components/ui/input.tsx",
     "./pagination": "./src/@/components/ui/pagination.tsx",
+    "./resizable.tsx": "./src/@/components/ui/resizable.tsx",
     "./difficulty-badge": "./src/@/components/difficulty-badge.tsx",
     "./default-badge": "./src/@/components/default-badge.tsx"
   },
@@ -44,6 +45,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.383.0",
+    "react-resizable-panels": "^2.1.2",
     "shadcn-ui": "^0.8.0",
     "tailwind-merge": "^2.3.0"
   }

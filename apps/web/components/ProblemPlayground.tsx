@@ -1,13 +1,7 @@
 "use client";
 import { ProblemWithSubmissions } from "@/app/lib/types";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { Editor } from "@monaco-editor/react";
-import {
-  SubmissionResult,
-  submissions as SubmissionsType,
-} from "@prisma/client";
 import { LANGUAGE_MAPPING } from "@repo/common/language";
-import { Button } from "@repo/ui/button";
 import {
   Select,
   SelectContent,
@@ -15,20 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@repo/ui/select";
-import axios from "axios";
-import {
-  AlignLeft,
-  CheckIcon,
-  CircleX,
-  ClockIcon,
-  Play,
-  Redo,
-  RefreshCcw,
-  Sparkles,
-} from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { AlignLeft, Redo, RefreshCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 import ProblemResults from "./ProblemResults";
 
 export default function ProblemPlayground({
@@ -77,13 +59,13 @@ export default function ProblemPlayground({
           </Select>
         </div>
         <div className="flex flex-row gap-3 items-center">
-          <div className="p-2 border rounded-lg">
+          <div className="p-2 border rounded-lg cursor-pointer">
             <AlignLeft className="w-4 h-4" />
           </div>
-          <div className="p-2 border rounded-lg">
+          <div className="p-2 border rounded-lg cursor-pointer">
             <Redo className="w-4 h-4" />
           </div>
-          <div className="p-2 border rounded-lg">
+          <div className="p-2 border rounded-lg cursor-pointer">
             <RefreshCcw className="w-4 h-4" />
           </div>
         </div>

@@ -9,6 +9,7 @@ import { CheckIcon, CircleX, ClockIcon, Play, Sparkles } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { RenderTestcase } from "./TestcaseRender";
 
 const TURNSTILE_SITE_KEY =
   process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
@@ -119,8 +120,8 @@ export default function ProblemResults({
   }
 
   return (
-    <div className="">
-      <div className="flex justify-between rounded-2xl border p-4 items-center">
+    <div className="flex flex-col gap-4 rounded-2xl border p-4">
+      <div className="flex justify-between flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="flex gap-2 items-center">
           {getSubmissionStatusIcon(status)}
           {getSubmissionStatusString(status)}
@@ -158,47 +159,9 @@ export default function ProblemResults({
           </Button>
         </div>
       </div>
-      <RenderTestcase testcases={testcases} />
-    </div>
-  );
-}
-
-function renderResult(status: number | null) {
-  switch (status) {
-    case 1:
-      return <ClockIcon className="h-6 w-6 text-yellow-500" />;
-    case 2:
-      return <ClockIcon className="h-6 w-6 text-yellow-500" />;
-    case 3:
-      return <CheckIcon className="h-6 w-6 text-green-500" />;
-    case 4:
-      return <CircleX className="h-6 w-6 text-red-500" />;
-    case 5:
-      return <ClockIcon className="h-6 w-6 text-red-500" />;
-    case 6:
-      return <CircleX className="h-6 w-6 text-red-500" />;
-    case 13:
-      return <div className="text-gray-500">Internal Error!</div>;
-    case 14:
-      return <div className="text-gray-500">Exec Format Error!</div>;
-    default:
-      return <div className="text-gray-500">Runtime Error!</div>;
-  }
-}
-
-function RenderTestcase({ testcases }: { testcases: SubmissionsType[] }) {
-  return (
-    <div className="grid grid-cols-6 gap-4">
-      {testcases.map((testcase, index) => (
-        <div key={index} className="border rounded-md">
-          <div className="px-2 pt-2 flex justify-center">
-            <div className="">Test #{index + 1}</div>
-          </div>
-          <div className="p-2 flex justify-center">
-            {renderResult(testcase.status_id)}
-          </div>
-        </div>
-      ))}
+      {testcases && testcases.length > 0 && (
+        <RenderTestcase testcases={testcases} />
+      )}
     </div>
   );
 }

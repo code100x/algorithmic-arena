@@ -71,7 +71,7 @@ async function runMainLoop() {
         },
       });
       for (const submission of submissions || []) {
-        // await updateSubmission(submission);
+        await updateSubmission(submission);
       }
     } catch (err) {
       console.error("Error during processing:", err);
