@@ -6,7 +6,7 @@ export function  LanguageSectionLanding (){
       <div className="flex flex-col items-center text-center gap-4">
          <div className="text-5xl font-bold">Supported <span className="text-[#4E7AFF]">Languages</span></div>
          <div className="text-sm text-gray-500 w-1/3">Solve problems in your preferred language with Algorithmic Arena, offering a wide range of programming language options.</div>
-         <div className="flex gap-2 bg-black rounded-md p-2">
+         <div className="flex gap-2 bg-gray-100 dark:bg-black rounded-md p-2">
             {languages.map((lang:string,index:number)=><img key={index} src={`/languagesIcon/${lang}`} alt="lng icons" />)}
          </div>
          <div>& Many More</div>
