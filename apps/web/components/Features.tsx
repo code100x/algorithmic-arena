@@ -38,14 +38,14 @@ export function Features() {
         <div className="text-5xl font-bold">
           Platform <span className="text-[#4E7AFF]">Features</span>
         </div>
-        <div className="text-sm text-gray-500 w-2/3">
+        <div className="text-sm text-gray-500 w-full md:w-2/3">
           Unlock the Full Potential of Competitive Programming with These Key
           Features
         </div>
         <div className="grid gap-2 grid-cols-1 md:grid-cols-2 p-2 ">
           {Features.map((lang: any, index: number) => (
             <div
-              className={`border-[1px] rounded-md p-2 text-start gap-2 flex flex-col w-[80%] ${
+              className={`border-[1px] rounded-md p-2 text-start gap-2 flex flex-col  ${
                 index % 2 === 0 ? 'mr-0' : 'ml-0'
               }`}
               key={index}
