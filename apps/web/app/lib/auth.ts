@@ -137,4 +137,10 @@ export const authOptions = {
       return newToken;
     },
   },
+  pages: {
+    signIn: '/auth/signin',
+    // signUp: '/auth/signup',
+     newUser: '/auth/signup',
+    error: '/auth/error',
+  },
 } satisfies NextAuthOptions;

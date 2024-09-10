@@ -26,11 +26,13 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body className={chivo.variable + " " + rubik.variable}>
+      <body className={chivo.variable + " " + rubik.variable +" "+"min-h-dvh  flex flex-col "}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <Providers>
           <Appbar />
+          {/* <div className=""> */}
           {children}
+          {/* </div> */}
           <Footer />
         </Providers>
       </ThemeProvider>
