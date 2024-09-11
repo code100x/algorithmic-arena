@@ -63,7 +63,7 @@ model Problem {
   points             Int                 @default(100)
   topics             String[]
   examples           String[]
-  constraints        String
+  constraints        String?
   contestSubmissions ContestSubmission[]
   contests           ContestProblem[]
   submissions        Submission[]

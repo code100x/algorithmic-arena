@@ -2,6 +2,7 @@ import { LANGUAGE_MAPPING } from "@repo/common/language";
 import { capitalize } from "@repo/common/utils";
 import fs from "fs";
 import prismaClient from "../src";
+import { parse } from "yaml";
 
 const MOUNT_PATH = process.env.MOUNT_PATH ?? "../../apps/problems";
 function promisifedReadFile(path: string): Promise<string> {
@@ -15,51 +16,51 @@ function promisifedReadFile(path: string): Promise<string> {
   });
 }
 
-async function main(problemSlug: string, problemTitle: string) {
+type ProblemYaml = {
+  Title: string;
+  Description: string;
+  Constraints?: string[];
+  Examples?: { Input: string; Output: string }[];
+  Topics?: string[];
+};
+
+async function main(problemSlug: string) {
   const problemStatement = await promisifedReadFile(
-    `${MOUNT_PATH}/${problemSlug}/Problem.md`
+    `${MOUNT_PATH}/${problemSlug}/Problem.yml`
   );
 
-  const t = await promisifedReadFile(`${MOUNT_PATH}/${problemSlug}/topics.txt`);
-  const topics = t.split(",");
+  const problemYaml: ProblemYaml = parse(problemStatement);
+  console.log(problemYaml);
 
-  const constraints = await promisifedReadFile(
-    `${MOUNT_PATH}/${problemSlug}/constraints.md`
-  );
-
-  const examples: string[] = [];
-  const dirs = fs.readdirSync(`${MOUNT_PATH}/${problemSlug}/examples`);
-  const readExamples = dirs.map(async (dir) => {
-    const example = await promisifedReadFile(
-      `${MOUNT_PATH}/${problemSlug}/examples/${dir}`
-    );
-    return example;
+  const examples = problemYaml.Examples?.map((example) => {
+    return `**Input:** \`${example.Input}\`\n\n**Output:** \`${example.Output}\``;
   });
 
-  await Promise.all(readExamples).then((results) => {
-    examples.push(...results);
-  });
+  let constraints = problemYaml.Constraints?.reduce((acc, constraint) => {
+    return `${acc}- \`${constraint}\`\n`;
+  }, "");
+  constraints = constraints?.replace(/\n$/, "");
 
   const problem = await prismaClient.problem.upsert({
     where: {
       slug: problemSlug,
     },
     create: {
-      title: capitalize(problemTitle),
+      title: problemYaml.Title,
       slug: problemSlug,
-      description: problemStatement,
+      description: problemYaml.Description,
       hidden: false,
-      topics,
-      examples,
-      constraints,
+      topics: problemYaml.Topics ?? [],
+      examples: examples ?? [],
+      constraints: constraints ?? null,
     },
     update: {
-      title: capitalize(problemTitle),
-      description: problemStatement,
+      title: problemYaml.Title,
+      description: problemYaml.Description,
       hidden: false,
-      topics,
-      examples,
-      constraints,
+      topics: problemYaml.Topics ?? [],
+      examples: examples ?? [],
+      constraints: constraints ?? null,
     },
   });
 
@@ -95,7 +96,7 @@ export async function addProblemsInDB() {
       return;
     }
     dirs.forEach(async (dir) => {
-      await main(dir, dir);
+      await main(dir);
     });
   });
 }

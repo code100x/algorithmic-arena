@@ -1,0 +1,15 @@
+Title: "Classroom"
+Description: "Given an array of integers, find the maximum sum of a pair of elements in the array."
+Constraints:
+  - "1 <= len(arr) <= 10^4"
+  - "-10^9 <= arr[i] <= 10^9"
+Examples:
+  - Input: "arr = [1, 2, 3, 4, 5]"
+    Output: "9"
+  - Input: "arr = [2, 3, 4, 5, 1, 100]"
+    Output: "105"
+Topics:
+  - "Array"
+  - "Two Pointers"
+  - "Sorting"
+  - "Greedy"

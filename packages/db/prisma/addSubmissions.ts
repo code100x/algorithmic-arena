@@ -18,14 +18,20 @@ export async function addSubmissions() {
       id: "1",
       problemId: problems[0].id,
       userId: "1",
-      code: "",
+      code: `function sum(num1, num2) {
+        // Implementation goes here
+        return result;
+      }`,
       languageId: 1,
     },
     {
       id: "2",
       problemId: problems[1].id,
       userId: "1",
-      code: "",
+      code: `function sum(num1, num2) {
+        // Implementation goes here
+        return result;
+      }`,
       status: SubmissionResult.ACCEPTED,
       languageId: 2,
     },
@@ -33,7 +39,10 @@ export async function addSubmissions() {
       id: "3",
       problemId: problems[2].id,
       userId: "1",
-      code: "",
+      code: `function sum(num1, num2) {
+        // Implementation goes here
+        return result;
+      }`,
       status: SubmissionResult.REJECTED,
       languageId: 4,
     },

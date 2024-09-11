@@ -31,7 +31,7 @@ async function updateSubmission(queued_Submission: SubmissionWithTestcases) {
             id: queued_Submission.id,
           },
           data: {
-            status: "REJECTED",
+            status: SubmissionResult.REJECTED,
           },
         });
         return; // Exit early since the flow is broken

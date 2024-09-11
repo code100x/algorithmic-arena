@@ -1,14 +1,14 @@
-import React from "react";
-import { getProblem } from "@/actions/problem/getProblem";
-import { ProblemSubmitBar } from "@/components/ProblemSubmitBar";
-import { ProblemComponent } from "@/components/ProblemComponent";
-import ProblemPlayground from "@/components/ProblemPlayground";
 import SubmissionsTable from "@/components/submissions-table/page";
+import { getServerSession } from "next-auth";
 
 export default async function page({
   params: { problemId },
 }: {
   params: { problemId: string };
 }) {
+  const session = await getServerSession();
+  if (!session || !session.user)
+    return <div className="">Please login to view your submissions</div>;
+
   return <SubmissionsTable problemId={problemId} />;
 }

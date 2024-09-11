@@ -12,6 +12,7 @@ export default function ProblemDescription({
 }: {
   problem: ProblemWithSubmissions;
 }) {
+  console.log(problem.submissions);
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between w-full">
@@ -37,30 +38,36 @@ export default function ProblemDescription({
       <div className="font-medium text-muted-foreground">
         {problem.description}
       </div>
-      <div className="flex flex-col gap-4">
-        {problem.examples.map((e, i) => (
-          <div className="flex flex-col gap-2">
-            <div key={i} className="font-medium">{`Example ${i + 1}`}</div>
-            <div className="flex flex-col gap-1 py-1 px-2 bg-accent rounded-lg">
-              <Markdown>{e}</Markdown>
+      {problem.examples.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {problem.examples.map((e, i) => (
+            <div className="flex flex-col gap-2">
+              <div key={i} className="font-medium">{`Example ${i + 1}`}</div>
+              <div className="flex flex-col gap-1 py-1 px-2 bg-accent rounded-lg">
+                <Markdown>{e}</Markdown>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="font-medium">Constraints</div>
-        <div className="flex flex-col gap-1 py-1 px-2 bg-accent rounded-lg">
-          <Markdown>{problem.constraints}</Markdown>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="font-medium">Related Topics</div>
-        <div className="flex gap-2">
-          {problem.topics.map((t) => (
-            <DefaultBadge text={t} />
           ))}
         </div>
-      </div>
+      )}
+      {problem.constraints && (
+        <div className="flex flex-col gap-2">
+          <div className="font-medium">Constraints</div>
+          <div className="flex flex-col gap-1 py-1 px-2 bg-accent rounded-lg">
+            <Markdown>{problem.constraints}</Markdown>
+          </div>
+        </div>
+      )}
+      {problem.topics.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <div className="font-medium">Related Topics</div>
+          <div className="flex gap-2">
+            {problem.topics.map((t) => (
+              <DefaultBadge text={t} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,11 +1,6 @@
 import { getProblem } from "@/actions/problem/getProblem";
 import { ProblemComponent } from "@/components/ProblemComponent";
 import ProblemPlayground from "@/components/ProblemPlayground";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@repo/ui/resizable.tsx";
 import React from "react";
 
 export default async function layout({

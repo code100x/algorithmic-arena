@@ -63,12 +63,14 @@ export default function SubmissionComponent({
           </div>
         </div>
       </div>
-      <CopyBlock
-        theme={dracula}
-        codeBlock
-        text={submission.code}
-        language={submission.language.name}
-      />
+      {submission.code && (
+        <CopyBlock
+          theme={dracula}
+          codeBlock
+          text={submission.code}
+          language={submission.language.name}
+        />
+      )}
     </div>
   );
 }
