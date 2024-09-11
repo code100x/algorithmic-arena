@@ -15,7 +15,7 @@ Return an array of length `N`, where each element corresponds to the product of 
 
 ### Constraints
 - `1 ≤ N ≤ 100,000`
-- `-1,000,000,000 ≤ A[i] ≤ 1,000,000,000`
+- `-1000 ≤ A[i] ≤ 1000`
 
 ### Example
 
