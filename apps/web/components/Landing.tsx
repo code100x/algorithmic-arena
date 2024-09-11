@@ -1,18 +1,19 @@
-import { Contests } from "./Contests";
 import { Hero } from "./Hero";
-import { Problems } from "./Problems";
+import { LanguageSectionLanding } from "./LanguageSectionLanding";
+import { Features } from "./Features";
+import style from '../app/page.module.css'
+import { HowItWork } from "./HowItWork";
+import { CTA } from "./CTA";
 
 export function Landing() {
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
-        <Hero />
-        <Contests />
-        <section className="bg-white dark:bg-gray-900 py-8 md:py-12">
-          <div className="container mx-auto px-4 md:px-6">
-            <Problems />
-          </div>
-        </section>
+      <main className={`${style.background} flex-1`} >
+       <Hero/>
+       <LanguageSectionLanding/>
+       <Features/>
+       <HowItWork/>
+       <CTA/>
       </main>
     </div>
   );
