@@ -1,5 +1,6 @@
 import { db } from "../db";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
@@ -40,7 +41,7 @@ const generateJWT = async (payload: JWTPayload) => {
   return jwt;
 };
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -116,6 +117,10 @@ export const authOptions = {
         }
       },
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID??'',
+      clientSecret: process.env.GITHUB_SECRET??''
+    }) 
   ],
   secret: process.env.NEXTAUTH_SECRET || "secr3t",
   callbacks: {
