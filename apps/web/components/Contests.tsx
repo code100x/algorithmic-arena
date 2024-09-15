@@ -1,55 +1,153 @@
-import { getExistingContests, getUpcomingContests } from "../app/db/contest";
-import { ContestCard } from "./ContestCard";
+"use client";
 
-export async function Contests() {
-  const [upcomingContests, pastContests] = await Promise.all([
-    getUpcomingContests(),
-    getExistingContests(),
-  ]);
+import { useState } from "react";
+import { ContestsCard } from "./ContestsCard";
+import ContestsLeaderboard from "./ContestsLeaderboard";
+import PastContest from "./PastContest";
+import ContestsPagination from "./ContestsPagination";
+import { MyContestsTable } from "./MyContestsTable";
+import Tabs from "./Tabs";
+
+export function Contests() {
+
+  const [ActiveOrUpcomingContests, setActiveOrUpcomingContests] = useState<string>("Active");
+  const [PastOrMyContests, setPastOrMyContests] = useState<string>("Past");
+
+  const PastContests: { title: string, date: string, attendee: string }[] = Array(4).fill({
+    title: "Weekly Contest 1",
+    date: "August 25, 2024, 2:00 PM (IST)",
+    attendee: "256",
+  })
+  const PastContestsComponent = PastContests.map((contest, index) => (
+    <PastContest
+      key={index}
+      contestName={contest.title}
+      date={contest.date}
+      attendee={contest.attendee}
+    />
+  ))
+
+  const MyContests: { title: string, finishTime: string, solved: string, ranking: string }[] = Array(4).fill({
+    title: "Weekly Contest 94",
+    finishTime: "0:56:00",
+    solved: "0 / 4",
+    ranking: "12 / 29",
+  })
+  const MyContestsComponent = <MyContestsTable data={MyContests} />
+
+  const UpcomingContests: { title: string, date: string, attendee: string }[] = Array(4).fill({
+    title: "Weekly Contest 1",
+    date: "02d : 21hr : 34m : 02s",
+    attendee: "256",
+  })
+
+  const UpcomingContestsComponent = UpcomingContests.map((contest, index) => (
+    <ContestsCard
+      key={index}
+      title={contest.title}
+      date={contest.date}
+      status={{
+        type: "upcoming",
+        date: contest.date
+      }}
+    />
+  ))
+
+  const ActiveContests: { title: string, date: string }[] = Array(4).fill({
+    title: "Weekly Contest 1",
+    date: "August 25, 2024, 2:00 PM (IST)",
+  })
+  const ActiveContestsComponent = ActiveContests.map((contest, index) => (
+    <ContestsCard
+      key={index}
+      title={contest.title}
+      date={contest.date}
+      status={{
+        type: "active"
+      }}
+    />
+  ))
+
+  const FeaturedContest = {
+    type: "upcoming",
+    title: "Weekly Contest 1",
+    date: "August 25, 2024, 2:00 PM (IST)",
+    status: {
+      type: "upcoming" as "upcoming" | "active",
+      date: "02d : 21hr : 34m : 02s"
+    }
+  }
+
   return (
-    <div className="min-h-screen">
-      <section className="bg-white dark:bg-gray-900 py-8 md:py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Upcoming Contests</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Check out the upcoming programming contests on Codeforces.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingContests.map((contest) => (
-              <ContestCard
-                key={contest.id}
-                title={contest.title}
-                id={contest.id}
-                startTime={contest.startTime}
-                endTime={contest.endTime}
-              />
-            ))}
+    <section className="min-h-screen py-[2rem] bg-white dark:bg-[#020817]">
+      <div className="max-w-7xl px-3 md:px-5 mx-auto">
+        <div className="px-4">
+          <h1 className="text-4xl font-bold">Contests</h1>
+          <p className="text-md my-2 text-gray-400">Test your skills, face top coders, and ascend the leaderboards at Algorithmic Arena.</p>
+        </div>
+
+        {/* Contests */}
+        <div className="mt-6 pt-6">
+
+          {/* Featured Contest */}
+          <h1 className="text-2xl px-4 font-bold">Featured Contest</h1>
+          <ContestsCard type="featured" title={FeaturedContest.title} date={FeaturedContest.date} status={FeaturedContest.status} />
+
+          {/* Active and Upcoming Contests */}
+
+          <div className="my-8">
+            <Tabs TabHead={[
+              { title: "Active Contests", key: "Active" },
+              { title: "Upcoming Contests", key: "Upcoming" }
+            ]}
+              TabContent={[{
+                key: "Active",
+                content: (
+                  <div className="lg:flex md:gap-3 md:justify-between">
+                    {ActiveContestsComponent}
+                  </div>
+                )
+              },
+              {
+                key: "Upcoming",
+                content: (
+                  <div className="lg:flex md:gap-3 md:justify-between">
+                    {UpcomingContestsComponent}
+                  </div>
+                )
+              }
+              ]}
+            />
           </div>
         </div>
-      </section>
-      <section className="bg-white dark:bg-gray-900 py-8 md:py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Previous Contests</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Check out the previous programming contests on Codeforces.
-            </p>
+
+        {/* Past, My Contests & Leaderboard */}
+        <div className="md:flex md:items-start md:gap-8">
+          <div className="md:flex-1 md:min-w-[400px]">
+            {<Tabs
+              TabHead={[{ title: "Past Contests", key: "Past" }, { title: "My Contests", key: "My" }]}
+              TabContent={[{
+                key: "Past", content: (
+                  <div className="flex flex-col gap-2 my-4">
+                    {PastContestsComponent}
+                    <ContestsPagination />
+                  </div>
+                )
+              },
+              {
+                key: "My", content: (
+                  <div className="flex flex-col gap-2 my-4">
+                    {MyContestsComponent}
+                    {MyContests.length > 0 && <ContestsPagination />}
+                  </div>
+                )
+              }]}
+            />}
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastContests.map((contest) => (
-              <ContestCard
-                key={contest.id}
-                title={contest.title}
-                id={contest.id}
-                startTime={contest.startTime}
-                endTime={contest.endTime}
-              />
-            ))}
-          </div>
+          {/* Leaderboard */}
+          <ContestsLeaderboard />
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
