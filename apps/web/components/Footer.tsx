@@ -1,70 +1,64 @@
-""
-/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { SiInstagram, SiYoutube, SiX } from "@icons-pack/react-simple-icons";
-import Image from "next/image";
-import playstore from "../public/playstore.png";
-import Logo from "../public/logo.png";
+import { SiGithub, SiYoutube, SiX } from "@icons-pack/react-simple-icons";
 
 export const Footer = () => {
   return (
-<div className="bottom-0 w-full p-4 bg-gray-900 dark:bg-slate-900 px-6 lg:px-36 print:hidden">
-      <div className="md:max-w-screen-2xl mt-4 mx-auto flex flex-row items-start justify-between w-full">
-        <div className="flex flex-col md:flex-row w-3/5 md:justify-between">
-          <div className=" ml-21 ">
-            <Link href={"https://app.100xdevs.com/"} target="_blank" rel="noopener noreferrer">
-              <Image src={Logo} alt="Logo" width={300} height={200} className="hover:opacity-80" />
-            </Link>
-          </div>
-          <div className="flex flex-col justify-center my-8 md:my-0">
-            <h3 className="font-semibold text-neutral-100 mb-4">Quick Links</h3>
+    <div className="bg-background text-foreground border border-coolGray-900 w-full p-4 flex flex-col items-center px-6 lg:px-20 print:hidden">
+      <div className="flex flex-col lg:flex-row w-full md:max-w-screen-2xl">
+        {/* Links Section */}
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:flex-1 lg:order-1 mb-4 lg:mb-0">
+          <div className="flex flex-col lg:flex-row lg:gap-6 text-sm md:text-base lg:flex-1 lg:justify-start lg:items-center">
             <Link
-              href={"https://app.100xdevs.com/"}
+              href={""}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-blue-500 text-neutral-200"
+              className="hover:text-blue-500"
             >
-              100xdevs
+              Help & Support
             </Link>
-            <Link
-              href={"https://github.com/code100x/daily-code/"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-500 text-neutral-200"
-            >
-              GitHub
-            </Link>
-            <Link href={"/tnc"} className="hover:text-blue-500 text-neutral-200">
+            <Link href={"/tnc"} className="hover:text-blue-500">
               Terms & Conditions
             </Link>
-            <Link href={"/privacy-policy"} className="hover:text-blue-500 text-neutral-200">
+            <Link href={"/privacy-policy"} className="hover:text-blue-500">
               Privacy Policy
             </Link>
           </div>
         </div>
 
-        <div className="flex flex-col justify-center">
-          <Link
-            href={"https://play.google.com/store/apps/details?id=com.hundredx.devs"}
-            target="_blank"
-            className="hover:text-blue-500 font-semibold  text-neutral-200 mb-4"
-          >
-            Download App
-            <Image className="shadow-md mt-2" src={playstore} alt={"playstore"} height={50} width={150} />
-          </Link>
-          <div>
-            <h4 className="text-neutral-200 font-semibold mb-2">Follow us</h4>
-            <div className="flex gap-x-2">
-              <Link target="_blank" rel="noopener noreferrer" href={"https://twitter.com/kirat_tw"}>
-                <SiX className="text-white hover:text-blue-500" />
-              </Link>
-              <Link target="_blank" rel="noopener noreferrer" href={"https://www.instagram.com/kirat_ins/"}>
-                <SiInstagram className="text-white hover:text-blue-500" />
-              </Link>
-              <Link target="_blank" rel="noopener noreferrer" href={"https://www.youtube.com/@harkirat1"}>
-                <SiYoutube className="text-white hover:text-blue-500" />
-              </Link>
-            </div>
+        {/* Social Icons and Copyright */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:flex-1 lg:order-2 lg:gap-6 mt-4 lg:mt-0 text-center lg:text-left">
+          <h4 className="opacity-40 text-sm md:text-base">
+            © 2024 Algorithmic Arena. All rights reserved.
+          </h4>
+
+          <div className="flex gap-4 mb-4 lg:mb-0 justify-center">
+            <Link
+              href={"https://www.youtube.com/@harkirat1"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-10 h-10 bg-[#1E293B] text-white border border-[#1E293B] rounded-full hover:bg-gray-700 transition-colors"
+              aria-label="YouTube"
+            >
+              <SiYoutube className="w-5 h-5 bg-coolGray-900" />
+            </Link>
+            <Link
+              href={"https://x.com/kirat_tw"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-10 h-10 bg-[#1E293B] text-white border border-[#1E293B] rounded-full hover:bg-gray-700 transition-colors"
+              aria-label="Instagram"
+            >
+              <SiX className="w-5 h-5 bg-coolGray-900" />
+            </Link>
+            <Link
+              href={"https://github.com/code100x/algorithmic-arena"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-10 h-10 bg-[#1E293B] text-white border border-[#1E293B] rounded-full hover:bg-gray-700 transition-colors"
+              aria-label="Instagram"
+            >
+              <SiGithub className="w-5 h-5 bg-coolGray-900" />
+            </Link>
           </div>
         </div>
       </div>
