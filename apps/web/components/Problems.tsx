@@ -11,6 +11,7 @@ import { PrimaryButton } from "./LinkButton";
 import { Input } from "@repo/ui/input";
 import { Button } from "@repo/ui/button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export async function Problems({ query }: { query: string | null }) {
   const problems = await getProblems(query ? query : undefined);
@@ -43,6 +44,14 @@ export async function Problems({ query }: { query: string | null }) {
               Search
             </Button>
           </form>
+          {query && (
+            <Link
+              className="text-sm mt-1 text-blue-500 underline"
+              href={"/problems"}
+            >
+              Clear Search
+            </Link>
+          )}
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6  mt-6">
           {problems.map((problem) => (

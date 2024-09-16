@@ -8,7 +8,7 @@ import Logo from "../public/logo.png";
 
 export const Footer = () => {
   return (
-    <div className="bottom-0 w-full p-4 bg-gray-900 dark:bg-slate-900 px-6 lg:px-36 print:hidden">
+    <div className="bottom-0 w-full p-4 bg-gray-900 dark:bg-slate-900 px-6 lg:px-36 print:hidden md:mt-12 mt-6">
       <div className="md:max-w-screen-2xl mt-4 mx-auto flex flex-row items-start justify-between w-full">
         <div className="flex flex-col md:flex-row w-3/5 md:justify-between">
           <div className=" ml-21 ">

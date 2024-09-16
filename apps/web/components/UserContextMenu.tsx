@@ -24,7 +24,7 @@ const UserContextMenu = ({ session }: { session: Session }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href="/dashboard">Settings</Link>
+            <Link href="/user/profile-settings">Settings</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
