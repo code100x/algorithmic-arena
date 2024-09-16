@@ -1,8 +1,15 @@
-
+import { getServerSession } from "next-auth";
 import { Landing } from "../components/Landing";
+import { authOptions } from "./lib/auth";
 import styles from "./page.module.css";
+import { redirect } from "next/navigation";
 
-export default function Page(): JSX.Element {
+export default async function Page() {
+  // redirect to problems page if user is already logged in
+  const auth = await getServerSession();
+  if (auth?.user) {
+    redirect("/problems");
+  }
   return (
     <main>
       <Landing />
@@ -10,4 +17,4 @@ export default function Page(): JSX.Element {
   );
 }
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
