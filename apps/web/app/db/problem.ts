@@ -40,10 +40,16 @@ export const getProblem = async (problemId: string, contestId?: string) => {
   return problem;
 };
 
-export const getProblems = async () => {
+export const getProblems = async (query?: string) => {
   const problems = await db.problem.findMany({
     where: {
       hidden: false,
+      ...(query && {
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      }),
     },
     include: {
       defaultCode: true,

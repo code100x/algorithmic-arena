@@ -11,6 +11,7 @@
     "./label": "./src/@/components/ui/label.tsx",
     "./textarea": "./src/@/components/ui/textarea.tsx",
     "./tabs": "./src/@/components/ui/tabs.tsx",
+    "./input": "./src/@/components/ui/input.tsx",
     "./dropdown-menu": "./src/@/components/ui/dropdown-menu.tsx"
   },
   "scripts": {
