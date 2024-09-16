@@ -176,7 +176,7 @@ export function Appbar() {
       {/* Desktop View */}
       <div className="hidden md:flex justify-between items-center px-6 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="./logo.svg" alt="logo" width={40} height={40} />
+          <Image src="/logo.svg" alt="logo" width={40} height={40} />
           <div>
             <div className="text-lg font-bold">algorithmic</div>
             <div className="text-blue-500">arena</div>
