@@ -11,6 +11,7 @@ model User {
   id                 String              @id @default(cuid())
   email              String              @unique
   name               String?
+  image              String?
   token              String?
   password           String
   createdAt          DateTime            @default(now())
@@ -184,7 +185,7 @@ model submissions {
   time                                       Decimal?    @db.Decimal
   memory                                     Int?
   stderr                                     String?
-  token                                      String?     @db.VarChar @unique
+  token                                      String?     @unique @db.VarChar
   number_of_runs                             Int?
   cpu_time_limit                             Decimal?    @db.Decimal
   cpu_extra_time                             Decimal?    @db.Decimal

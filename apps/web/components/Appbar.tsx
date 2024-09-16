@@ -6,6 +6,8 @@ import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/button";
 import { CodeIcon } from "./Icon";
 import { ModeToggle } from "./ModeToggle";
+import UserAccountDropDown from "./UserAccountDropDown";
+
 export function Appbar() {
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
@@ -30,16 +32,15 @@ export function Appbar() {
       {!isLoading && session?.user && (
         <div className="flex items-center gap-4">
           <ModeToggle />
-          <Button onClick={() => signOut()}>Logout</Button>
+          <UserAccountDropDown />
         </div>
       )}
 
       {!isLoading && !session?.user && (
         <div className="flex items-center gap-4">
-        <ModeToggle />
-        <Button onClick={() => signIn()}>Sign in</Button>
+          <ModeToggle />
+          <Button onClick={() => signIn()}>Sign in</Button>
         </div>
-      
       )}
 
       {isLoading && <div className="flex items-center gap-4"></div>}
