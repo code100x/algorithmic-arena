@@ -35,7 +35,7 @@ export default function RootLayout({
         >
           <Providers>
             <div className="flex flex-col min-h-screen ">
-              <Appbar />
+              <Appbar className="sticky top-0 bg-background z-10" />
               <main className="flex-1 grid">{children}</main>
               <Footer />
             </div>

@@ -14,7 +14,7 @@ export default async function Page() {
 
   return (
     <div>
-      <div className="flex flex-col min-h-screen p-4 max-w-screen-md mx-auto  ">
+      <div className="flex flex-col p-4 max-w-screen-md mx-auto  ">
         <div className="container px-4 md:px-6">
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">Leaderboard</h2>

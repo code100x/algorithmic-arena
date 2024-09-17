@@ -8,8 +8,9 @@ import { CodeIcon } from "./Icon";
 import { ModeToggle } from "./ModeToggle";
 import UserContextMenu from "./UserContextMenu";
 import { usePathname } from "next/navigation";
+import { cn } from "../../../packages/ui/src/@/lib/utils";
 
-export function Appbar() {
+export function Appbar({ className }: { className?: string }) {
   const pathname = usePathname();
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
@@ -30,7 +31,11 @@ export function Appbar() {
   ];
 
   return (
-    <header className="  px-4 md:px-6 py-3 flex items-center justify-between ">
+    <header
+      className={cn(
+        `px-4 md:px-6 py-3 flex items-center justify-between border-b ${className}`
+      )}
+    >
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
         <CodeIcon className="h-6 w-6" />
         <span className="text-lg font-bold">Code100x</span>

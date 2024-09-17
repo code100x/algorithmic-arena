@@ -16,7 +16,7 @@ import Link from "next/link";
 export async function Problems({ query }: { query: string | null }) {
   const problems = await getProblems(query ? query : undefined);
   return (
-    <section className="bg-white dark:bg-gray-900 py-8 md:py-22 min-h-screen">
+    <section className=" py-8 md:py-22">
       <div className="container mx-auto px-4 md:px-6">
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">Problems</h2>
