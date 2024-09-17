@@ -13,7 +13,6 @@ import { User } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const UserContextMenu = ({ session }: { session: Session }) => {
-  console.log(session.user);
   const { user } = session;
   if (!user) return null;
   return (
@@ -26,6 +25,13 @@ const UserContextMenu = ({ session }: { session: Session }) => {
           <DropdownMenuItem asChild>
             <Link href="/user/profile-settings">Settings</Link>
           </DropdownMenuItem>
+
+          {user?.role === "ADMIN" && (
+            <DropdownMenuItem asChild>
+              <Link href="/admin">Admin Controls </Link>
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"

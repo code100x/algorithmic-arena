@@ -108,7 +108,6 @@ export const authOptions = {
         newSession.user.token = token.token as string;
         newSession.user.role = token.role as string;
       }
-      console.log(newSession);
       return newSession!;
     },
     jwt: async ({ token, user }) => {
