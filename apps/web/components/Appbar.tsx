@@ -113,7 +113,7 @@ export function Appbar() {
               </Link>
               <Button
                 onClick={handleMenuToggle}
-                className="text-black dark:bg-primary-foreground dark:text-white border"
+                className="text-black dark:bg-primary-foreground bg-white dark:text-white border"
               >
                 <X />
               </Button>

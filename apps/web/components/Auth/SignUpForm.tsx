@@ -23,9 +23,6 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
-export const description =
-  "A sign-up form for Algorithmic Arena with username, name, email, and password fields.";
-
 export default function SignUpForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,7 +39,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
         <Image src="/logo.svg" alt="logo" width={64} height={64} />
         <CardTitle className="text-2xl font-bold">
@@ -128,6 +125,10 @@ export default function SignUpForm() {
           onClick={handleSignUp}
           disabled={loading}
         >
+          <Link
+              href="/signup/verify-otp"
+              className="w-full flex items-center justify-center gap-2"
+            >
           {loading ? (
             <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -136,6 +137,7 @@ export default function SignUpForm() {
           ) : (
             "Sign Up Now"
           )}
+          </Link>
         </Button>
         <div className="relative w-full mb-4 flex items-center">
           <div className="flex-grow border-t border-blueGray-500"></div>
@@ -143,23 +145,35 @@ export default function SignUpForm() {
           <div className="flex-grow border-t border-blueGray-500"></div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <Button className="w-full bg-secondary text-white flex items-center justify-center gap-2">
-            <Image
-              src="/google.png"
-              alt="Google"
-              width={20}
-              height={20}
-              className="mr-2"
-            />
-            Continue with Google
+          <Button className="w-full bg-primary-foreground text-gray-500 flex items-center justify-center gap-2">
+            <Link
+              href="/signup/complete-profile"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Image
+                src="/google.png"
+                alt="Google"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
+              Continue with Google
+            </Link>
           </Button>
-          <Button className="w-full bg-secondary text-white flex items-center justify-center gap-2">
-            <GithubIcon className="w-5 h-5 mr-2" />
-            Continue with GitHub
+
+          <Button className="w-full bg-primary-foreground text-gray-500 flex items-center justify-center gap-2">
+            <Link
+              href="/signup/complete-profile"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <GithubIcon className="w-5 h-5 mr-2 dark:text-white text-black" />
+              Continue with GitHub
+            </Link>
           </Button>
         </div>
-        <Link href="/login" className="text-blue-500 mt-4">
-          Already have an account? Login
+        <Link href="/login" className=" mt-4">
+          Already have an account?{" "}
+          <span className="text-blue-500 hover:underline">Login</span>
         </Link>
       </CardFooter>
     </Card>

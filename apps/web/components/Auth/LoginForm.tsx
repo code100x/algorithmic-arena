@@ -36,7 +36,7 @@ export default function LoginForm()
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
         <Image src="/logo.svg" alt="logo" width={64} height={64} />
         <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
@@ -103,7 +103,7 @@ export default function LoginForm()
           <div className="flex-grow border-t border-blueGray-500"></div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <Button className="w-full bg-secondary text-white flex items-center justify-center gap-2">
+          <Button className="w-full bg-secondary text-blueGray-400 flex items-center justify-center gap-2">
             <Image
               src="/google.png"
               alt="Google"
@@ -113,13 +113,13 @@ export default function LoginForm()
             />
             Continue with Google
           </Button>
-          <Button className="w-full bg-secondary text-white flex items-center justify-center gap-2">
+          <Button className="w-full bg-secondary text-blueGray-400 flex items-center justify-center gap-2">
             <GithubIcon className="w-5 h-5 mr-2" />
             Continue with GitHub
           </Button>
         </div>
-        <Link href="/signup" className="text-blue-500 mt-4">
-          Don't have an account? Sign up
+        <Link href="/signup" className=" mt-4">
+          Don't have an account? <span className="text-blue-500 hover:underline">Sign up</span>
         </Link>
       </CardFooter>
     </Card>

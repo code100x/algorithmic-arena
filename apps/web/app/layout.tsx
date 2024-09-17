@@ -28,7 +28,7 @@ export default function RootLayout({
 }): JSX.Element {
   const pathname = usePathname(); 
 
-  const excludedPaths = ["/login", "/signup","/signup/verify-otp","/signup/complete-profile", "/404"];
+  const excludedPaths = ["/404", "/login", "/reset-password", "/forgot-password" , "/signup","/signup/complete-profile", "/signup/verify-otp",];
 
   return (
     <html lang="en">

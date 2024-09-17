@@ -11,6 +11,7 @@ import {
   CardTitle
 } from "@repo/ui/card";
 import Image from "next/image";
+import Link from 'next/link';
 
 interface CenteredOTPInputProps {
   value: string;
@@ -74,7 +75,7 @@ const VerifyOtpForm: React.FC = () => {
   };
 
   return (
-    <Card className="w-[350px] mx-auto">
+    <Card className="w-[350px] mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
       <Image src="/logo.svg" alt="Logo" width={64} height={64} />
         <CardTitle>Verify your email</CardTitle>
@@ -88,15 +89,15 @@ const VerifyOtpForm: React.FC = () => {
       </CardContent>
       <CardFooter className="flex flex-col">
         <Button
-          className="w-full mb-2"
+          className="w-full mb-2 bg-blue-600 text-white"
           onClick={handleVerify}
           disabled={otp.length !== 4 || loading}
         >
           {loading ? 'Verifying...' : 'Verify OTP'}
         </Button>
-        <Button variant="link" onClick={handleResend}>
-          Didn't receive the code? Resend OTP
-        </Button>
+        <div onClick={handleResend}>
+          Didn't receive the code ?{"  "} <span className='text-blue-500'> Resend OTP</span>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -6,25 +6,30 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@repo/ui/input';
 import { Label } from "@repo/ui/label";
 import { Mail } from 'lucide-react';
-import Link from "next/link";
+import { useRouter } from 'next/navigation'; 
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {};
 
 export const ForgotPasswordPage: React.FC<Props> = () => {
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter(); 
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
+      router.push("/reset-password"); 
     }, 2000);
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto border-none">
 <CardHeader className="text-center items-center mt-0 pt-0">
 <Image src="/logo.svg" alt="logo" width={64} height={64} />
         <CardTitle className="text-2xl font-bold">Reset Your Password</CardTitle>
@@ -65,7 +70,7 @@ export const ForgotPasswordPage: React.FC<Props> = () => {
       </CardContent>
       <CardFooter className="flex justify-center items-center space-x-1">
   <div className="text-gray-500">Didn't receive the email?</div>
-  <Link href="/sign-up" className="text-blue-500">
+  <Link href="/forgot-password" className="text-blue-500">
     Resend Link
   </Link>
 </CardFooter>

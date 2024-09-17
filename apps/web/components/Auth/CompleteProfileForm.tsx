@@ -18,7 +18,7 @@ const CompleteProfileForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
         <Image src="/logo.svg" alt="logo" width={64} height={64} />
         <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
