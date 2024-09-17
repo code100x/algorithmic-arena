@@ -45,11 +45,18 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "email", type: "text", placeholder: "name@gmail.com" },
-        password: { label: "password", type: "password", placeholder: "********" },
+        username: {
+          label: "email",
+          type: "text",
+          placeholder: "name@gmail.com",
+        },
+        password: {
+          label: "password",
+          type: "password",
+          placeholder: "********",
+        },
       },
       async authorize(credentials: any) {
-
         if (!credentials.username || !credentials.password) {
           return null;
         }
@@ -86,11 +93,11 @@ export const authOptions = {
         try {
           // sign up
           if (credentials.username.length < 3) {
-            return null
+            return null;
           }
 
           if (credentials.username.password < 3) {
-            return null
+            return null;
           }
 
           const user = await db.user.create({
