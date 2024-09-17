@@ -13,17 +13,19 @@ export default async function Page() {
   const contests = await getContestsWithLeaderboard();
 
   return (
-    <div className="flex flex-col min-h-screen p-4 max-w-screen-md mx-auto">
-      <div className="container px-4 md:px-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">Leaderboard</h2>
-          <p className="text-gray-500 dark:text-gray-400">
-            Check out the leaderboard
-          </p>
+    <div>
+      <div className="flex flex-col min-h-screen p-4 max-w-screen-md mx-auto  ">
+        <div className="container px-4 md:px-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2">Leaderboard</h2>
+            <p className="text-gray-500 dark:text-gray-400">
+              Check out the leaderboard
+            </p>
+          </div>
         </div>
-      </div>
-      <div>
-        <ContestsTable contests={contests} />
+        <div>
+          <ContestsTable contests={contests} />
+        </div>
       </div>
     </div>
   );

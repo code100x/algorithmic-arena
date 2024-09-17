@@ -7,10 +7,27 @@ import { Button } from "@repo/ui/button";
 import { CodeIcon } from "./Icon";
 import { ModeToggle } from "./ModeToggle";
 import UserContextMenu from "./UserContextMenu";
+import { usePathname } from "next/navigation";
 
 export function Appbar() {
+  const pathname = usePathname();
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
+
+  const links: { name: string; href: string }[] = [
+    {
+      name: "Contests",
+      href: "/contests",
+    },
+    {
+      name: "Problems",
+      href: "/problems",
+    },
+    {
+      name: "Standings",
+      href: "/standings",
+    },
+  ];
 
   return (
     <header className="  px-4 md:px-6 py-3 flex items-center justify-between">
@@ -19,15 +36,16 @@ export function Appbar() {
         <span className="text-lg font-bold">Code100x</span>
       </Link>
       <nav className="hidden md:flex items-center gap-6">
-        <Link href="/contests" className="hover:underline" prefetch={false}>
-          Contests
-        </Link>
-        <Link href="/problems" className="hover:underline" prefetch={false}>
-          Problems
-        </Link>
-        <Link href="/standings" className="hover:underline" prefetch={false}>
-          Standings
-        </Link>
+        {links.map((link, index) => (
+          <Link
+            href={link.href}
+            key={index}
+            className={`hover:underline ${pathname === link.href ? "text-primary font-medium" : "text-muted-foreground"}`}
+            prefetch={false}
+          >
+            {link.name}
+          </Link>
+        ))}
       </nav>
       {!isLoading && session?.user && (
         <div className="flex items-center gap-4">
