@@ -76,12 +76,12 @@ export function Appbar() {
   ];
 
   return (
-    <header className="dark:bg-primary-foreground bg-white text-black dark:text-white">
+    <header className="dark:bg-primary-foreground bg-white text-black dark:text-white border-b ">
       {/* Mobile View */}
       <div className="md:hidden flex flex-col items-center p-4 w-full">
         <div className="w-full flex justify-between items-center mb-4">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="./logo.svg" width={40} height={40} alt="logo" />
+            <Image src="/logo.svg" width={40} height={40} alt="logo" />
             <div>
               <div className="text-lg font-bold">algorithmic</div>
               <div className="text-blue-500">arena</div>
@@ -105,7 +105,7 @@ export function Appbar() {
           <div className="flex flex-col h-full">
             <div className="flex flex-row justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
               <Link href="/" className="flex flex-row items-center gap-2">
-                <Image src="./logo.svg" width={40} height={40} alt="logo" />
+                <Image src="/logo.svg" width={40} height={40} alt="logo" />
                 <div>
                   <div className="text-lg font-bold">algorithmic</div>
                   <div className="text-blue-500">arena</div>

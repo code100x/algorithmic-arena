@@ -24,7 +24,7 @@ const RecentProblems = () => {
       <CardContent>
         <ul className="space-y-2">
           {items.map((item, index) => (
-            <li key={index} className="bg-gray-800 flex rounded-lg p-3 justify-between items-center">
+            <li key={index} className="border flex rounded-lg p-3 justify-between items-center">
               <span>{item.title}</span>
               <span className="text-sm text-gray-400">{item.time}</span>
             </li>
