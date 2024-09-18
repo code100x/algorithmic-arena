@@ -14,7 +14,8 @@
     "./tooltip": "./src/@/components/ui/tooltip.tsx",
     "./input": "./src/@/components/ui/input.tsx",
     "./pagination": "./src/@/components/ui/pagination.tsx",
-    "./chart": "./src/@/components/ui/chart.tsx"
+    "./chart": "./src/@/components/ui/chart.tsx",
+    "./badge": "./src/@/components/ui/badge.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

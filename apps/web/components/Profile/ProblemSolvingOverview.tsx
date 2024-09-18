@@ -1,7 +1,12 @@
 "use client";
 
-import React from 'react';
-import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
+import React from "react";
+import {
+  Label,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { ChartConfig, ChartContainer } from "@repo/ui/chart";
 
@@ -27,10 +32,17 @@ const chartConfig: ChartConfig = {
   },
 };
 
-const DifficultySegment: React.FC<{ difficulty: string; value: string; fill: string }> = ({ difficulty, value, fill }) => {
+const DifficultySegment: React.FC<{
+  difficulty: string;
+  value: string;
+  fill: string;
+}> = ({ difficulty, value, fill }) => {
   return (
     <div className="h-[62px] w-full px-3 py-2 rounded-xl flex flex-col border justify-center items-center gap-0.5">
-      <div className={`self-stretch text-center text-sm font-medium leading-tight`} style={{ color: fill }}>
+      <div
+        className={`self-stretch text-center text-sm font-medium leading-tight`}
+        style={{ color: fill }}
+      >
         {difficulty}
       </div>
       <div className="self-stretch text-center text-black dark:text-slate-50 text-base font-medium leading-normal">
@@ -44,7 +56,9 @@ export function ProblemSolvingOverview() {
   return (
     <Card className="w-[439px] h-[336px] p-4 border">
       <CardHeader className="items-start pb-4">
-        <CardTitle className="text-balck dark:text-white text-xl font-bold">Problem-Solving Overview</CardTitle>
+        <CardTitle className="text-balck dark:text-white text-xl font-bold">
+          Problem-Solving Overview
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex gap-4 h-full pb-0">
         <div className="flex-shrink-0">
@@ -63,12 +77,20 @@ export function ProblemSolvingOverview() {
                 dataKey="solved"
                 background
                 cornerRadius={10}
-                fill={({ payload }: { payload?: { fill?: string } }) => payload?.fill || '#ccc'}
+                fill={({ payload }: { payload?: { fill?: string } }) => payload?.fill || "#ccc"}
               />
               <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                 <Label
-                  content={({ viewBox }: { viewBox?: { cx?: number; cy?: number } }) => {
-                    if (viewBox && viewBox.cx !== undefined && viewBox.cy !== undefined) {
+                  content={({
+                    viewBox,
+                  }: {
+                    viewBox?: { cx?: number; cy?: number };
+                  }) => {
+                    if (
+                      viewBox &&
+                      viewBox.cx !== undefined &&
+                      viewBox.cy !== undefined
+                    ) {
                       return (
                         <text
                           x={viewBox.cx}
@@ -105,7 +127,7 @@ export function ProblemSolvingOverview() {
             <DifficultySegment
               key={category}
               difficulty={category.charAt(0).toUpperCase() + category.slice(1)}
-              value={`${solved} / 25`} 
+              value={`${solved} / 25`}
               fill={fill}
             />
           ))}

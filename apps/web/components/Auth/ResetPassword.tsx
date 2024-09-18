@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Button } from "@repo/ui/button";
 import {
   Card,
@@ -8,12 +8,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@repo/ui/card";
 import { Input } from "../../../../packages/ui/src/@/components/ui/input";
 import { Label } from "@repo/ui/label";
-import { Lock, Eye, EyeOff } from 'lucide-react';
-import Link from "next/link";
+import { Lock, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 
 export default function ResetPassword() {
@@ -42,7 +41,9 @@ export default function ResetPassword() {
     <Card className="w-full max-w-sm mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
         <Image src="/logo.svg" alt="logo" width={64} height={64} />
-        <CardTitle className="text-2xl font-bold">Create New Password</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Create New Password
+        </CardTitle>
         <CardDescription className="font-medium">
           Please enter a new password for your account.
         </CardDescription>
@@ -51,10 +52,13 @@ export default function ResetPassword() {
         <div className="grid gap-2">
           <Label htmlFor="new-password">New Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+            <Lock
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              size={20}
+            />
             <Input
               id="new-password"
-              type={newPasswordVisible ? 'text' : 'password'}
+              type={newPasswordVisible ? "text" : "password"}
               placeholder="New Password"
               required
               className="pl-10"
@@ -71,10 +75,13 @@ export default function ResetPassword() {
         <div className="grid gap-2">
           <Label htmlFor="confirm-password">Confirm Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+            <Lock
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              size={20}
+            />
             <Input
               id="confirm-password"
-              type={confirmPasswordVisible ? 'text' : 'password'}
+              type={confirmPasswordVisible ? "text" : "password"}
               placeholder="Confirm Password"
               required
               className="pl-10"
@@ -84,7 +91,11 @@ export default function ResetPassword() {
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
               onClick={toggleConfirmPasswordVisibility}
             >
-              {confirmPasswordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+              {confirmPasswordVisible ? (
+                <EyeOff size={20} />
+              ) : (
+                <Eye size={20} />
+              )}
             </button>
           </div>
         </div>
@@ -101,7 +112,7 @@ export default function ResetPassword() {
               Resetting Password...
             </div>
           ) : (
-            'Reset Password'
+            "Reset Password"
           )}
         </Button>
       </CardFooter>

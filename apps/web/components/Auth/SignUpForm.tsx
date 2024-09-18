@@ -126,17 +126,17 @@ export default function SignUpForm() {
           disabled={loading}
         >
           <Link
-              href="/signup/verify-otp"
-              className="w-full flex items-center justify-center gap-2"
-            >
-          {loading ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin" />
-              Signing Up...
-            </div>
-          ) : (
-            "Sign Up Now"
-          )}
+            href="/signup/verify-otp"
+            className="w-full flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin" />
+                Signing Up...
+              </div>
+            ) : (
+              "Sign Up Now"
+            )}
           </Link>
         </Button>
         <div className="relative w-full mb-4 flex items-center">

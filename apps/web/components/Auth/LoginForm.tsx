@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Button } from "@repo/ui/button";
 import {
   Card,
@@ -8,19 +8,18 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@repo/ui/card";
-import { Input } from "@repo/ui/input"
-import { Label } from '@repo/ui/label';
-import { Mail, Lock, GithubIcon, Eye, EyeOff } from 'lucide-react';
+import { Input } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
+import { Mail, Lock, GithubIcon, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-export const description = 
+export const description =
   "A simple login form with email and password. The submit button says 'Sign in'.";
 
-export default function LoginForm()
- {
+export default function LoginForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +47,10 @@ export default function LoginForm()
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+            <Mail
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              size={20}
+            />
             <Input
               id="email"
               type="email"
@@ -61,10 +63,13 @@ export default function LoginForm()
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+            <Lock
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              size={20}
+            />
             <Input
               id="password"
-              type={passwordVisible ? 'text' : 'password'}
+              type={passwordVisible ? "text" : "password"}
               placeholder="Password"
               required
               className="pl-10"
@@ -94,7 +99,7 @@ export default function LoginForm()
               Logging In...
             </div>
           ) : (
-            'Login'
+            "Login"
           )}
         </Button>
         <div className="relative w-full mb-4 flex items-center">
@@ -119,7 +124,8 @@ export default function LoginForm()
           </Button>
         </div>
         <Link href="/signup" className=" mt-4">
-          Don't have an account? <span className="text-blue-500 hover:underline">Sign up</span>
+          Don't have an account?{" "}
+          <span className="text-blue-500 hover:underline">Sign up</span>
         </Link>
       </CardFooter>
     </Card>

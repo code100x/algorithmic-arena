@@ -1,36 +1,49 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@repo/ui/card";
+import React, { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
-import { Input } from "@repo/ui/input"
+import { Input } from "@repo/ui/input";
 import Image from "next/image";
-import { User, CircleUser } from 'lucide-react';
+import { User, CircleUser } from "lucide-react";
 
 const CompleteProfileForm = () => {
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    // Handle profile completion logic here
-    console.log('Profile completed', { username, name });
+    // profile  logic here
+    console.log("Profile completed", { username, name });
   };
 
   return (
     <Card className="w-full max-w-sm mx-auto border-none">
       <CardHeader className="text-center items-center mt-0 pt-0">
         <Image src="/logo.svg" alt="logo" width={64} height={64} />
-        <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Complete Your Profile
+        </CardTitle>
         <CardDescription className="font-medium">
-          You're almost ready to start! Please provide a username and confirm your name.
+          You're almost ready to start! Please provide a username and confirm
+          your name.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+              <User
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                size={20}
+              />
               <Input
                 id="username"
                 type="text"
@@ -44,7 +57,10 @@ const CompleteProfileForm = () => {
           </div>
           <div className="grid gap-2">
             <div className="relative">
-              <CircleUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
+              <CircleUser
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                size={20}
+              />
               <Input
                 id="name"
                 type="text"
@@ -63,6 +79,6 @@ const CompleteProfileForm = () => {
       </CardContent>
     </Card>
   );
-}
+};
 
 export default CompleteProfileForm;
