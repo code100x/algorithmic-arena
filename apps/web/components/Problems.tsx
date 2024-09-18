@@ -62,7 +62,7 @@ export async function Problems({ query }: { query: string | null }) {
             </div>
             {problems.map((problem) => (
               <Link
-                href={"/"}
+                href={`/problem/${problem.id}`}
                 className="flex text-muted-foreground hover:bg-muted/50 duration-300"
                 key={problem.id}
               >
