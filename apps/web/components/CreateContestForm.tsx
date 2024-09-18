@@ -17,7 +17,7 @@ import {
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import { Textarea } from "@repo/ui/textarea";
-import { Problem } from "@prisma/client";
+import { Contest, Problem } from "@prisma/client";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -37,8 +37,10 @@ const formSchema = z.object({
 
 const CreateContestForm = ({
   intitalProblems,
+  intitalContest,
 }: {
   intitalProblems: Problem[];
+  intitalContest?: Contest;
 }) => {
   const [problems, setProblems] = useState<Problem[]>(intitalProblems);
   const [query, setquery] = useState("");
@@ -58,9 +60,13 @@ const CreateContestForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "Testing Contest",
-      description: "This is a test contest",
-      hidden: true,
+      ...(intitalContest && {
+        title: intitalContest.title,
+        description: intitalContest.description,
+        startTime: intitalContest.startTime,
+        endTime: intitalContest.endTime,
+        hidden: intitalContest.hidden,
+      }),
     },
   });
 
