@@ -15,7 +15,12 @@
     "./input": "./src/@/components/ui/input.tsx",
     "./pagination": "./src/@/components/ui/pagination.tsx",
     "./chart": "./src/@/components/ui/chart.tsx",
-    "./badge": "./src/@/components/ui/badge.tsx"
+    "./badge": "./src/@/components/ui/badge.tsx",
+    "./dropdown-menu": "./src/@/components/ui/dropdown-menu.tsx",
+    "./sheet": "./src/@/components/ui/sheet.tsx",
+    "./switch": "./src/@/components/ui/switch.tsx",
+    "./breadcrumb": "./src/@/components/ui/breadcrumb.tsx",
+    "./toggle-group": "./src/@/components/ui/toggle-group.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -35,11 +40,15 @@
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-toggle": "^1.1.0",
+    "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
