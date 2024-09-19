@@ -7,6 +7,9 @@ const page = async ({ params }: { params: { id: string } }) => {
     where: {
       id: params.id,
     },
+    include: {
+      problems: true,
+    },
   });
   const problems = await db.problem.findMany();
   if (!contest) {
@@ -18,7 +21,12 @@ const page = async ({ params }: { params: { id: string } }) => {
         {contest.title}
       </h1>
 
-      <CreateContestForm intitalContest={contest} intitalProblems={problems} />
+      <div className="mt-12">
+        <CreateContestForm
+          intitalContest={contest}
+          intitalProblems={problems}
+        />
+      </div>
     </div>
   );
 };

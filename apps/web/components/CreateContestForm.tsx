@@ -17,7 +17,7 @@ import {
 } from "@repo/ui/form";
 import { Input } from "@repo/ui/input";
 import { Textarea } from "@repo/ui/textarea";
-import { Contest, Problem } from "@prisma/client";
+import { Contest, ContestProblem, Problem } from "@prisma/client";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -40,11 +40,17 @@ const CreateContestForm = ({
   intitalContest,
 }: {
   intitalProblems: Problem[];
-  intitalContest?: Contest;
+  intitalContest?: Contest & {
+    problems: ContestProblem[];
+  };
 }) => {
   const [problems, setProblems] = useState<Problem[]>(intitalProblems);
   const [query, setquery] = useState("");
-  const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
+  const [selectedProblems, setSelectedProblems] = useState<string[]>(
+    intitalContest
+      ? intitalContest.problems.map((problem) => problem.problemId)
+      : []
+  );
 
   const filterProblems = useCallback(async () => {
     if (!query) {
@@ -65,7 +71,7 @@ const CreateContestForm = ({
         description: intitalContest.description,
         startTime: intitalContest.startTime,
         endTime: intitalContest.endTime,
-        hidden: intitalContest.hidden,
+        hidden: !intitalContest.hidden,
       }),
     },
   });
@@ -75,8 +81,6 @@ const CreateContestForm = ({
       const res = await axios.post(`/api/contest`, {
         title: values.title,
         description: values.description,
-        startTime: values.startTime,
-        endTime: values.endTime,
         hidden: !values.hidden,
         problems: selectedProblems,
       });
@@ -135,6 +139,11 @@ const CreateContestForm = ({
                 onChange={(e) => {
                   form.setValue("startTime", new Date(e.target.value));
                 }}
+                defaultValue={
+                  intitalContest
+                    ? intitalContest.startTime.toISOString().split("Z")[0]
+                    : ""
+                }
                 type="datetime-local"
               />
             </FormControl>
@@ -150,6 +159,11 @@ const CreateContestForm = ({
                 onChange={(e) => {
                   form.setValue("endTime", new Date(e.target.value));
                 }}
+                defaultValue={
+                  intitalContest
+                    ? intitalContest.endTime.toISOString().split("Z")[0]
+                    : ""
+                }
                 type="datetime-local"
               />
             </FormControl>
