@@ -74,6 +74,14 @@ export class ProblemDefinitionParser {
     return `public static ${this.mapTypeToJava(this.outputFields[0].type)} ${this.functionName}(${inputs}) {\n    // Implementation goes here\n    return result;\n}`;
   }
 
+  generatePython(): string {
+    const inputs = this.inputFields
+      .map((field) => `${field.name}: ${this.mapTypeToPython(field.type)}`)
+      .join(", ");
+    const outputType = this.mapTypeToPython(this.outputFields[0].type);
+    return `def ${this.functionName}(${inputs}) -> ${outputType}:\n    # Implementation goes here\n    return result`;
+  }
+
   mapTypeToRust(type: string): string {
     switch (type) {
       case "int":
@@ -141,5 +149,31 @@ export class ProblemDefinitionParser {
     default:
       return "unknown";
   }
+
 }
+
+  mapTypeToPython(type:string):string {
+  switch (type) {
+    case "int":
+      return "int";
+    case "float":
+      return "float";
+    case "string":
+      return "str";
+    case "bool":
+      return "bool";
+    case "list<int>":
+      return "List[int]";
+    case "list<float>":
+      return "List[float]";
+    case "list<string>":
+      return "List[str]";
+    case "list<bool>":
+      return "List[bool]";
+    default:
+      return "unknown";
+  }
+
+}
+
 }
