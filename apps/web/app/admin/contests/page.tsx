@@ -136,7 +136,7 @@ const ContestsAmdin = () => {
         </Button>
       </div>
 
-      <div className="mb-5 flex justify-end space-x-2">
+      <div className="mb-5 flex justify-between space-x-2">
         <div className="relative w-1/3">
           <Search
             className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -148,7 +148,7 @@ const ContestsAmdin = () => {
             className="pl-10 bg-gray-900 text-white"
           />
         </div>
-        <div>
+        <div className="flex space-x-2">
           <Button variant="outline" className="bg-gray-900 text-white mr-2">
             Status <ChevronDown className="ml-2" size={16} />
           </Button>

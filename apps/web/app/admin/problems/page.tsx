@@ -1,12 +1,19 @@
-import React from 'react';
-import { Button } from "@repo/ui/button";
-import { Input } from "@repo/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
-import { PlusCircle, Search, ChevronDown, Trash2 } from 'lucide-react';
-import { Badge } from '@repo/ui/badge';
-import Link from 'next/link';
+"use client"
 
-const ProblemManagementDashboard = () => {
+import React, { useState } from "react";
+import Link from "next/link";
+import { Button} from "@repo/ui/button";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@repo/ui/dropdown-menu"
+import { PlusCircle, ChevronDown, Search } from "lucide-react";
+import { Input } from "@repo/ui/input";
+import PaginationComponent from "../../../components/Pagination";
+import ProblemsTable from "../../../components/Admin/ProblemsTable";
+
+const ProblemManagementPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null); 
+  const itemsPerPage = 10;
+
   const problems = [
     { name: "24 Two Sum", difficulty: "Easy", points: "120 pts", submissions: 400 },
     { name: "24 Two Sum", difficulty: "Easy", points: "120 pts", submissions: 400 },
@@ -20,86 +27,79 @@ const ProblemManagementDashboard = () => {
     { name: "24 Two Sum", difficulty: "Easy", points: "120 pts", submissions: 400 },
   ];
 
-  const getDifficultyColor = (difficulty: any) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-green-100 text-green-500';
-      case 'Medium': return 'bg-orange-200 text-orange-500';
-      case 'Hard': return 'bg-red-200 text-red-500';
-      default: return 'bg-gray-500 text-white';
-    }
+  const filteredProblems = selectedDifficulty
+    ? problems.filter((problem) => problem.difficulty === selectedDifficulty)
+    : problems;
+
+  const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
-
-
 
   return (
     <div className="px-28 pt-8 pb-14 min-h-screen">
-      <div className=" flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6">
         <div className="text-slate-50 text-[32px] font-bold leading-10">
           All Problems
         </div>
         <Link href="/admin/new-problem">
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-          <PlusCircle className="mr-2" size={20} />
-          Add New Problem
-        </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <PlusCircle className="mr-2" size={20} />
+            Add New Problem
+          </Button>
         </Link>
       </div>
-      <div className="mb-4 flex justify-end space-x-2">
-      <div className="relative w-1/3">
+
+      <div className="mb-4 flex justify-between space-x-2">
+        <div className="relative w-1/3">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
           <Input type="text" placeholder="Search problems..." className="pl-10 bg-gray-900 text-white" />
         </div>
-        <Button variant="outline" className="bg-gray-900 text-white">
-          Difficulty <ChevronDown className="ml-2" size={16} />
-        </Button>
-        <Button variant="outline" className="bg-gray-900 text-white">
-          Topic <ChevronDown className="ml-2" size={16} />
-        </Button>
-        <Button variant="outline" className="bg-gray-900 text-white">
-          Type <ChevronDown className="ml-2" size={16} />
-        </Button>
+
+        <div className="flex space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="bg-gray-900 text-white">
+                Difficulty <ChevronDown className="ml-2" size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setSelectedDifficulty(null)}>
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedDifficulty('Easy')}>
+                Easy
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedDifficulty('Medium')}>
+                Medium
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedDifficulty('Hard')}>
+                Hard
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button variant="outline" className="bg-gray-900 text-white">
+            Topic <ChevronDown className="ml-2" size={16} />
+          </Button>
+          <Button variant="outline" className="bg-gray-900 text-white">
+            Type <ChevronDown className="ml-2" size={16} />
+          </Button>
+        </div>
       </div>
-      <Table className='border rounded'>
-        <TableHeader className='bg-slate-800'>
-          <TableRow >
-            <TableHead>Name</TableHead>
-            <TableHead>Difficulty</TableHead>
-            <TableHead>Points</TableHead>
-            <TableHead>Submissions</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {problems.map((problem, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{problem.name}</TableCell>
-              <TableCell>
-                <Badge variant={'secondary'} className={`px-2 py-1 rounded-full text-xs ${getDifficultyColor(problem.difficulty)}`}>
-                  {problem.difficulty}
-                </Badge>
-              </TableCell>
-              <TableCell>{problem.points}</TableCell>
-              <TableCell>{problem.submissions}</TableCell>
-              <TableCell>
-                <Button variant="ghost" size="icon">
-                  <Trash2 className="h-4 w-4" color='#DD503F' />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+
+      <ProblemsTable problems={filteredProblems} currentPage={currentPage} itemsPerPage={itemsPerPage} />
+
       <div className="mt-4 flex justify-center">
-        <Button variant="outline" className="mx-1">&lt;</Button>
-        <Button variant="outline" className="mx-1 bg-blue-600 text-white">1</Button>
-        <Button variant="outline" className="mx-1">2</Button>
-        <Button variant="outline" className="mx-1">...</Button>
-        <Button variant="outline" className="mx-1">9</Button>
-        <Button variant="outline" className="mx-1">10</Button>
-        <Button variant="outline" className="mx-1 ">&gt;</Button>
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
 };
 
-export default ProblemManagementDashboard;
+export default ProblemManagementPage;

@@ -16,10 +16,12 @@ import {
   BarChart2,
   X,
   Menu,
+  LayoutDashboard,
+  Users,
 } from "lucide-react";
 
 interface NavItemProps {
-  icon: React.ElementType;
+  icon?: React.ElementType;
   label: string;
   href: string;
   onClick?: () => void;
@@ -31,7 +33,7 @@ const NavItem: FC<NavItemProps> = ({ icon: Icon, label, href, onClick }) => (
     onClick={onClick}
     className={`flex font-medium items-center w-[250px] gap-4 h-10 px-4 py-2 ${label === "Logout" ? "text-red-500" : "text-black dark:text-gray-50"}`}
   >
-    <Icon className="w-5 h-5 mr-3" />
+    {/* <Icon className="w-5 h-5 mr-3" /> */}
     {label}
   </Link>
 );
@@ -43,6 +45,9 @@ export function Appbar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Add this state to simulate admin status (replace with actual admin check)
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const handleMenuToggle = () => setMenuOpen(!isMenuOpen);
   const handleProfileClick = () => setDropdownVisible(!isDropdownVisible);
@@ -68,6 +73,20 @@ export function Appbar() {
     { icon: BarChart2, label: "Leaderboard", href: "/leaderboard" },
     { icon: Bookmark, label: "Bookmarks", href: "/bookmarks" },
   ];
+
+  const adminNavItems = [
+    {  label: "Dashboard", href: "/admin" },
+    { label: "Problems", href: "/admin/problems" },
+    {  label: "Contests", href: "/admin/contests" },
+    {  label: "Users", href: "/admin/users" },
+  ];
+
+  // const adminNavItems = [
+  //   { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
+  //   { icon: Code, label: "Problems", href: "/admin/problems" },
+  //   { icon: Trophy, label: "Contests", href: "/admin/contests" },
+  //   { icon: Users, label: "Users", href: "/admin/users" },
+  // ];
 
   const dropdownItems = [
     { icon: User, label: "View Profile", href: "/profile" },
@@ -137,7 +156,9 @@ export function Appbar() {
                     </div>
                   </div>
                   <nav className="py-4 text-black dark:text-white ">
-                    {navItems.map((item, index) => (
+                    {isAdmin ? adminNavItems.map((item, index) => (
+                      <NavItem key={index} {...item} />
+                    )) : navItems.map((item, index) => (
                       <NavItem key={index} {...item} />
                     ))}
                     <div className="border-t border-grey-400">
@@ -184,15 +205,34 @@ export function Appbar() {
         </Link>
         {!isLoading && session?.user && (
           <div className="flex items-center gap-6">
-            {navItems.slice(0, 3).map((item, index) => (
-              <Link
-                key={index}
-                href={item.href}
-                className="text-black dark:text-white font-medium hover:text-blue-500 dark:hover:text-blue-400"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {isAdmin ? (
+              // Admin Navbar
+              <>
+                {adminNavItems.map((item, index) => (
+                  <Link
+                    key={index}
+                    href={item.href}
+                    className="text-black dark:text-white font-medium hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2"
+                  >
+                    {/* <item.icon className="w-5 h-5" /> */}
+                    {item.label}
+                  </Link>
+                ))}
+              </>
+            ) : (
+              // Regular User Navbar
+              <>
+                {navItems.slice(0, 3).map((item, index) => (
+                  <Link
+                    key={index}
+                    href={item.href}
+                    className="text-black dark:text-white font-medium hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </>
+            )}
             <ModeToggle />
             <div className="relative">
               <Image
@@ -218,9 +258,7 @@ export function Appbar() {
         )}
         {!isLoading && !session?.user && (
           <div className="flex items-center gap-4">
-            {/* {This button is kept for now until all the ui changes and auth setup is completed} */}
             <Button onClick={() => signIn()}>Sign in</Button>
-
             <ModeToggle />
             <Button
               variant="outline"

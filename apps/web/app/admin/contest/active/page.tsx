@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 const ContestDashboard = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 px-28 pt-8 pb-14">
       <div className="text-sm breadcrumbs mb-4">
         <ul>
           <li><a>Contest</a></li>
