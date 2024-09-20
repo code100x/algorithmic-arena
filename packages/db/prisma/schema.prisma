@@ -37,7 +37,7 @@ model Contest {
 }
 
 model ContestProblem {
-  id        String
+  id        String   @id @default(cuid())
   contestId String
   problemId String
   createdAt DateTime @default(now())
@@ -47,7 +47,7 @@ model ContestProblem {
   index     Int
   solved    Int      @default(0)
 
-  @@id([contestId, problemId])
+  @@unique([contestId, problemId])
 }
 
 model Problem {
@@ -184,7 +184,7 @@ model submissions {
   time                                       Decimal?    @db.Decimal
   memory                                     Int?
   stderr                                     String?
-  token                                      String?     @db.VarChar @unique
+  token                                      String?     @unique @db.VarChar
   number_of_runs                             Int?
   cpu_time_limit                             Decimal?    @db.Decimal
   cpu_extra_time                             Decimal?    @db.Decimal

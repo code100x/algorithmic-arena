@@ -1,18 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import prismaClient from "@repo/db/client";
 
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
+export const db = prismaClient;
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+// ! when we have already exporting client i don't think we need to export db again
 
-// eslint-disable-next-line
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
+// const prismaClientSingleton = () => {
+//   return new PrismaClient();
+// };
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+// type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
 
-export const db = prisma;
+// // eslint-disable-next-line
+// const globalForPrisma = globalThis as unknown as {
+//   prisma: PrismaClientSingleton | undefined;
+// };
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+
+// export const db = prisma;
+
+// if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
