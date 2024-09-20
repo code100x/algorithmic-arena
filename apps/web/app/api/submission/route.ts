@@ -31,16 +31,16 @@ export async function POST(req: NextRequest) {
   //using the ratelimt function from lib, 1 req per 10 seconds
 
   const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
-  if (!isAllowed && process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      {
-        message: `Too many requests. Please wait before submitting again.`,
-      },
-      {
-        status: 429,
-      }
-    );
-  }
+  // if (!isAllowed && process.env.NODE_ENV === "production") {
+  //   return NextResponse.json(
+  //     {
+  //       message: `Too many requests. Please wait before submitting again.`,
+  //     },
+  //     {
+  //       status: 429,
+  //     }
+  //   );
+  // }
 
   const submissionInput = SubmissionInput.safeParse(await req.json());
   if (!submissionInput.success) {
