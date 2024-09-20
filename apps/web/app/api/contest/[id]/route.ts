@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../../../lib/auth";
 import * as z from "zod";
 import { db } from "../../../db";
 
 export async function POST(
-  req: NextResponse,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
