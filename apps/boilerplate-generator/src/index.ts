@@ -24,6 +24,7 @@ function generatePartialBoilerplate(generatorFilePath: string) {
   const jsCode = parser.generateJs();
   const rustCode = parser.generateRust();
   const javaCode = parser.generateJava();
+  const pyCode = parser.generatePython();
 
   // Ensure the boilerplate directory exists
   if (!fs.existsSync(boilerplatePath)) {
@@ -35,6 +36,7 @@ function generatePartialBoilerplate(generatorFilePath: string) {
   fs.writeFileSync(path.join(boilerplatePath, "function.js"), jsCode);
   fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
   fs.writeFileSync(path.join(boilerplatePath, "function.java"), javaCode);
+  fs.writeFileSync(path.join(boilerplatePath, "function.py"), pyCode);
 
   console.log("Boilerplate code generated successfully!");
 }
@@ -58,6 +60,7 @@ function generateFullBoilerPLate(generatorFilePath: string) {
   const jsCode = parser.generateJs();
   const rustCode = parser.generateRust();
   const javaCode = parser.generateJava();
+  const pyCode = parser.generatePython();
 
   // Ensure the boilerplate directory exists
   if (!fs.existsSync(boilerplatePath)) {
@@ -69,6 +72,7 @@ function generateFullBoilerPLate(generatorFilePath: string) {
   fs.writeFileSync(path.join(boilerplatePath, "function.js"), jsCode);
   fs.writeFileSync(path.join(boilerplatePath, "function.rs"), rustCode);
   fs.writeFileSync(path.join(boilerplatePath, "function.java"), javaCode);
+  fs.writeFileSync(path.join(boilerplatePath, "function.py"), pyCode);
 
   console.log("Boilerplate code generated successfully!");
 }
@@ -104,6 +108,7 @@ const getFolders = (dir: string) => {
     });
   });
 };
+
 function main() {
   fs.readdir(process.env.PROBLEMS_DIR_PATH || "", (err, files) => {
     files.forEach(file => {
@@ -113,6 +118,7 @@ function main() {
     })
   })
 }
+
 if (!process.env.PROBLEMS_DIR_PATH) {
   console.log("Store a valid problems dir path in .env", process.env.PROBLEMS_DIR_PATH);
 } else {
