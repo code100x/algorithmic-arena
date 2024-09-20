@@ -78,14 +78,28 @@ const CreateContestForm = ({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const res = await axios.post(`/api/contest`, {
-        title: values.title,
-        description: values.description,
-        hidden: !values.hidden,
-        problems: selectedProblems,
-      });
-      console.log(res.status);
-    } catch (error) {}
+      if (intitalContest) {
+        await axios.post(`/api/contest/${intitalContest.id}`, {
+          title: values.title,
+          description: values.description,
+          hidden: !values.hidden,
+          problems: selectedProblems,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        });
+      } else {
+        await axios.post(`/api/contest`, {
+          title: values.title,
+          description: values.description,
+          hidden: !values.hidden,
+          problems: selectedProblems,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
