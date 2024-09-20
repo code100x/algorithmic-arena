@@ -43,7 +43,7 @@ export class ProblemDefinitionParser {
   }
 
   extractField(line: string): { type: string; name: string } | null {
-    const match = line.match(/Field: (\w+(?:<\w+>)?) (\w+)$/);
+    const match = line.match(/Field: (\w+(?:<\w+>)?(?:\[\])?(?:\[\])?) (\w+)$/);
     return match ? { type: match[1], name: match[2] } : null;
   }
 
@@ -67,7 +67,7 @@ export class ProblemDefinitionParser {
     return `fn ${this.functionName}(${inputs}) -> ${outputType} {\n    // Implementation goes here\n    result\n}`;
   }
 
-  generateJava(): string{
+  generateJava(): string {
     const inputs = this.inputFields
       .map((field) => `${this.mapTypeToJava(field.type)} ${field.name}`)
       .join(", ");
@@ -84,14 +84,26 @@ export class ProblemDefinitionParser {
         return "String";
       case "bool":
         return "bool";
+      case "int[]":
       case "list<int>":
         return "Vec<i32>";
+      case "float[]":
       case "list<float>":
         return "Vec<f64>";
+      case "string[]":
       case "list<string>":
         return "Vec<String>";
+      case "bool[]":
       case "list<bool>":
         return "Vec<bool>";
+      case "int[][]":
+        return "Vec<Vec<i32>>";
+      case "float[][]":
+        return "Vec<Vec<f64>>";
+      case "string[][]":
+        return "Vec<Vec<String>>";
+      case "bool[][]":
+        return "Vec<Vec<bool>>";
       default:
         return "unknown";
     }
@@ -107,39 +119,67 @@ export class ProblemDefinitionParser {
         return "std::string";
       case "bool":
         return "bool";
+      case "int[]":
       case "list<int>":
         return "std::vector<int>";
+      case "float[]":
       case "list<float>":
         return "std::vector<float>";
+      case "string[]":
       case "list<string>":
         return "std::vector<std::string>";
+      case "bool[]":
       case "list<bool>":
         return "std::vector<bool>";
+      case "int[][]":
+        return "std::vector<std::vector<int>>";
+      case "float[][]":
+        return "std::vector<std::vector<float>>";
+      case "string[][]":
+        return "std::vector<std::vector<std::string>>";
+      case "bool[][]":
+        return "std::vector<std::vector<bool>>";
       default:
         return "unknown";
     }
   }
 
-  mapTypeToJava(type:string):string {
-  switch (type) {
-    case "int":
-      return "int";
-    case "float":
-      return "float";
-    case "string":
-      return "String";
-    case "bool":
-      return "boolean";
-    case "list<int>":
-      return "List<Integer>";
-    case "list<float>":
-      return "List<Float>";
-    case "list<string>":
-      return "List<String>";
-    case "list<bool>":
-      return "List<Boolean>";
-    default:
-      return "unknown";
+  mapTypeToJava(type: string): string {
+    switch (type) {
+      case "int":
+        return "int";
+      case "float":
+        return "float";
+      case "string":
+        return "String";
+      case "bool":
+        return "boolean";
+      case "int[]":
+        return "int[]";
+      case "float[]":
+        return "float[]";
+      case "string[]":
+        return "String[]";
+      case "bool[]":
+        return "boolean[]";
+      case "list<int>":
+        return "List<Integer>";
+      case "list<float>":
+        return "List<Float>";
+      case "list<string>":
+        return "List<String>";
+      case "list<bool>":
+        return "List<Boolean>";
+      case "int[][]":
+        return "int[][]";
+      case "float[][]":
+        return "float[][]";
+      case "string[][]":
+        return "String[][]";
+      case "bool[][]":
+        return "boolean[][]";
+      default:
+        return "unknown";
+    }
   }
-}
 }
