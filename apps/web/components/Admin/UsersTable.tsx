@@ -1,7 +1,14 @@
-import React from 'react';
-import { Button } from '@repo/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/table';
-import { Trash2 } from 'lucide-react';
+import React from "react";
+import { Button } from "@repo/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
+import { Trash2 } from "lucide-react";
 
 interface UsersTableProps {
   users: { name: string; username: string; email: string }[];

@@ -19,6 +19,7 @@
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "ioredis": "^5.4.1",
     "jose": "^5.4.1",
     "lucide-react": "^0.383.0",
