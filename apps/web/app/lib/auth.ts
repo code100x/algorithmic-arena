@@ -1,11 +1,15 @@
 import { db } from "../db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { JWTPayload, SignJWT, importJWK } from "jose";
 import { Session } from "next-auth";
+
+import { Adapter } from "next-auth/adapters";
+
 
 interface token extends JWT {
   uid: string;
@@ -42,6 +46,7 @@ const generateJWT = async (payload: JWTPayload) => {
 };
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(db) as Adapter,
   providers: [
     CredentialsProvider({
       name: "Credentials",
