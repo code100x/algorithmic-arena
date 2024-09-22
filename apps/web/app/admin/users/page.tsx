@@ -82,13 +82,13 @@ const UserManagementDashboard: React.FC = () => {
           <Input
             type="text"
             placeholder="Search users..."
-            className="pl-10 bg-gray-900 text-white w-full"
+            className="pl-10 text-white w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <Button variant="outline" className="bg-gray-900 text-white">
+        <Button variant="outline" >
           Newest <ChevronDown className="ml-2" size={16} />
         </Button>
       </div>

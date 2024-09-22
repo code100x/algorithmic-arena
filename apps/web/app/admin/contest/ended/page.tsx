@@ -1,16 +1,41 @@
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table"
+import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "@repo/ui/breadcrumb";
 
-const ContestDashboard = () => {
+const EndedContestPage = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 h-[1024px]">
+      <Breadcrumb className="mb-4">
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/admin/contest">Contest</BreadcrumbLink>
+        <BreadcrumbSeparator />
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+         Weekly Contest 101
+        </BreadcrumbItem>
+      </Breadcrumb>
+
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Weekly Contest 101</h1>
         <div className="text-sm text-gray-500">
           30 August, 2024, 2:00 PM (IST) | 3 hours | 5,000 Participants
         </div>
-        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">Ended</span>
+        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
+          Ended
+        </span>
       </div>
 
       <Tabs defaultValue="overview">
@@ -24,7 +49,11 @@ const ContestDashboard = () => {
           <div className="space-y-4">
             <section>
               <h2 className="text-xl font-semibold">Contest Description</h2>
-              <p>Join our weekly coding contest and compete with programmers from around the world! This contest features a mix of algorithmic problems designed to challenge your coding skills.</p>
+              <p>
+                Join our weekly coding contest and compete with programmers from
+                around the world! This contest features a mix of algorithmic
+                problems designed to challenge your coding skills.
+              </p>
             </section>
             <section>
               <h2 className="text-xl font-semibold">Contest Rules</h2>
@@ -52,8 +81,10 @@ const ContestDashboard = () => {
                 <TableRow key={index}>
                   <TableCell>24 Two Sum</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs ${index === 2 ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
-                      {index === 2 ? 'Hard' : 'Easy'}
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${index === 2 ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}
+                    >
+                      {index === 2 ? "Hard" : "Easy"}
                     </span>
                   </TableCell>
                   <TableCell>120 pts</TableCell>
@@ -87,7 +118,9 @@ const ContestDashboard = () => {
             </TableBody>
           </Table>
           <div className="flex justify-center mt-4 space-x-2">
-            <button className="px-3 py-1 bg-blue-500 text-white rounded">1</button>
+            <button className="px-3 py-1 bg-blue-500 text-white rounded">
+              1
+            </button>
             <button className="px-3 py-1 bg-gray-200 rounded">2</button>
             <span>...</span>
             <button className="px-3 py-1 bg-gray-200 rounded">9</button>
@@ -99,4 +132,4 @@ const ContestDashboard = () => {
   );
 };
 
-export default ContestDashboard;
+export default EndedContestPage;

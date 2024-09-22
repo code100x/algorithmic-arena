@@ -81,7 +81,7 @@ const ExtendedAdminDashboard: React.FC = () => {
                   >
                     {/* Left side: Problem Name and Submissions */}
                     <TableCell className="flex flex-col">
-                      <span className="font-medium text-slate-50">
+                      <span className="font-medium dark:text-slate-50 text-black">
                         Problem Name
                       </span>
                       <span className="text-slate-400">250 Submissions</span>
@@ -110,7 +110,6 @@ const ExtendedAdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Right section with Upcoming Contests and Quick Links */}
         <div className="col-span-2 flex flex-col gap-4">
           {/* Upcoming Contests */}
           <Card className="h-[344px]">

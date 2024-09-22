@@ -1,23 +1,41 @@
-import React from 'react';
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "@repo/ui/breadcrumb";
 
-const ContestDashboard = () => {
+const ActiveContest = () => {
   return (
-    <div className="container mx-auto p-4 px-28 pt-8 pb-14">
-      <div className="text-sm breadcrumbs mb-4">
-        <ul>
-          <li><a>Contest</a></li>
-          <li>Weekly Contest 101</li>
-        </ul>
-      </div>
+    <div className="container mx-auto px-28 pt-8 pb-14 h-[1024px]">
+      <Breadcrumb className="text-blue-400 mb-4">
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/admin/contest">Contest</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+  <BreadcrumbLink href="#" aria-current="page">Weekly Contest 101</BreadcrumbLink>
+</BreadcrumbItem>
+      </Breadcrumb>
 
       <Card className="mb-4">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
             Weekly Contest 101
-            <span className="ml-2 text-xs bg-green-500 text-white px-2 py-1 rounded">Active</span>
+            <span className="ml-2 text-xs bg-green-500 text-white px-2 py-1 rounded">
+              Active
+            </span>
           </CardTitle>
           <p className="text-sm text-gray-500">
             30 August, 2024, 2:00 PM (IST) | 3 hours | 5,000 Participants
@@ -38,9 +56,15 @@ const ContestDashboard = () => {
               <CardTitle>Contest Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <h3 className="text-lg font-semibold mb-2">Contest Description</h3>
-              <p className="mb-4">Join our weekly coding contest and compete with programmers from around the world! This contest features a mix of algorithmic problems designed to challenge your coding skills.</p>
-              
+              <h3 className="text-lg font-semibold mb-2">
+                Contest Description
+              </h3>
+              <p className="mb-4">
+                Join our weekly coding contest and compete with programmers from
+                around the world! This contest features a mix of algorithmic
+                problems designed to challenge your coding skills.
+              </p>
+
               <h3 className="text-lg font-semibold mb-2">Contest Rules</h3>
               <ul className="list-disc pl-5">
                 <li>All submissions must be original work.</li>
@@ -70,7 +94,11 @@ const ContestDashboard = () => {
                 <TableBody>
                   <TableRow>
                     <TableCell>24 Two Sum</TableCell>
-                    <TableCell><span className="bg-green-500 text-white px-2 py-1 rounded text-xs">Easy</span></TableCell>
+                    <TableCell>
+                      <span className="bg-green-500 text-white px-2 py-1 rounded text-xs">
+                        Easy
+                      </span>
+                    </TableCell>
                     <TableCell>120 pts</TableCell>
                     <TableCell>400</TableCell>
                   </TableRow>
@@ -100,12 +128,13 @@ const ContestDashboard = () => {
                 <TableBody>
                   <TableRow>
                     <TableCell>5</TableCell>
-                    <TableCell className="text-blue-500">@anupsingh12</TableCell>
+                    <TableCell className="text-blue-500">
+                      @anupsingh12
+                    </TableCell>
                     <TableCell>120 pts</TableCell>
                     <TableCell>00:07:57</TableCell>
                     <TableCell>4</TableCell>
                   </TableRow>
-                  {/* Add more rows as needed */}
                 </TableBody>
               </Table>
             </CardContent>
@@ -116,4 +145,4 @@ const ContestDashboard = () => {
   );
 };
 
-export default ContestDashboard;
+export default ActiveContest;

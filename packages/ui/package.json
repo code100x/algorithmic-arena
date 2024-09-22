@@ -24,7 +24,8 @@
     "./calendar": "./src/@/components/ui/calendar.tsx",
     "./toast": "./src/@/components/ui/toast.tsx",
     "./toaster": "./src/@/components/ui/toaster.tsx",
-    "./dialog": "./src/@/components/ui/dialog.tsx"
+    "./dialog": "./src/@/components/ui/dialog.tsx",
+    "./popover": "./src/@/components/ui/popover.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

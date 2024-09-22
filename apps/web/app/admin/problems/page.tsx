@@ -40,7 +40,7 @@ const ProblemManagementPage = () => {
   return (
     <div className="px-28 pt-8 pb-14 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-slate-50 text-[32px] font-bold leading-10">
+        <div className=" text-[32px] font-bold leading-10">
           All Problems
         </div>
         <Link href="/admin/new-problem">
@@ -54,13 +54,13 @@ const ProblemManagementPage = () => {
       <div className="mb-4 flex justify-between space-x-2">
         <div className="relative w-1/3">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={20} />
-          <Input type="text" placeholder="Search problems..." className="pl-10 bg-gray-900 text-white" />
+          <Input type="text" placeholder="Search problems..." className="pl-10 text-white" />
         </div>
 
         <div className="flex space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-gray-900 text-white">
+              <Button variant="outline">
                 Difficulty <ChevronDown className="ml-2" size={16} />
               </Button>
             </DropdownMenuTrigger>
@@ -80,10 +80,10 @@ const ProblemManagementPage = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="outline" className="bg-gray-900 text-white">
+          <Button variant="outline" >
             Topic <ChevronDown className="ml-2" size={16} />
           </Button>
-          <Button variant="outline" className="bg-gray-900 text-white">
+          <Button variant="outline">
             Type <ChevronDown className="ml-2" size={16} />
           </Button>
         </div>
