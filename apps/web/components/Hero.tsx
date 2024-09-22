@@ -15,13 +15,13 @@ export function Hero() {
           <div className="flex justify-center flex-col md:flex-row gap-4 mt-4">
             <Link
               href={"/api/auth/signin"}
-              className="border-[1px] border-gray-600 px-4 py-2 rounded-sm bg-[#4E7AFF]"
+              className="border-[1px] border-gray-600 px-4 py-2 rounded-lg bg-[#4E7AFF]"
             >
               Start Solving{" "}
             </Link>
             <Link
               href={"/#features"}
-              className="border-[1px] border-gray-600 px-4 py-2 rounded-sm"
+              className="border-[1px] border-gray-600 px-4 py-2 rounded-lg"
             >
               Explore Features
             </Link>
