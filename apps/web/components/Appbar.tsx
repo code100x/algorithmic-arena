@@ -75,10 +75,10 @@ export function Appbar() {
   ];
 
   const adminNavItems = [
-    {  label: "Dashboard", href: "/admin" },
+    { label: "Dashboard", href: "/admin" },
     { label: "Problems", href: "/admin/problems" },
-    {  label: "Contests", href: "/admin/contests" },
-    {  label: "Users", href: "/admin/users" },
+    { label: "Contests", href: "/admin/contests" },
+    { label: "Users", href: "/admin/users" },
   ];
 
   // const adminNavItems = [
@@ -156,11 +156,13 @@ export function Appbar() {
                     </div>
                   </div>
                   <nav className="py-4 text-black dark:text-white ">
-                    {isAdmin ? adminNavItems.map((item, index) => (
-                      <NavItem key={index} {...item} />
-                    )) : navItems.map((item, index) => (
-                      <NavItem key={index} {...item} />
-                    ))}
+                    {isAdmin
+                      ? adminNavItems.map((item, index) => (
+                          <NavItem key={index} {...item} />
+                        ))
+                      : navItems.map((item, index) => (
+                          <NavItem key={index} {...item} />
+                        ))}
                     <div className="border-t border-grey-400">
                       <NavItem icon={User} label="Profile" href="#" />
                       <NavItem

@@ -45,9 +45,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {!excludedPaths.includes(pathname) && <Appbar />}
-            {children}
-            {!excludedPaths.includes(pathname) && <Footer />}
+            <div className="flex flex-col justify-between min-h-screen">
+              {!excludedPaths.includes(pathname) && <Appbar />}
+              <main className="flex-1">{children}</main>
+              {!excludedPaths.includes(pathname) && <Footer />}
+            </div>
           </ThemeProvider>
         </SessionProvider>
       </body>

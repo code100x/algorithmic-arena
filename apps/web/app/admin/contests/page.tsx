@@ -1,168 +1,54 @@
-"use client";
-
-import React, { useState } from "react";
-import { Button } from "@repo/ui/button";
-import PaginationComponent from "../../../components/Pagination";
-import AdminContestsTable from "../../../components/Admin/AdminContestsTable";
+import React from "react";
+import { db } from "../../db";
 import Link from "next/link";
-import { PlusCircleIcon, PlusIcon } from "lucide-react";
+import { buttonVariants } from "@repo/ui/button";
 
-const ContestsAdminPage = () => {
-  const itemsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const contests = [
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
+async function page() {
+  const contests = await db.contest.findMany({
+    orderBy: {
+      createdAt: "desc",
     },
-    {
-      name: " Contest 101",
-      status: "Active",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: true,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Ended",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Ended",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-    {
-      name: " Contest 101",
-      status: "Upcoming",
-      startDate: "25-08-2024",
-      totalTime: "9:05 AM",
-      duration: "2 hours",
-      participants: 1200,
-      featured: false,
-    },
-  ];
-
-  const totalPages = Math.ceil(contests.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentContests = contests.slice(startIndex, endIndex);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
+  });
   return (
-    <main className="px-28 py-8 pb-6 min-h-screen">
-      <div className="flex mb-6 justify-between items-center">
-        <div className="text-slate-50 text-[32px] font-bold leading-10">
-          Contests
-        </div>
-        <Link href="/admin/new-contest">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-slate-50">
-            <PlusIcon className="pr-1" />
-            Create New Contest
-          </Button>
-        </Link>
+    <div className="container md:mt-12 mt-6">
+      <h1 className="lg:text-3xl md:text-2xl text-lg font-bold text-muted-foreground">
+        On Going Contests
+      </h1>
+      <div className="mt-6 space-y-4">
+        {contests.map((contest) => (
+          <div key={contest.id} className="border p-2 rounded-md">
+            <h2 className="text-lg font-bold">
+              {contest.title}{" "}
+              <span className="text-sm text-muted-foreground">
+                ({contest.hidden ? "Hidden" : "Visible"})
+              </span>
+            </h2>
+            <p className="text-sm  text-muted-foreground p-2">
+              {contest.description}
+            </p>
+            <div className="mt-2 flex justify-end">
+              <Link
+                href={`/admin/contests/${contest.id}`}
+                className={buttonVariants({ variant: "secondary" })}
+              >
+                Edit
+              </Link>
+            </div>
+            <div className="text-sm text-muted-foreground flex justify-between mt-3">
+              <p>
+                Started At: {contest.startTime.toLocaleDateString()}{" "}
+                {contest.startTime.toLocaleTimeString()}
+              </p>
+              <p>
+                End At: {contest.endTime.toLocaleDateString()}{" "}
+                {contest.endTime.toLocaleTimeString()}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
-
-      <AdminContestsTable contests={currentContests} />
-
-      <PaginationComponent
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </main>
+    </div>
   );
-};
+}
 
-export default ContestsAdminPage;
+export default page;

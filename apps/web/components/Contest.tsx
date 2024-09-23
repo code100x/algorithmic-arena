@@ -11,7 +11,7 @@ export async function Contest({ id }: { id: string }) {
   }
 
   return (
-    <div className="grid grid-flow-row-dense gap-4 grid-cols md:grid-cols-12 gap-4 grid-cols-1 min-h-screen px-2 md:px-12">
+    <div className="grid grid-flow-row-dense gap-4 grid-cols md:grid-cols-12 grid-cols-1 min-h-screen px-2 md:px-12">
       <div className="col-span-9">
         <ContestProblemsTable contest={contest} />
       </div>
@@ -23,7 +23,7 @@ export async function Contest({ id }: { id: string }) {
           <ContestPoints
             points={contest.contestSubmissions.reduce(
               (acc, curr) => acc + curr.points,
-              0,
+              0
             )}
           />
         </div>

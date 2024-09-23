@@ -26,20 +26,21 @@ export async function POST(req: NextRequest) {
       }
     );
   }
+
   const userId = session.user.id;
   //using the ratelimt function from lib, 1 req per 10 seconds
-  const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
 
-  if (!isAllowed) {
-    return NextResponse.json(
-      {
-        message: "Too many requests. Please wait before submitting again.",
-      },
-      {
-        status: 429,
-      }
-    );
-  }
+  const isAllowed = await rateLimit(userId, 1, 10); // Limit to 1 requests per 10 seconds
+  // if (!isAllowed && process.env.NODE_ENV === "production") {
+  //   return NextResponse.json(
+  //     {
+  //       message: `Too many requests. Please wait before submitting again.`,
+  //     },
+  //     {
+  //       status: 429,
+  //     }
+  //   );
+  // }
 
   const submissionInput = SubmissionInput.safeParse(await req.json());
   if (!submissionInput.success) {
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
   });
   const challengeResult = await result.json();
-  const challengeSucceeded = (challengeResult).success;
+  const challengeSucceeded = challengeResult.success;
 
   if (!challengeSucceeded && process.env.NODE_ENV === "production") {
     return NextResponse.json(
