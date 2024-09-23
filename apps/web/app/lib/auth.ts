@@ -1,4 +1,4 @@
-import { db } from "../db";
+import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { NextAuthOptions, User } from "next-auth";

@@ -18,12 +18,16 @@
   "dependencies": {
     "@prisma/client": "5.15.0",
     "@repo/common": "workspace:*",
-    "prisma": "^5.12.0"
+    "bcrypt": "^5.1.1",
+    "prisma": "^5.12.0",
+    "yaml": "^2.5.1"
   },
   "exports": {
-    "./client": "./src/index.ts"
+    "./client": "./src/index.ts",
+    "./src": "./src/index.ts"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.14.6"
   }
 }

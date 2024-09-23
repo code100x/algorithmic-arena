@@ -3,6 +3,7 @@
  * @see https://v0.dev/t/pxkBLMqmzHi
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+import { SubmissionResult } from "@prisma/client";
 import {
   Table,
   TableHeader,
@@ -29,7 +30,7 @@ export interface ISubmission {
 
 function getColor(status: string) {
   switch (status) {
-    case "AC":
+    case "ACCEPTED":
       return "text-green-500";
     case "FAIL":
       return "text-red-500";
@@ -48,7 +49,7 @@ function getColor(status: string) {
 
 function getIcon(status: string) {
   switch (status) {
-    case "AC":
+    case "ACCEPTED":
       return <CheckIcon className="h-4 w-4" />;
     case "FAIL":
       return <CircleX className="h-4 w-4" />;
@@ -83,25 +84,25 @@ export function SubmissionTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-  {submissions.map((submission) => (
-    <TableRow key={submission.id}> 
-      <TableCell>{submission.id.substr(0, 8)}</TableCell>
-      <TableCell className={getColor(submission.status)}>
-        {getIcon(submission.status)}
-      </TableCell>
-      <TableCell>
-        {
-          submission.testcases.filter(
-            (testcase) => testcase.status === "AC",
-          ).length
-        }
-        /{submission.testcases.length}
-      </TableCell>
-      <TableCell>{submission.time}</TableCell>
-      <TableCell>{submission.memory}</TableCell>
-    </TableRow>
-  ))}
-</TableBody>
+          {submissions.map((submission) => (
+            <TableRow key={submission.id}>
+              <TableCell>{submission.id.substr(0, 8)}</TableCell>
+              <TableCell className={getColor(submission.status)}>
+                {getIcon(submission.status)}
+              </TableCell>
+              <TableCell>
+                {
+                  submission.testcases.filter(
+                    (testcase) => testcase.status === SubmissionResult.ACCEPTED
+                  ).length
+                }
+                /{submission.testcases.length}
+              </TableCell>
+              <TableCell>{submission.time}</TableCell>
+              <TableCell>{submission.memory}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
     </div>
   );

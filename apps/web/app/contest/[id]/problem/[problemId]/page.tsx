@@ -1,6 +1,6 @@
-import { ProblemStatement } from "../../../../../components/ProblemStatement";
-import { ProblemSubmitBar } from "../../../../../components/ProblemSubmitBar";
-import { getProblem } from "../../../../db/problem";
+import { ProblemStatement } from "@/components/ProblemStatement";
+import { ProblemSubmitBar } from "@/components/ProblemSubmitBar";
+import { getProblem } from "@/app/db/problem";
 
 export default async function ProblemPage({
   params: { id, problemId },

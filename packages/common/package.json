@@ -2,7 +2,8 @@
   "name": "@repo/common",
   "exports": {
     "./language": "./language/index.ts",
-    "./zod": "./zod/index.ts"
+    "./zod": "./zod/index.ts",
+    "./utils": "./utils/index.ts"
   },
   "version": "1.0.0",
   "description": "",
@@ -10,6 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
+    "tailwind-merge": "^2.3.0",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.7"
   }
 }

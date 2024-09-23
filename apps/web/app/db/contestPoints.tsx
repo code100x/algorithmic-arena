@@ -1,11 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
-import { db } from "./index";
+import db from "@repo/db/client";
 
 export const getContestPoints = async (
   contestId: string,
   page: number,
-  perPage: number,
+  perPage: number
 ) => {
   const session = await getServerSession(authOptions);
 

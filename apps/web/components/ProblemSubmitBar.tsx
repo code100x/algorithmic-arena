@@ -17,7 +17,10 @@ import { ISubmission, SubmissionTable } from "./SubmissionTable";
 import { CheckIcon, CircleX, ClockIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { signIn, useSession } from "next-auth/react";
-import { submissions as SubmissionsType } from "@prisma/client";
+import {
+  SubmissionResult,
+  submissions as SubmissionsType,
+} from "@prisma/client";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 const TURNSTILE_SITE_KEY =
@@ -141,7 +144,7 @@ function SubmitProblem({
       await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
       pollWithBackoff(id, retries - 1);
     } else {
-      if (response.data.submission.status === "AC") {
+      if (response.data.submission.status === SubmissionResult.ACCEPTED) {
         setStatus(SubmitStatus.ACCEPTED);
         setTestcases(response.data.submission.testcases);
         toast.success("Accepted!");

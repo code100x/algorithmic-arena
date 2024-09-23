@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "../../../db";
+import db from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/auth";
 

@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
-import { db } from "./db";
+import { Prisma, SubmissionResult } from "@prisma/client";
+import db from "@repo/db/src";
 import { getPoints } from "./points";
 
 type SubmissionWithTestcases = Prisma.SubmissionGetPayload<{
@@ -25,7 +25,9 @@ export async function updateMemoryAndExecutionTime(
         id: submission.id,
       },
       data: {
-        status: accepted ? "AC" : "REJECTED",
+        status: accepted
+          ? SubmissionResult.ACCEPTED
+          : SubmissionResult.REJECTED,
         time: Math.max(
           ...submission.testcases.map((testcase) =>
             Number(testcase.time || "0")

@@ -1,22 +1,20 @@
 // This is the root layout component for your Next.js app.
 // Learn more: https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#root-layout-required
 
-import { Chivo } from "next/font/google";
-import { Rubik } from "next/font/google";
-import "./globals.css";
+import { cn } from "@repo/common/utils";
+import localFont from "next/font/local";
 import { Appbar } from "../components/Appbar";
 import { Footer } from "../components/Footer";
 import { Providers, ThemeProvider } from "../providers";
+import "./globals.css";
 
-const chivo = Chivo({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-chivo",
-});
-const rubik = Rubik({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-rubik",
+const satoshi = localFont({
+  src: [
+    {
+      path: "../public/fonts/satoshi.ttf",
+    },
+  ],
+  variable: "--font-satoshi",
 });
 
 export default function RootLayout({
@@ -26,7 +24,12 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body className={chivo.variable + " " + rubik.variable}>
+      <body
+        className={cn(
+          "bg-background font-satoshi antialiased min-h-screen",
+          satoshi.variable
+        )}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

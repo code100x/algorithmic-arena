@@ -1,0 +1,13 @@
+Title: "Max Element"
+Description: "Given an array of integers, find the maximum element in the array."
+Constraints:
+  - "1 <= len(arr) <= 10^4"
+  - "1 <= arr[i] <= 10^9"
+Examples:
+  - Input: "arr = [1, 2, 3, 4, 5]"
+    Output: "5"
+  - Input: "arr = [2, 6, 8, 9, 11, 1]"
+    Output: "11"
+Topics:
+  - "Array"
+  - "Sum"

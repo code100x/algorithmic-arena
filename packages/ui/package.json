@@ -11,7 +11,12 @@
     "./label": "./src/@/components/ui/label.tsx",
     "./textarea": "./src/@/components/ui/textarea.tsx",
     "./tabs": "./src/@/components/ui/tabs.tsx",
+    "./badge": "./src/@/components/ui/badge.tsx",
     "./input": "./src/@/components/ui/input.tsx",
+    "./pagination": "./src/@/components/ui/pagination.tsx",
+    "./resizable.tsx": "./src/@/components/ui/resizable.tsx",
+    "./difficulty-badge": "./src/@/components/difficulty-badge.tsx",
+    "./default-badge": "./src/@/components/default-badge.tsx",
     "./form": "./src/@/components/ui/form.tsx",
     "./checkbox": "./src/@/components/ui/checkbox.tsx",
     "./dropdown-menu": "./src/@/components/ui/dropdown-menu.tsx"
@@ -21,6 +26,7 @@
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
+    "@repo/common": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^1.12.4",
@@ -44,6 +50,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.383.0",
+    "react-resizable-panels": "^2.1.2",
     "react-hook-form": "^7.53.0",
     "shadcn-ui": "^0.8.0",
     "tailwind-merge": "^2.3.0",

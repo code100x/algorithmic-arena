@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/button";
+import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "../../../packages/ui/src/@/lib/utils";
 import { CodeIcon } from "./Icon";
 import { ModeToggle } from "./ModeToggle";
 import UserContextMenu from "./UserContextMenu";
-import { usePathname } from "next/navigation";
-import { cn } from "../../../packages/ui/src/@/lib/utils";
 
 export function Appbar({ className }: { className?: string }) {
   const pathname = usePathname();
