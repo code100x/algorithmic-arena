@@ -260,7 +260,6 @@ export function Appbar() {
         )}
         {!isLoading && !session?.user && (
           <div className="flex items-center gap-4">
-            <Button onClick={() => signIn()}>Sign in</Button>
             <ModeToggle />
             <Button
               variant="outline"

@@ -3,7 +3,7 @@ import { SiGithub, SiYoutube, SiX } from "@icons-pack/react-simple-icons";
 
 export const Footer = () => {
   return (
-    <div className="bg-background text-foreground border border-coolGray-900 w-full p-4 flex flex-col items-center px-6 lg:px-20 print:hidden">
+    <div className="bg-background text-foreground border border-coolGray-900 w-full p-4 flex flex-col items-center px-6 lg:px-20 print:hidden md:mt-12 mt-6">
       <div className="flex flex-col lg:flex-row w-full md:max-w-screen-2xl">
         {/* Links Section */}
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:flex-1 lg:order-1 mb-4 lg:mb-0">

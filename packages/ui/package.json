@@ -25,6 +25,8 @@
     "./toast": "./src/@/components/ui/toast.tsx",
     "./toaster": "./src/@/components/ui/toaster.tsx",
     "./dialog": "./src/@/components/ui/dialog.tsx",
+    "./form": "./src/@/components/ui/form.tsx",
+    "./checkbox": "./src/@/components/ui/checkbox.tsx",
     "./popover": "./src/@/components/ui/popover.tsx"
   },
   "scripts": {
@@ -46,6 +48,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.0",
     "@radix-ui/react-label": "^2.1.0",
@@ -62,8 +65,8 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.383.0",
-    "react-hook-form": "^7.53.0",
     "react-day-picker": "8.10.1",
+    "react-hook-form": "^7.53.0",
     "recharts": "^2.12.7",
     "shadcn-ui": "^0.8.0",
     "tailwind-merge": "^2.3.0",
