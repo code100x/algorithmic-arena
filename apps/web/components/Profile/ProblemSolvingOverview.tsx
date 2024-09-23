@@ -1,12 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Label,
-  PolarRadiusAxis,
-  RadialBar,
-  RadialBarChart,
-} from "recharts";
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
 import { ChartConfig, ChartContainer } from "@repo/ui/chart";
 
@@ -77,10 +72,10 @@ export function ProblemSolvingOverview() {
                 dataKey="solved"
                 background
                 cornerRadius={10}
-                fill={({ payload }: { payload?: { fill?: string } }) => payload?.fill || "#ccc"}
+                // fill={({ payload }: { payload?: { fill?: string } }) => payload?.fill || "#ccc"}
               />
               <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-                <Label
+                {/* <Label
                   content={({
                     viewBox,
                   }: {
@@ -117,7 +112,7 @@ export function ProblemSolvingOverview() {
                     }
                     return null;
                   }}
-                />
+                /> */}
               </PolarRadiusAxis>
             </RadialBarChart>
           </ChartContainer>
