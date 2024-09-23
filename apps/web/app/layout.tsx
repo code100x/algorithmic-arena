@@ -1,12 +1,12 @@
-// This is the root layout component for your Next.js app.
-// Learn more: https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#root-layout-required
+"use client";
 
-import { Chivo } from "next/font/google";
-import { Rubik } from "next/font/google";
-import "./globals.css";
+import { Chivo, Rubik } from "next/font/google";
+import { ThemeProvider } from "../providers";
 import { Appbar } from "../components/Appbar";
 import { Footer } from "../components/Footer";
-import { Providers, ThemeProvider } from "../providers";
+import { usePathname } from "next/navigation";
+import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 
 const chivo = Chivo({
   subsets: ["latin"],
@@ -24,23 +24,34 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }): JSX.Element {
+  const pathname = usePathname();
+
+  const excludedPaths = [
+    "/login",
+    "/reset-password",
+    "/forgot-password",
+    "/signup",
+    "/signup/complete-profile",
+    "/signup/verify-otp",
+  ];
+
   return (
     <html lang="en">
-      <body className={chivo.variable + " " + rubik.variable}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>
-            <div className="flex flex-col min-h-screen ">
-              <Appbar className="sticky top-0 bg-background z-10" />
-              <main className="flex-1 grid">{children}</main>
-              <Footer />
+      <body className={`${chivo.variable} ${rubik.variable}`}>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex flex-col justify-between min-h-screen">
+              {!excludedPaths.includes(pathname) && <Appbar />}
+              <main className="flex-1 ">{children}</main>
+              {!excludedPaths.includes(pathname) && <Footer />}
             </div>
-          </Providers>
-        </ThemeProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
