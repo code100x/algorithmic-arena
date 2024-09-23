@@ -38,6 +38,24 @@ export const getUpcomingContests = async () => {
   const contests = await db.contest.findMany({
     where: {
       hidden: false,
+      startTime: {
+        gt: new Date(),
+      },
+    },
+    orderBy: {
+      startTime: "asc",
+    },
+  });
+  return contests;
+};
+
+export const getRunningContests = async () => {
+  const contests = await db.contest.findMany({
+    where: {
+      hidden: false,
+      startTime: {
+        lte: new Date(),
+      },
       endTime: {
         gt: new Date(),
       },

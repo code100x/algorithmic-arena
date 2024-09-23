@@ -1,36 +1,60 @@
 "use client";
 
-import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { signIn } from "next-auth/react";
 import { Button } from "@repo/ui/button";
+import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "../../../packages/ui/src/@/lib/utils";
 import { CodeIcon } from "./Icon";
 import { ModeToggle } from "./ModeToggle";
-export function Appbar() {
+import UserContextMenu from "./UserContextMenu";
+
+export function Appbar({ className }: { className?: string }) {
+  const pathname = usePathname();
   const { data: session, status: sessionStatus } = useSession();
   const isLoading = sessionStatus === "loading";
 
+  const links: { name: string; href: string }[] = [
+    {
+      name: "Contests",
+      href: "/contests",
+    },
+    {
+      name: "Problems",
+      href: "/problems",
+    },
+    {
+      name: "Standings",
+      href: "/standings",
+    },
+  ];
+
   return (
-    <header className="bg-gray-900 text-white px-4 md:px-6 py-3 flex items-center justify-between h-[72px]">
+    <header
+      className={cn(
+        `px-4 md:px-6 py-3 flex items-center justify-between border-b ${className}`
+      )}
+    >
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
         <CodeIcon className="h-6 w-6" />
         <span className="text-lg font-bold">Code100x</span>
       </Link>
       <nav className="hidden md:flex items-center gap-6">
-        <Link href="/contests" className="hover:underline" prefetch={false}>
-          Contests
-        </Link>
-        <Link href="/problems" className="hover:underline" prefetch={false}>
-          Problems
-        </Link>
-        <Link href="/standings" className="hover:underline" prefetch={false}>
-          Standings
-        </Link>
+        {links.map((link, index) => (
+          <Link
+            href={link.href}
+            key={index}
+            className={`hover:underline ${pathname === link.href ? "text-primary font-medium" : "text-muted-foreground"}`}
+            prefetch={false}
+          >
+            {link.name}
+          </Link>
+        ))}
       </nav>
       {!isLoading && session?.user && (
         <div className="flex items-center gap-4">
           <ModeToggle />
-          <Button onClick={() => signOut()}>Logout</Button>
+          <UserContextMenu session={session} />
         </div>
       )}
 

@@ -1,13 +1,12 @@
 // This is the root layout component for your Next.js app.
 // Learn more: https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#root-layout-required
 
+import { cn } from "@repo/common/utils";
 import localFont from "next/font/local";
 import { Appbar } from "../components/Appbar";
 import { Footer } from "../components/Footer";
 import { Providers, ThemeProvider } from "../providers";
 import "./globals.css";
-import next from "next";
-import { cn } from "@repo/common/utils";
 
 const satoshi = localFont({
   src: [
@@ -38,9 +37,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <Appbar />
-            {children}
-            <Footer />
+            <div className="flex flex-col min-h-screen ">
+              <Appbar className="sticky top-0 bg-background z-10" />
+              <main className="flex-1 grid">{children}</main>
+              <Footer />
+            </div>
           </Providers>
         </ThemeProvider>
       </body>

@@ -34,7 +34,7 @@ export function HowItWork (){
           <div className="grid gap-3 grid-cols-1 md:grid-cols-2 p-2 ">
             {steps.map((lang: any, index: number) => (
               <div
-                className={`border-[1px] rounded-md p-4  text-start gap-2 flex flex-col w-[80%] ${
+                className={`border-[1px] rounded-md p-4  text-start gap-2 flex flex-col  ${
                   index % 2 === 0 ? 'mr-0' : 'ml-0'
                 } `}
                 key={index}

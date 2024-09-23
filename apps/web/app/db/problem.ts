@@ -1,3 +1,4 @@
+import { Problem } from "@prisma/client";
 import db from "@repo/db/client";
 
 export const getProblem = async (problemId: string, contestId?: string) => {
@@ -40,10 +41,16 @@ export const getProblem = async (problemId: string, contestId?: string) => {
   return problem;
 };
 
-export const getProblems = async () => {
+export const getProblems = async (query?: string): Promise<Problem[]> => {
   const problems = await db.problem.findMany({
     where: {
       hidden: false,
+      ...(query && {
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      }),
     },
     include: {
       defaultCode: true,

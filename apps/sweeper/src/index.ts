@@ -1,5 +1,5 @@
 import { Prisma, SubmissionResult } from "@prisma/client";
-import { db } from "./db";
+import db from "@repo/db/src";
 import { updateContest, updateMemoryAndExecutionTime } from "./utils";
 type SubmissionWithTestcases = Prisma.SubmissionGetPayload<{
   include: {

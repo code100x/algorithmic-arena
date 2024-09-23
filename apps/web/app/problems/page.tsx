@@ -1,11 +1,15 @@
 import { Problems } from "../../components/Problems";
 
-export default function Page(): JSX.Element {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { query: string | null };
+}): JSX.Element {
   return (
     <main>
-      <Problems />
+      <Problems query={searchParams.query} />
     </main>
   );
 }
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";

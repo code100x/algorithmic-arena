@@ -1,29 +1,31 @@
 import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { JWTPayload, SignJWT, importJWK } from "jose";
 import { Session } from "next-auth";
 
-interface token extends JWT {
-  uid: string;
-  jwtToken: string;
+declare module "next-auth" {
+  interface Session {
+    user: {
+      /** The user's postal address. */
+      role: string;
+      token: string;
+    } & User;
+  }
+  interface User {
+    /** The user's postal address. */
+    role: string;
+    token: string;
+  }
 }
-
-export interface session extends Session {
-  user: {
-    id: string;
-    jwtToken: string;
-    email: string;
-    name: string;
-  };
-}
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  token: string;
+declare module "next-auth/jwt" {
+  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+  interface JWT {
+    /** OpenID ID Token */
+    idToken?: string;
+  }
 }
 
 const generateJWT = async (payload: JWTPayload) => {
@@ -45,8 +47,16 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "email", type: "text", placeholder: "name@gmail.com" },
-        password: { label: "password", type: "password", placeholder: "********" },
+        username: {
+          label: "email",
+          type: "text",
+          placeholder: "name@gmail.com",
+        },
+        password: {
+          label: "password",
+          type: "password",
+          placeholder: "********",
+        },
       },
       async authorize(credentials: any) {
         if (!credentials.username || !credentials.password) {
@@ -55,84 +65,59 @@ export const authOptions = {
 
         const hashedPassword = await bcrypt.hash(credentials.password, 10);
 
-        const userDb = await db.user.findFirst({
+        const user = await db.user.upsert({
           where: {
             email: credentials.username,
           },
-          select: {
-            password: true,
-            id: true,
-            name: true,
+          update: {},
+          create: {
+            email: credentials.username,
+            name: credentials.username,
+            password: hashedPassword,
           },
         });
 
-        if (userDb) {
-          if (await bcrypt.compare(credentials.password, userDb.password)) {
-            const jwt = await generateJWT({
-              id: userDb.id,
-            });
-
-            return {
-              id: userDb.id,
-              name: userDb.name,
-              email: credentials.username,
-              token: jwt,
-            };
-          } else {
-            return null;
-          }
-        }
-        try {
-          // sign up
-          if (credentials.username.length < 3) {
-            return null;
-          }
-
-          if (credentials.username.password < 3) {
-            return null;
-          }
-
-          const user = await db.user.create({
-            data: {
-              email: credentials.username,
-              name: credentials.username,
-              password: hashedPassword,
-            },
-          });
-
+        if (await bcrypt.compare(credentials.password, user.password)) {
           const jwt = await generateJWT({
             id: user.id,
           });
-
           return {
             id: user.id,
-            name: credentials.username,
+            name: user.name,
             email: credentials.username,
+            role: user.role,
             token: jwt,
           };
-        } catch (e) {
+        } else {
           return null;
         }
       },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET || "secr3t",
+
+  session: {
+    strategy: "jwt",
+  },
+
   callbacks: {
     session: async ({ session, token }) => {
-      const newSession: session = session as session;
-      if (newSession.user && token.uid) {
-        newSession.user.id = token.uid as string;
-        newSession.user.jwtToken = token.jwtToken as string;
+      const newSession = session;
+      if (newSession.user) {
+        newSession.user.id = token.id as string;
+        newSession.user.token = token.token as string;
+        newSession.user.role = token.role as string;
       }
       return newSession!;
     },
-    jwt: async ({ token, user }): Promise<JWT> => {
+    jwt: async ({ token, user }) => {
       const newToken = token;
-
       if (user) {
-        newToken.uid = user.id;
-        newToken.jwtToken = (user as User).token;
+        newToken.id = user.id;
+        newToken.role = user.role;
+        newToken.token = user.token;
       }
+
       return newToken;
     },
   },

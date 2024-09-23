@@ -1,5 +1,5 @@
 import { Prisma, SubmissionResult } from "@prisma/client";
-import { db } from "./db";
+import db from "@repo/db/src";
 import { getPoints } from "./points";
 
 type SubmissionWithTestcases = Prisma.SubmissionGetPayload<{

@@ -138,6 +138,7 @@ function SubmitProblem({
 
     const response = await axios.get(`/api/submission/?id=${id}`);
 
+    console.log(response.data.submission);
     if (response.data.submission.status === "PENDING") {
       setTestcases(response.data.submission.testcases);
       await new Promise((resolve) => setTimeout(resolve, 2.5 * 1000));
