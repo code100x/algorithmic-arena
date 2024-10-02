@@ -1,0 +1,47 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: 100xdevs/algo-arena:${{ github.sha }}
+          build-args: |
+            DATABASE_URL=${{ secrets.STAGING_DATABASE }}
+            JUDGE0_API_URL=${{ secrets.JUDGE0_API_URL }}
+            REDIS_URL=${{ secrets.REDIS_URL }}
+
+      - name: Update deployment manifest
+        env:
+          PAT: ${{ secrets.PAT }}
+        run: |
+          git clone https://github.com/codes30/ops.git
+          sed -i 's|100xdevs/algo-arena:.*|image: 100xdevs/algo-arena:${{ github.sha }}|' algorithmic-arena/deployment.yml
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add algorithmic-arena/deployment.yml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push https://${{ secrets.PAT }}@github.com/codes30/ops.git main
