@@ -14,5 +14,11 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
+  
   "exclude": ["node_modules"],
+  
 }
+
+
+
+

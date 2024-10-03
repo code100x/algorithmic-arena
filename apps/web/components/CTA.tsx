@@ -23,7 +23,7 @@ export function CTA() {
           </Link>
         </div>
         <div className="flex grow h-60 md:h-auto"></div>
-        <img className="absolute right-0 bottom-0 " src="a2.svg" alt="a2" />
+        <img className="absolute right-0 bottom-0 " src="A2.svg" alt="a2" />
       </div>
     </section>
   );

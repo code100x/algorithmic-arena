@@ -1,7 +1,7 @@
 import Link from "next/link";
 export function Hero() {
   return (
-    <section className="bg-white dark:bg-[#020817] m-4 md:m-0 py-4 md:py-6">
+    <section className="bg-white dark:bg-[#020817] pt-8 relative overflow-hidden md:pt-20">
       <div className="mx-auto px-4 md:px-6 flex flex-col justify-center items-center gap-0">
         <div className="flex flex-col justify-center text-center gap-3 ">
           <div className="text-6xl font-bold">Conquer the Code at</div>
